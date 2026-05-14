@@ -23,3 +23,16 @@ quantum computing:
 - ⬜ R6: Phase diagram under EM feedback
 
 ## Requirements
+
+pip install numpy scipy matplotlib pandas pfapack psutil
+
+## Running
+
+python src/bdg_eigensolver_r1_r2.py
+
+## Results
+See `/figures` for all generated plots and `/data` for CSV outputs.
+
+## Science Fair
+Denver Metro Regional Science and Engineering Fair (DMRSEF)  
+February 19, 2027
