@@ -1,1 +1,9 @@
-/dmrsef2027.py
+__pycache__/
+*.pyc
+.venv/
+venv/
+site-packages/
+test.py
+.DS_Store
+Thumbs.db
+.ipynb_checkpoints/
