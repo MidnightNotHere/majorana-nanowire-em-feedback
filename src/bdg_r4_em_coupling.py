@@ -861,7 +861,7 @@ def figure4_phase_shift_preview(fname: str = "r4_figure4_phase_shift_preview.png
 
     phi_ext = np.pi * 0.1 / N                         # Phi = 0.1 Phi_0
     g0 = 0.03                                          # inductive feedback strength
-    mu_b = np.linspace(0.0, 1.2, 9)
+    mu_b = np.linspace(-1.5, 1.5, 31)
     Bc_base, Bc_ind = [], []
     for m in mu_b:
         Bc_base.append(openwire_boundary_Bc(N, m, T_HOP_SI, LATTICE_A,
