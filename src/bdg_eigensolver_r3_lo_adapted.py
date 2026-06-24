@@ -46,11 +46,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-import sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-try:
-    from bdg_eigensolver_r1_r2_LOAdapted import (
+from bdg_eigensolver_r1_r2_LOAdapted import (
         build_bdg_lo,
         check_ph_symmetry_complex,
         pfaffian_trim_lo,
@@ -58,10 +55,7 @@ try:
         device_info,
         COLORS,
     )
-except ImportError:
-    raise ImportError(
-        "R3 requires bdg_eigensolver_r1_r2_LOAdapted (O1 version) on the Python path."
-    )
+
 
 # ════════════════════════════════════════════════════════════════════
 # SECTION 1 — Constants

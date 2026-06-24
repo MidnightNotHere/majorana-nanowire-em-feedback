@@ -102,12 +102,17 @@ LO_PARAMS = {
     'mu_range': (-2.0, 2.0),   # meV, centred near Dirac point
     'Bz_range': (0.0, 1.0),    # meV, effective Zeeman energy
 }
-
+_HBAR_SI = 1.054571817e-34
+_M_E_SI  = 9.1093837015e-31
+_MEV_J   = 1.602176634e-19 * 1e-3
 # Dimensionless units: normalise all energies to Delta
 # t_norm = t_hop / Delta, alpha_norm = alpha_SO / (Delta * a_lat)
 _D   = LO_PARAMS['Delta']
 _a   = LO_PARAMS['a_lat']
-LO_PARAMS['t_norm']     = LO_PARAMS['t_hop']  / _D        # ~6624 (large, as expected)
+
+# Replace the hardcoded value with a derived one
+LO_PARAMS['t_hop'] = (_HBAR_SI**2) / (2 * LO_PARAMS['m_eff'] * _M_E_SI * (LO_PARAMS['a_lat']*1e-9)**2) / _MEV_J
+LO_PARAMS['t_norm']     = LO_PARAMS['t_hop']  / _D       
 LO_PARAMS['alpha_norm'] = LO_PARAMS['alpha_SO'] / (_D * _a) # 20/(0.25*10) = 8.0
 
 
