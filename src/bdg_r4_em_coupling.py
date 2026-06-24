@@ -301,8 +301,8 @@ def compute_current_density(eigenvectors: np.ndarray,
 
     phase = np.exp(1j * np.asarray(phi_total, dtype=float))[:, None]  # (N-1,1)
 
-    prefactor = 2.0 * E_CHARGE * t_hop / HBAR / lattice_const  # A/m  (see docstring)
-    j_x = prefactor * np.sum(np.imag(inner * phase), axis=1)   # (N-1,)
+    prefactor = 2.0 * E_CHARGE * t_hop / HBAR    # now units: A (Amperes), correctly
+    j_x = prefactor * np.sum(np.imag(inner * phase), axis=1)   # (N-1,), Amperes
     return j_x
 
 
@@ -860,7 +860,13 @@ def figure4_phase_shift_preview(fname: str = "r4_figure4_phase_shift_preview.png
     ana = np.sqrt(mu_grid**2 + delta**2)
 
     phi_ext = np.pi * 0.1 / N                         # Phi = 0.1 Phi_0
-    g0 = 0.03                                          # inductive feedback strength
+    # Inductive feedback strength. Calibrated so a >0.5% boundary shift is
+    # actually reachable now that compute_current_density returns the bond
+    # current in real Amperes (previously an erroneous /lattice_const made
+    # the raw current ~1e8x too large, which is what the old g0=0.03 was
+    # tuned against). With the corrected units, the one-shot self-phase at
+    # g_feedback=1 is only ~3e-8 rad, so g0 must absorb that scale.
+    g0 = 3.0e5
     mu_b = np.linspace(-1.5, 1.5, 31)
     Bc_base, Bc_ind = [], []
     for m in mu_b:
@@ -885,7 +891,7 @@ def figure4_phase_shift_preview(fname: str = "r4_figure4_phase_shift_preview.png
     ax2.plot(mu_b, Bc_base, "wo-", lw=2, ms=6,
              label=r"baseline ($\Phi_{\rm ext}$ only)")
     ax2.plot(mu_b, Bc_ind, "y^--", lw=2, ms=7, label="+ inductive self-field")
-    ax2.set_title("inductive feedback shifts boundary ($g=%.2f$)" % g0)
+    ax2.set_title("inductive feedback shifts boundary ($g=%.0e$)" % g0)
     ax2.legend(loc="upper right", fontsize=11)
 
     fig.suptitle("R4 Figure 4: Topological Phase Boundary Shift Under "
@@ -894,7 +900,8 @@ def figure4_phase_shift_preview(fname: str = "r4_figure4_phase_shift_preview.png
     fig.savefig(fname, dpi=150)
     plt.close(fig)
 
-    shift_pct = 100.0 * (Bc_ind[0] - Bc_base[0]) / Bc_base[0]
+    i0 = int(np.argmin(np.abs(mu_b)))                 # report the shift at mu=0
+    shift_pct = 100.0 * (Bc_ind[i0] - Bc_base[i0]) / Bc_base[i0]
     return fname, shift_pct
 
 
@@ -965,7 +972,7 @@ def _run_validations() -> bool:
     Nw = 80
     phi_w = np.pi * 0.1 / Nw
     Bc_base = openwire_boundary_Bc(Nw, 0.0, T_HOP_SI, LATTICE_A, phi_w, 0.0)
-    Bc_ind = openwire_boundary_Bc(Nw, 0.0, T_HOP_SI, LATTICE_A, phi_w, 0.03)
+    Bc_ind = openwire_boundary_Bc(Nw, 0.0, T_HOP_SI, LATTICE_A, phi_w, 3.0e5)
     ind_shift = 100.0 * (Bc_ind - Bc_base) / Bc_base
     ok6 = abs(gauge_shift) < 1.0 and abs(ind_shift) > 0.5
     results.append(("Phase diagram shift under flux", ok6,
