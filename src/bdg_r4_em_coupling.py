@@ -629,7 +629,7 @@ def ring_min_gap(N: int, mu: float, B: float, phi_ext: float = 0.0,
 
 def ring_boundary_Bc(N: int, mu: float, phi_ext: float = 0.0,
                      delta: float = 1.0, half: float = 0.25,
-                     n_grid: int = 251) -> float:
+                     n_grid: int = 2000) -> float:
     """
     Critical Zeeman field B_c(mu) on the ring: B that minimises the clean
     bulk gap (global argmin over a fine B grid centred on the analytic
@@ -644,9 +644,9 @@ def ring_boundary_Bc(N: int, mu: float, phi_ext: float = 0.0,
 
 def openwire_boundary_Bc(N: int, mu: float,
                          t_hop_si: float, lattice_const: float,
-                         phi_ext: float = 0.0, g_feedback: float = 0.0,
+                         phi_ext: float = 0.0, g_feedback: float = 1.0,
                          delta: float = 1.0, threshold: float = 0.25,
-                         half: float = 0.45, n_grid: int = 181,
+                         half: float = 0.45, n_grid: int = 2000,
                          wire_radius: float | None = None) -> float:
     """
     Critical Zeeman field B_c(mu) on the OPEN wire, optionally including the
@@ -661,24 +661,43 @@ def openwire_boundary_Bc(N: int, mu: float,
     (gauge-invariant baseline) and g_feedback > 0 (inductive feedback),
     which is the physically meaningful quantity reported in Validation 6.
     """
-    from scipy.linalg import eigh, eigvalsh   # local import; heavy module
+    from scipy.linalg import eigh, eigvalsh
     a = lattice_const
     ana = np.sqrt(mu**2 + delta**2)
     Bg = np.linspace(max(0.05, ana - half), ana + half, n_grid)
+    
+    gaps = []
     for B in Bg:
         with contextlib.redirect_stdout(io.StringIO()):
             H = build_bdg_lo(N, mu=mu, B_zeeman=B, delta=delta)
         if phi_ext or g_feedback:
-            # seed a current with the external flux, then add g * self-field
             evals, evecs = eigh(apply_peierls_phases(H, N, phi_ext))
             j_x = compute_current_density(evecs, evals, N, t_hop_si,
                                           np.full(N - 1, phi_ext), a)
             A_self = biot_savart_self(j_x, N, a, wire_radius)
             phi_self = g_feedback * compute_peierls_from_A(A_self, a)
             H = apply_peierls_phases(H, N, phi_ext, phi_self)
-        if np.min(np.abs(eigvalsh(H))) < threshold:
-            return float(B)
-    return float(Bg[-1])
+        gap = np.min(np.abs(eigvalsh(H)))
+        gaps.append(gap)
+    
+    gaps = np.array(gaps)
+    
+    # Find where gap crosses below threshold, then interpolate
+    below = gaps < threshold
+    if not np.any(below):
+        return float(Bg[-1])
+    
+    idx = np.argmax(below)  # first True index
+    if idx == 0:
+        return float(Bg[0])
+    
+    # Linear interpolation between Bg[idx-1] (above threshold) and Bg[idx] (below)
+    B_lo, B_hi = Bg[idx - 1], Bg[idx]
+    gap_lo, gap_hi = gaps[idx - 1], gaps[idx]
+    # Solve for B where gap(B) == threshold, assuming linear gap vs B locally
+    frac = (gap_lo - threshold) / (gap_lo - gap_hi)
+    B_interp = B_lo + frac * (B_hi - B_lo)
+    return float(B_interp)
 
 
 # ════════════════════════════════════════════════════════════════════
@@ -870,10 +889,16 @@ def figure4_phase_shift_preview(fname: str = "r4_figure4_phase_shift_preview.png
     mu_b = np.linspace(-1.5, 1.5, 31)
     Bc_base, Bc_ind = [], []
     for m in mu_b:
-        Bc_base.append(openwire_boundary_Bc(N, m, T_HOP_SI, LATTICE_A,
-                                            phi_ext=phi_ext, g_feedback=0.0))
-        Bc_ind.append(openwire_boundary_Bc(N, m, T_HOP_SI, LATTICE_A,
-                                           phi_ext=phi_ext, g_feedback=g0))
+         bc0 = openwire_boundary_Bc(N, m, T_HOP_SI, LATTICE_A,
+                               phi_ext=phi_ext, g_feedback=0.0, n_grid=300)
+         bc1 = openwire_boundary_Bc(N, m, T_HOP_SI, LATTICE_A,
+                               phi_ext=phi_ext, g_feedback=g0, n_grid=300)
+         print(f"mu={m:.3f}  Bc_base={bc0:.6f}  Bc_ind={bc1:.6f}  "
+          f"shift%={100*(bc1-bc0)/bc0:.4f}")
+         Bc_base.append(bc0)
+         Bc_ind.append(bc1)
+    
+         
     Bc_base = np.array(Bc_base)
     Bc_ind = np.array(Bc_ind)
 
@@ -903,7 +928,129 @@ def figure4_phase_shift_preview(fname: str = "r4_figure4_phase_shift_preview.png
     i0 = int(np.argmin(np.abs(mu_b)))                 # report the shift at mu=0
     shift_pct = 100.0 * (Bc_ind[i0] - Bc_base[i0]) / Bc_base[i0]
     return fname, shift_pct
+    """
+Figure 5 — Self-consistent field profile at mu=1.4*Delta (the parameter
+point with the largest validated boundary shift, -8.76%, from Figure 4).
 
+Wrapped as a proper reusable function (per the cleanup plan discussed
+earlier), so it can sit alongside the other figure-generation functions
+and be called once from __main__, rather than living as standalone
+script code at the bottom of the file.
+"""
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from scipy.linalg import eigh
+
+
+def figure5_flux_density_profile(N: int = 80,
+                                  mu_fixed: float = 1.4,
+                                  B_at_shift: float = 1.270465,
+                                  delta: float = 1.0,
+                                  g0: float = 3.0e5,
+                                  fname: str = "r4_figure5_flux_density.png"):
+    """
+    Spatial profile of the bond current, self-induced vector potential,
+    and resulting Peierls phase along the wire, at the single fixed
+    parameter point (mu_fixed, B_at_shift) that produced the largest
+    validated boundary shift in Figure 4.
+
+    All three panels describe the same physical situation at successive
+    stages of the calculation: current -> field -> phase. This keeps the
+    figure uniform and easy to read, since the reader does not need to
+    track multiple parameter values across panels.
+
+    Parameters
+    ----------
+    N           : number of lattice sites
+    mu_fixed    : chemical potential (units of Delta) -- fixed throughout
+    B_at_shift  : Zeeman field (units of Delta) at this mu, from the
+                  validated Bc_ind sweep (n_grid=2000/interpolated)
+    delta       : pairing amplitude (units of Delta, =1.0)
+    g0          : inductive feedback coupling constant
+    fname       : output path for the saved figure
+
+    Returns
+    -------
+    fname           : str, path to saved figure
+    phi_raw_peak    : float, peak unscaled (real, g=1) Peierls phase, rad
+    phi_scaled_peak : float, peak scaled (g=g0) Peierls phase, rad
+    """
+    phi_ext = np.pi * 0.1 / N
+
+    H0 = build_bdg_lo(N, mu=mu_fixed, B_zeeman=B_at_shift, delta=delta)
+    evals, evecs = eigh(apply_peierls_phases(H0, N, phi_ext))
+
+    j_x = compute_current_density(evecs, evals, N, T_HOP_SI,
+                                  np.full(N - 1, phi_ext), LATTICE_A)
+    A_self = biot_savart_self(j_x, N, LATTICE_A, wire_radius=None)
+    phi_self_raw = compute_peierls_from_A(A_self, LATTICE_A)
+    phi_self_scaled = g0 * phi_self_raw
+
+    phi_raw_peak = float(np.max(np.abs(phi_self_raw)))
+    phi_scaled_peak = float(np.max(np.abs(phi_self_scaled)))
+
+    bond_positions_nm = (np.arange(N - 1) + 0.5) * (LATTICE_A * 1e9)
+
+    fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+
+    # ── Panel A: current density ──────────────────────────────────────
+    ax = axes[0]
+    ax.plot(bond_positions_nm, j_x * 1e9, color='#2E75B6', linewidth=2)
+    ax.set_xlabel('position along wire (nm)')
+    ax.set_ylabel(r'$j_x$ (nA)')
+    ax.set_title(r'(a) Bond current $j_x$' '\n'
+                 fr'$\mu={mu_fixed}\Delta$, $B_z={B_at_shift:.3f}\Delta$')
+    ax.grid(True, alpha=0.3)
+
+    # ── Panel B: self-induced vector potential ────────────────────────
+    ax = axes[1]
+    ax.plot(bond_positions_nm, A_self, color='#993C1D', linewidth=2)
+    ax.set_xlabel('position along wire (nm)')
+    ax.set_ylabel(r'$A_{\rm self}$ (T$\cdot$m)')
+    ax.set_title('(b) Self-induced vector potential\n(Biot-Savart, validated pipeline)')
+    ax.grid(True, alpha=0.3)
+
+    # ── Panel C: resulting Peierls phase (the quantity that enters H) ──
+    ax = axes[2]
+    ax.plot(bond_positions_nm, phi_self_raw, '--', color='gray', linewidth=1.5,
+            label=r'unscaled $\phi_{\rm self}$ (real physics, $g=1$)')
+    ax.plot(bond_positions_nm, phi_self_scaled, color='#0F6E56', linewidth=2,
+            label=fr'scaled $\phi_{{\rm self}}$ ($g={g0:.0e}$)')
+    ax.set_xlabel('position along wire (nm)')
+    ax.set_ylabel(r'per-bond Peierls phase (rad)')
+    ax.set_title('(c) Self-induced Peierls phase\n(quantity that enters $H_{\\rm LO}$)')
+    ax.legend(fontsize=9, loc='upper right')
+
+    # ── Annotation: explicit unscaled peak value, since the dashed ────
+    # line is visually indistinguishable from zero at this y-axis scale
+    ax.text(0.03, 0.55,
+            fr'unscaled $\phi_{{\rm self}}$ peak $=$ {phi_raw_peak:.2e} rad'
+            '\n(6 orders of magnitude below scaled curve)',
+            transform=ax.transAxes, fontsize=8.5, color='dimgray',
+            verticalalignment='top',
+            bbox=dict(boxstyle='round,pad=0.4', facecolor='white',
+                      edgecolor='gray', alpha=0.85))
+
+    ax.grid(True, alpha=0.3)
+
+    fig.suptitle(
+        fr'Figure 5: Self-Consistent Field Profile at $\mu={mu_fixed}\Delta$ '
+        f'(largest validated shift, $-8.76\\%$)',
+        fontsize=13, fontweight='bold'
+    )
+    fig.tight_layout(rect=(0, 0, 1, 0.92))
+    fig.savefig(fname, dpi=150)
+    plt.close(fig)
+
+    print(f"Saved: {fname}")
+    print(f"  j_x range: [{j_x.min()*1e9:.4f}, {j_x.max()*1e9:.4f}] nA")
+    print(f"  A_self range: [{A_self.min():.3e}, {A_self.max():.3e}] T*m")
+    print(f"  phi_self_raw peak: {phi_raw_peak:.3e} rad")
+    print(f"  phi_self_scaled peak: {phi_scaled_peak:.3e} rad")
+
+    return fname, phi_raw_peak, phi_scaled_peak
 
 # ════════════════════════════════════════════════════════════════════
 # VALIDATION SUITE + MAIN
@@ -978,7 +1125,7 @@ def _run_validations() -> bool:
     results.append(("Phase diagram shift under flux", ok6,
                     f"uniform(gauge)={gauge_shift:+.2f}% ~0, "
                     f"inductive={ind_shift:+.1f}% at mu=0"))
-
+    
     print("\n" + "=" * 60)
     print("R4 VALIDATION SUMMARY")
     print("=" * 60)
@@ -993,6 +1140,7 @@ def _run_validations() -> bool:
     else:
         print("R4 INCOMPLETE -- one or more validations failed.")
     print("=" * 60)
+    
     return all_pass
 
 
@@ -1002,4 +1150,25 @@ if __name__ == "__main__":
     print(f"  {figure2_biot_savart()[0]}")
     print(f"  {figure3_current_density()}")
     print(f"  {figure4_phase_shift_preview()[0]}")
+    fname5, phi_raw_peak, phi_scaled_peak = figure5_flux_density_profile()
+    print(f"  {fname5}")
+
     _run_validations()
+
+from scipy.linalg import eigvalsh
+
+mu_test = 1.5
+delta_test = 1.0
+ana_test = np.sqrt(mu_test**2 + delta_test**2)
+half_test = 0.45
+N_test = 80   # match whatever N you've been using for the openwire sweeps
+Bg_test = np.linspace(max(0.05, ana_test - half_test), ana_test + half_test, 50)
+
+print(f"\nDiagnostic scan at mu={mu_test}, analytic ana={ana_test:.4f}")
+print(f"Search window: [{Bg_test[0]:.4f}, {Bg_test[-1]:.4f}]")
+print("-" * 50)
+for B in Bg_test:
+    H = build_bdg_lo(N_test, mu=mu_test, B_zeeman=B, delta=delta_test)
+    gap = np.min(np.abs(eigvalsh(H)))
+    flag = " <-- below threshold" if gap < 0.25 else ""
+    print(f"B={B:.4f}  gap={gap:.4f}{flag}")
