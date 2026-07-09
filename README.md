@@ -17,8 +17,8 @@ quantum computing:
 ## Current Status
 - ✅ R1: Baseline BdG eigensolver (validated vs Kitaev 2001)
 - ✅ R2: Pfaffian topological indicator (finite-size scaling confirmed)
-- 🔄 R3: PH-symmetric rank-2 update (August 2026)
-- ⬜ R4: Biot-Savart EM coupling layer
+- ✅ R3: PH-symmetric rank-2 update (August 2026)
+- 🔄 R4: Biot-Savart EM coupling layer
 - ⬜ R5: Self-consistent fixed-point iteration
 - ⬜ R6: Phase diagram under EM feedback
 
