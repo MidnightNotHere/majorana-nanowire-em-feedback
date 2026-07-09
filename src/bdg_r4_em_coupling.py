@@ -83,6 +83,19 @@ with contextlib.redirect_stdout(io.StringIO()):
     )
 
 
+# ── All figure outputs are routed into this program's data folder ───────
+# (repo-root/"ISEF R4 data folder"), resolved relative to THIS file so it
+# works no matter what the current working directory is when R4 is run.
+_OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           "..", "ISEF R4 data folder")
+
+
+def _out(name: str) -> str:
+    """Route an output basename into this program's data folder (created if needed)."""
+    os.makedirs(_OUTPUT_DIR, exist_ok=True)
+    return os.path.join(_OUTPUT_DIR, os.path.basename(str(name)))
+
+
 # ════════════════════════════════════════════════════════════════════
 # PHYSICAL CONSTANTS (SI) — used only at the Biot-Savart / circuit layer
 # ════════════════════════════════════════════════════════════════════
@@ -1057,9 +1070,9 @@ def figure1_peierls_validation(fname: str = "r4_figure1_peierls_validation.png")
     fig.suptitle("R4 Validation 1: Peierls Phase Implementation (uniform A field)",
                  fontsize=14, fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.96))
-    fig.savefig(fname, dpi=150)
+    fig.savefig(_out(fname), dpi=150)
     plt.close(fig)
-    return fname
+    return _out(fname)
 
 
 def figure2_biot_savart(fname: str = "r4_figure2_biot_savart.png"):
@@ -1114,7 +1127,7 @@ def figure2_biot_savart(fname: str = "r4_figure2_biot_savart.png"):
                  "(uniform current, analytic comparison)",
                  fontsize=14, fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.96))
-    fig.savefig(fname, dpi=150)
+    fig.savefig(_out(fname), dpi=150)
     plt.close(fig)
     return fname, rel_err
 
@@ -1154,9 +1167,9 @@ def figure3_current_density(fname: str = "r4_figure3_current_density.png"):
                  "(InAs/Al, seed $\\Phi=0.1\\,\\Phi_0$)",
                  fontsize=14, fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.95))
-    fig.savefig(fname, dpi=150)
+    fig.savefig(_out(fname), dpi=150)
     plt.close(fig)
-    return fname
+    return _out(fname)
 
 
 def figure4_phase_shift_preview(fname: str = "r4_figure4_phase_shift_preview.png",
@@ -1253,7 +1266,7 @@ def figure4_phase_shift_preview(fname: str = "r4_figure4_phase_shift_preview.png
     fig.suptitle("R4 Figure 4: Topological Phase Boundary Shift Under "
                  "Inductive Feedback (preview)", fontsize=14, fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.95))
-    fig.savefig(fname, dpi=150)
+    fig.savefig(_out(fname), dpi=150)
     plt.close(fig)
 
     i0 = int(np.argmin(np.abs(mu_b)))                 # report the shift at mu=0
@@ -1263,7 +1276,7 @@ def figure4_phase_shift_preview(fname: str = "r4_figure4_phase_shift_preview.png
     imax = int(np.argmax(np.abs(all_shift_pct)))      # largest-magnitude shift
     largest = {"mu": float(mu_b[imax]), "Bc_ind": float(Bc_ind[imax]),
                "shift_pct": float(all_shift_pct[imax])}
-    return fname, shift_pct, largest
+    return _out(fname), shift_pct, largest
 
 
 def figure5_flux_density_profile(N: int = 80,
@@ -1388,16 +1401,16 @@ def figure5_flux_density_profile(N: int = 80,
         fontsize=13, fontweight='bold'
     )
     fig.tight_layout(rect=(0, 0, 1, 0.92))
-    fig.savefig(fname, dpi=150)
+    fig.savefig(_out(fname), dpi=150)
     plt.close(fig)
 
-    print(f"Saved: {fname}")
+    print(f"Saved: {_out(fname)}")
     print(f"  j_x range: [{j_x.min()*1e9:.4f}, {j_x.max()*1e9:.4f}] nA")
     print(f"  A_self range: [{A_self.min():.3e}, {A_self.max():.3e}] T*m")
     print(f"  phi_self_raw peak: {phi_raw_peak:.3e} rad")
     print(f"  phi_self_scaled peak: {phi_scaled_peak:.3e} rad")
 
-    return fname, phi_raw_peak, phi_scaled_peak
+    return _out(fname), phi_raw_peak, phi_scaled_peak
 
 
 def validate_pfaffian_boundary(
@@ -1464,14 +1477,14 @@ def validate_pfaffian_boundary(
         ax.legend(loc="best", fontsize=11)
         ax.grid(True, alpha=0.3)
         fig.tight_layout()
-        fig.savefig(fname, dpi=150)
+        fig.savefig(_out(fname), dpi=150)
         plt.close(fig)
 
     return {"Ns": list(Ns), "analytic": ana,
             "pfaffian_Bc": pfaff.tolist(), "threshold_Bc": thresh.tolist(),
             "pfaffian_max_abs_err": float(pf_err),
             "pfaffian_spread": pf_spread, "threshold_spread": th_spread,
-            "pass": bool(ok), "figure": fname if make_figure else None}
+            "pass": bool(ok), "figure": _out(fname) if make_figure else None}
 
 
 # ════════════════════════════════════════════════════════════════════

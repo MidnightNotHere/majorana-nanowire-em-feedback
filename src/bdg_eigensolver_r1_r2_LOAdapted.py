@@ -58,6 +58,7 @@ Changes from previous version:
   [18] ADDED _validate_lo_ph_symmetry() — module-import assertion for LO.
 """
 
+import os
 import numpy as np
 from scipy.linalg import eigh
 from pfapack import pfaffian as pf
@@ -77,6 +78,18 @@ matplotlib.rcParams.update({
     'lines.linewidth': 2,
     'figure.dpi': 150,
 })
+
+# ── All figure/data outputs are routed into this program's data folder ──
+# (repo-root/R1_R2_data_files), resolved relative to THIS file so it works
+# no matter what the current working directory is when the program is run.
+_OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           "..", "R1_R2_data_files")
+
+
+def _out(name: str) -> str:
+    """Route an output basename into this program's data folder (created if needed)."""
+    os.makedirs(_OUTPUT_DIR, exist_ok=True)
+    return os.path.join(_OUTPUT_DIR, os.path.basename(str(name)))
 
 
 # ════════════════════════════════════════════════════════════════════
@@ -784,7 +797,7 @@ def plot_phase_sweep(df: pd.DataFrame,
     ax2.set_yticks([-1, 0, 1])
     ax2.set_yticklabels(['-1 (Topological)', '0 (Critical)', '+1 (Trivial)'])
     plt.tight_layout()
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.savefig(_out(save_path), dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
 
@@ -802,7 +815,7 @@ def plot_finite_size(df: pd.DataFrame,
     ax.set_title('Finite-Size Scaling of Majorana Gap (Kitaev chain)')
     ax.legend(); ax.grid(True, alpha=0.3); ax.set_xticks([20, 50, 100, 200])
     plt.tight_layout()
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.savefig(_out(save_path), dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
 
@@ -829,7 +842,7 @@ def plot_performance(df_perf: pd.DataFrame, exponent: float,
                  f"Device: {info['cpu'][:35]} | {info['cores']} cores")
     ax.legend(); ax.grid(True, alpha=0.3); ax.set_xticks([50, 100, 200])
     plt.tight_layout()
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.savefig(_out(save_path), dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
 
@@ -853,7 +866,7 @@ def plot_phase_diagram_2d(mu_vals, delta_vals, phase_map,
     ax.set_title('Kitaev Chain Phase Diagram — Numerical Pfaffian Validation')
     ax.legend(loc='upper right')
     plt.tight_layout()
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.savefig(_out(save_path), dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
 
@@ -882,7 +895,7 @@ def plot_pfaffian_tracking(df: pd.DataFrame,
     plt.suptitle('Figure 5: Real-Time Pfaffian Tracking',
                  fontsize=13, fontweight='bold')
     plt.tight_layout()
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.savefig(_out(save_path), dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
 
@@ -947,7 +960,7 @@ def plot_lo_phase_diagram(mu_vals: np.ndarray,
         fontsize=12, fontweight='bold'
     )
     plt.tight_layout()
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.savefig(_out(save_path), dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
 
@@ -1002,7 +1015,7 @@ def plot_lo_finite_size(df: pd.DataFrame,
         fontsize=12, fontweight='bold'
     )
     plt.tight_layout()
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.savefig(_out(save_path), dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
 
@@ -1027,13 +1040,13 @@ if __name__ == '__main__':
     df_sweep = run_phase_sweep(N_sweep=20)
     print(df_sweep[['mu','gap','nu','pf_k0','pf_kpi','ph_error','phase']]
           .to_string(index=False))
-    df_sweep.to_csv('phase_sweep.csv', index=False)
+    df_sweep.to_csv(_out('phase_sweep.csv'), index=False)
 
     # ── [2/7] Kitaev finite-size scaling ─────────────────────────
     print("\n[2/7] Kitaev finite-size scaling...")
     df_scaling = run_finite_size_scaling()
     print(df_scaling.to_string(index=False))
-    df_scaling.to_csv('finite_size_scaling.csv', index=False)
+    df_scaling.to_csv(_out('finite_size_scaling.csv'), index=False)
 
     # ── [3/7] Performance baseline ────────────────────────────────
     print("\n[3/7] Performance baseline (N=50,100,200)...")
@@ -1041,12 +1054,12 @@ if __name__ == '__main__':
     for _, row in df_perf.iterrows():
         print(f"  N={row['N']:>4} | {row['time_ms']:.3f} ms")
     print(f"  Empirical exponent: O(N^{exponent:.2f})")
-    df_perf.to_csv('performance_baseline.csv', index=False)
+    df_perf.to_csv(_out('performance_baseline.csv'), index=False)
 
     # ── [4/7] Pfaffian tracking ───────────────────────────────────
     print("\n[4/7] Pfaffian tracking vs μ (N=50,100,200)...")
     df_tracking = run_pfaffian_tracking()
-    df_tracking.to_csv('pfaffian_tracking.csv', index=False)
+    df_tracking.to_csv(_out('pfaffian_tracking.csv'), index=False)
     print(f"  Rows: {len(df_tracking)}")
 
     # ── [5/7] Kitaev 2D phase diagram ────────────────────────────
@@ -1063,14 +1076,14 @@ if __name__ == '__main__':
         N=50, delta=1.0, n_mu=40, n_Bz=40)
     print(f"  Topological fraction: "
           f"{(lo_nu == -1).mean():.1%} of parameter space")
-    np.save('lo_nu_map.npy',  lo_nu)
-    np.save('lo_gap_map.npy', lo_gap)
+    np.save(_out('lo_nu_map.npy'),  lo_nu)
+    np.save(_out('lo_gap_map.npy'), lo_gap)
 
     # ── [7/7] O1: LO finite-size scaling ─────────────────────────
     print("\n[7/7] O1 — Lutchyn-Oreg finite-size scaling (N=20,50,100,200)...")
     df_lo_fs = run_lo_finite_size_scaling()
     print(df_lo_fs.to_string(index=False))
-    df_lo_fs.to_csv('lo_finite_size_scaling.csv', index=False)
+    df_lo_fs.to_csv(_out('lo_finite_size_scaling.csv'), index=False)
 
     max_lo_ph = df_lo_fs['ph_error'].max()
     print(f"\n  O1 CHECK — Max LO PH error across all N: {max_lo_ph:.2e}")

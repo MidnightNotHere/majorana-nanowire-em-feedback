@@ -36,6 +36,7 @@ Kitaev 2N×2N targets, matrix is 2× larger at the same N):
   Measured at runtime in Section 3 below.
 """
 
+import os
 import numpy as np
 from scipy.linalg import eigh
 import time
@@ -45,6 +46,18 @@ import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
+# ── All figure/data outputs are routed into this program's data folder ──
+# (repo-root/R3_data_files), resolved relative to THIS file so it works no
+# matter what the current working directory is when the program is run.
+_OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           "..", "R3_data_files")
+
+
+def _out(name: str) -> str:
+    """Route an output basename into this program's data folder (created if needed)."""
+    os.makedirs(_OUTPUT_DIR, exist_ok=True)
+    return os.path.join(_OUTPUT_DIR, os.path.basename(str(name)))
 
 
 from bdg_eigensolver_r1_r2_LOAdapted import (
@@ -450,7 +463,7 @@ def plot_accuracy_vs_perturbation_lo(df, save_path='r3_lo_figure1_accuracy.png')
     ax.set_ylabel('Mean absolute eigenvalue error')
     ax.set_title(f'R3-LO: Near-Zero Mode Accuracy vs δB_z\n(N=100, μ=0, K_MODES={K_MODES})')
     ax.legend(loc='upper left', bbox_to_anchor=(1.02, 1.0), fontsize=10, framealpha=0.9)
-    plt.tight_layout(); plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.tight_layout(); plt.savefig(_out(save_path), dpi=300, bbox_inches='tight')
     plt.close(); print(f"Saved: {save_path}")
 
 
@@ -470,7 +483,7 @@ def plot_speedup_lo(df, save_path='r3_lo_figure2_speedup.png'):
     ax2.set_xlabel('System size N'); ax2.set_ylabel('Mean eigenvalue error (log)')
     ax2.set_title('LO Woodbury Error vs N'); ax2.grid(True, alpha=0.3); ax2.set_xticks(df['N'].tolist())
     plt.suptitle('R3-LO Performance and Accuracy Summary', fontsize=13, fontweight='bold')
-    plt.tight_layout(); plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.tight_layout(); plt.savefig(_out(save_path), dpi=300, bbox_inches='tight')
     plt.close(); print(f"Saved: {save_path}")
 
 
@@ -516,7 +529,7 @@ def plot_sweep_tracking_lo(df, mu0=0.0, delta0=1.0,
     ax2.grid(True, alpha=0.3, which='both')
 
     plt.tight_layout()
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.savefig(_out(save_path), dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
 
@@ -538,12 +551,12 @@ if __name__ == '__main__':
     print("\n[1/4] Accuracy validation (N=100, μ=0, B_z0=1.5Δ — deep topological)...")
     df_acc = run_accuracy_validation_lo(N=100)
     print(df_acc[['delta_B','rel_norm','eval_error','ph_error','used_fallback']].to_string(index=False))
-    df_acc.to_csv('r3_lo_accuracy.csv', index=False)
+    df_acc.to_csv(_out('r3_lo_accuracy.csv'), index=False)
 
     print("\n[2/4] Performance comparison (N=50,100,200, δB_z=0.02)...")
     df_perf = run_performance_comparison_lo()
     print(df_perf[['N','time_full_ms','time_wood_ms','speedup','eval_error','ph_error']].to_string(index=False))
-    df_perf.to_csv('r3_lo_performance.csv', index=False)
+    df_perf.to_csv(_out('r3_lo_performance.csv'), index=False)
 
     print("\n[3/4] Chained Woodbury sweep (N=100, B_z: 0.5→1.8, 130 steps, μ=0)...")
     df_sweep = run_sweep_comparison_lo(N=100)
@@ -551,7 +564,7 @@ if __name__ == '__main__':
                              df_sweep['used_fallback'].sum())
     print(f"  Max eigenvalue error: {max_err:.2e}  |  Max PH error: {max_ph:.2e}  |  "
           f"Fallback count: {n_fb}/{len(df_sweep)}")
-    df_sweep.to_csv('r3_lo_sweep_tracking.csv', index=False)
+    df_sweep.to_csv(_out('r3_lo_sweep_tracking.csv'), index=False)
 
     print("\n[4/4] Generating figures...")
     plot_accuracy_vs_perturbation_lo(df_acc)
