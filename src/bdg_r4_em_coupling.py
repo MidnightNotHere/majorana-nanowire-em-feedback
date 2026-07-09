@@ -23,7 +23,17 @@ Pipeline position
   R3     : PH-symmetric rank-2 Woodbury update ...................... COMPLETE
   R6     : Lutchyn-Oreg 4N x 4N BdG Hamiltonian (InAs/Al) ........... COMPLETE
   R4     : Quasi-static Biot-Savart EM coupling layer ...... THIS MODULE
-  R5     : Self-consistent fixed-point loop (Anderson mixing) ....... NEXT
+  R5     : Self-consistent fixed-point loop (Anderson mixing) ....... NOT STARTED
+
+R5 does not exist in this repository yet -- there is no self-consistency
+loop, no fixed point, and no "seed" to check independence against. R4's
+figure4/figure5 only ever apply the self-field *once* (seeded by phi_ext,
+then scaled by g_feedback), which is explicitly a one-shot preview of
+what R5 will iterate to convergence -- see the module docstring above and
+openwire_boundary_Bc's docstring. A seed-independence check (same fixed
+point reached from Phi=0 vs Phi=0.1*Phi_0) is an R5-scope question and
+cannot be answered until that loop is written; don't mistake the current
+one-shot preview for a converged self-consistent result.
 
 Imports build_bdg_lo() and check_ph_symmetry_complex() from the R1/R2/R6
 module.  NOTE: the spec referred to that module as `bdg_r6_lutchyn_oreg`,
@@ -647,7 +657,8 @@ def openwire_boundary_Bc(N: int, mu: float,
                          phi_ext: float = 0.0, g_feedback: float = 1.0,
                          delta: float = 1.0, threshold: float = 0.25,
                          half: float = 0.45, n_grid: int = 2000,
-                         wire_radius: float | None = None) -> float:
+                         wire_radius: float | None = None,
+                         _max_widenings: int = 4) -> float:
     """
     Critical Zeeman field B_c(mu) on the OPEN wire, optionally including the
     one-shot inductive self-field (seeded by phi_ext, scaled by the
@@ -656,48 +667,132 @@ def openwire_boundary_Bc(N: int, mu: float,
 
     Detector: first B (scanning upward) at which the lowest excitation
     |E|_min drops below `threshold`, i.e. a Majorana zero-mode pair appears.
-    The absolute value carries a finite-size offset from sqrt(mu^2+delta^2),
-    but that offset cancels in the *relative* shift between g_feedback = 0
-    (gauge-invariant baseline) and g_feedback > 0 (inductive feedback),
-    which is the physically meaningful quantity reported in Validation 6.
+    The absolute value carries a finite-size offset from sqrt(mu^2+delta^2);
+    see [BASELINE OFFSET] below for why that offset is *not* a small,
+    cleanly-cancelling constant, and read the relative shift with care.
+
+    [BASELINE OFFSET] why phi_ext-only Bc sits well below the ring/analytic
+    value, and why the offset grows (not shrinks) with N
+    ---------------------------------------------------------------------
+    ring_boundary_Bc (a translationally-invariant ring, no open ends)
+    recovers B_c = sqrt(mu^2+delta^2) to ~0.01% -- essentially exact,
+    because a ring's bulk gap closes cleanly with no sub-gap structure.
+    This open-wire detector, by contrast, gives Bc(phi_ext=0, g=0) at
+    mu=0 about -16% *below* that value at N=80 -- and the offset gets
+    *worse* with longer wires (measured: -4% at N=40, -11% at N=60, -16%
+    at N=80, -20% at N=120, -22% at N=160), which rules out the naive
+    explanation "it's just the Majorana end-mode hybridization energy
+    splitting decaying away." True end-to-end MZM splitting is
+    exponentially small and *shrinks* with N (~exp(-N/xi)*cos(k_F N);
+    see e.g. Sarma-Sau/Prada et al., arXiv:2507.00128 and the
+    length-dependent-oscillation literature on Majorana/Shiba splitting,
+    PMC9018407) -- the opposite trend from what's observed here.
+
+    What is actually happening: `threshold` is a *fixed absolute* energy
+    (0.25 in units of Delta), while a finite open wire has an increasing
+    density of ordinary (non-Majorana) near-edge single-particle levels
+    as N grows -- level spacing near a band/gap edge shrinks roughly like
+    1/N. So as N increases, more of these ordinary finite-size levels
+    fall below the fixed threshold *before* B reaches the true bulk
+    transition, and "first B with min|E|<threshold" triggers earlier
+    (lower B) than the real transition -- and does so increasingly for
+    larger N. This was confirmed by sweeping `threshold` itself at fixed
+    N=80: 0.05 -> +17% offset, 0.10 -> +6%, 0.25 -> -16%, 0.40 -> -33%,
+    i.e. the reported Bc is highly sensitive to this arbitrary knob, which
+    is diagnostic of a detector picking up finite-size DOS structure
+    rather than a robust, threshold-independent transition.
+    Practical consequence: because this offset is systematic but not a
+    clean additive constant, do not assume it perfectly cancels between
+    g_feedback=0 and g_feedback>0 -- the reported percent shift should be
+    treated as approximate (right order of magnitude, right sign), and
+    cross-checked at a couple of N/threshold values before quoting a
+    headline number (as done here and in Figure 4/5).
+
+    Window-clipping bug (found + fixed 2026-07-09)
+    ------------------------------------------------
+    The B-scan only covers [ana-half, ana+half] around the analytic ring
+    value ana = sqrt(mu^2+delta^2). For large g_feedback (e.g. the
+    calibrated g0=3e5 used in Figure 4/5) the true gap-closing field can
+    sit *outside* that +-0.45 window, so the old code would silently
+    return Bg[0] or Bg[-1] -- the window's edge, not a real crossing --
+    whenever the very first or last scanned point was already past
+    threshold. That produced a value that looked like a legitimate,
+    reproducible number (it's deterministic) but was actually just
+    reporting where the search happened to stop.
+
+    Numerically confirmed at N=80, g0=3e5: mu=1.4 returned Bc_ind =
+    1.270465 = ana-half *exactly* (window's lower edge) for n_grid in
+    {200, 400, 800, 2000} and for N in {60, 80} -- i.e. "converged" and
+    "N-independent" only because it was pinned to the window boundary,
+    not because the physics was converged. mu=1.45 and mu=1.5 hit the
+    same failure mode (mu=1.5 was independently flagged as a suspected
+    edge artifact before this was traced down). A full mu in
+    [-1.5, 1.5] step-0.1 scan showed exactly these three points --
+    mu=1.4, 1.45, 1.5, i.e. only the extreme top of the range used in
+    Figure 4 -- were clipped; every other point (including all of
+    mu<1.3) was a genuine interior crossing. At N=100 the true crossing
+    for mu=1.4 happens to fall inside the default window (Bc_ind=
+    1.286167, not equal to the edge), confirming the N=60/80 values were
+    the artifact and not the physics.
+
+    Fix: if the detected crossing lands on either edge of the scanned
+    window, the window is doubled (recentred on the same ana) and the
+    scan is retried, up to `_max_widenings` times, before falling back to
+    returning the edge (with the same coarse behaviour as before, now
+    only reachable if the true crossing is implausibly far from ana).
+    This makes the "largest validated shift" figure (previously reported
+    as -8.76% at mu=1.4, N=80) a real detected value rather than a
+    search-window artifact -- regenerate Figure 4/5 after this fix and
+    expect the mu=1.4/1.45/1.5 points to move.
     """
     from scipy.linalg import eigh, eigvalsh
     a = lattice_const
     ana = np.sqrt(mu**2 + delta**2)
-    Bg = np.linspace(max(0.05, ana - half), ana + half, n_grid)
-    
-    gaps = []
-    for B in Bg:
-        with contextlib.redirect_stdout(io.StringIO()):
-            H = build_bdg_lo(N, mu=mu, B_zeeman=B, delta=delta)
-        if phi_ext or g_feedback:
-            evals, evecs = eigh(apply_peierls_phases(H, N, phi_ext))
-            j_x = compute_current_density(evecs, evals, N, t_hop_si,
-                                          np.full(N - 1, phi_ext), a)
-            A_self = biot_savart_self(j_x, N, a, wire_radius)
-            phi_self = g_feedback * compute_peierls_from_A(A_self, a)
-            H = apply_peierls_phases(H, N, phi_ext, phi_self)
-        gap = np.min(np.abs(eigvalsh(H)))
-        gaps.append(gap)
-    
-    gaps = np.array(gaps)
-    
-    # Find where gap crosses below threshold, then interpolate
-    below = gaps < threshold
-    if not np.any(below):
-        return float(Bg[-1])
-    
-    idx = np.argmax(below)  # first True index
-    if idx == 0:
-        return float(Bg[0])
-    
-    # Linear interpolation between Bg[idx-1] (above threshold) and Bg[idx] (below)
-    B_lo, B_hi = Bg[idx - 1], Bg[idx]
-    gap_lo, gap_hi = gaps[idx - 1], gaps[idx]
-    # Solve for B where gap(B) == threshold, assuming linear gap vs B locally
-    frac = (gap_lo - threshold) / (gap_lo - gap_hi)
-    B_interp = B_lo + frac * (B_hi - B_lo)
-    return float(B_interp)
+
+    def _scan(h):
+        Bg = np.linspace(max(0.05, ana - h), ana + h, n_grid)
+        gaps = np.empty(n_grid)
+        for i, B in enumerate(Bg):
+            with contextlib.redirect_stdout(io.StringIO()):
+                H = build_bdg_lo(N, mu=mu, B_zeeman=B, delta=delta)
+            if phi_ext or g_feedback:
+                evals, evecs = eigh(apply_peierls_phases(H, N, phi_ext))
+                j_x = compute_current_density(evecs, evals, N, t_hop_si,
+                                              np.full(N - 1, phi_ext), a)
+                A_self = biot_savart_self(j_x, N, a, wire_radius)
+                phi_self = g_feedback * compute_peierls_from_A(A_self, a)
+                H = apply_peierls_phases(H, N, phi_ext, phi_self)
+            gaps[i] = np.min(np.abs(eigvalsh(H)))
+        return Bg, gaps
+
+    h = half
+    for attempt in range(_max_widenings + 1):
+        Bg, gaps = _scan(h)
+        below = gaps < threshold
+        last_attempt = attempt == _max_widenings
+
+        if not np.any(below):
+            # gap never dropped below threshold anywhere in the window
+            if last_attempt:
+                return float(Bg[-1])
+            h *= 2.0
+            continue
+
+        idx = int(np.argmax(below))     # first True index
+        if idx == 0:
+            # already below threshold at the window's very first point --
+            # the true crossing lies below ana-h; widen and retry rather
+            # than silently reporting this edge as the answer
+            if last_attempt:
+                return float(Bg[0])
+            h *= 2.0
+            continue
+
+        # genuine interior crossing: linearly interpolate to `threshold`
+        B_lo, B_hi = Bg[idx - 1], Bg[idx]
+        gap_lo, gap_hi = gaps[idx - 1], gaps[idx]
+        frac = (gap_lo - threshold) / (gap_lo - gap_hi)
+        return float(B_lo + frac * (B_hi - B_lo))
 
 
 # ════════════════════════════════════════════════════════════════════
@@ -885,20 +980,48 @@ def figure4_phase_shift_preview(fname: str = "r4_figure4_phase_shift_preview.png
     # the raw current ~1e8x too large, which is what the old g0=0.03 was
     # tuned against). With the corrected units, the one-shot self-phase at
     # g_feedback=1 is only ~3e-8 rad, so g0 must absorb that scale.
+    #
+    # Physical justification for g0 ~ 3e5 (order-of-magnitude, not a fit)
+    # ---------------------------------------------------------------------
+    # g0 is a placeholder for whatever R5's actual circuit does to the bare
+    # Biot-Savart self-field computed here -- it is NOT free-floating; two
+    # independent, well-documented mechanisms in real Majorana-nanowire
+    # readout circuits can plausibly supply factors of this size together:
+    #
+    #  (1) Resonant amplification. If the wire is embedded in a driven
+    #      superconducting LC/CPW resonator (the standard rf/quantum-
+    #      inductance readout geometry for Majorana devices -- see e.g.
+    #      Yavilberg et al./quantum-inductance parity-readout proposals,
+    #      arXiv:2603.12256, and rf gate-sensing readout, arXiv:1902.00789),
+    #      operating near resonance boosts the current response by
+    #      roughly the resonator's quality factor Q. Planar superconducting
+    #      CPW resonators routinely reach internal Q ~ 1e5-1e6 (some
+    #      >1e6, arXiv:1304.3254; PMC10511541).
+    #  (2) Kinetic-inductance dominance. A thin/narrow superconducting
+    #      loop's kinetic inductance L_k can exceed its geometric
+    #      (Biot-Savart) inductance L_m -- the quantity actually computed
+    #      by biot_savart_self() -- by a documented factor of ~10-100 in
+    #      nanowire geometries (e.g. NbN kinetic-inductance nanowire
+    #      resonators/superinductors; PMC7047614, arXiv:1511.01760).
+    #
+    #  A modest resonant enhancement (Q ~ few*1e3 to 1e4, well below the
+    #  state of the art) combined with a ~10-30x kinetic-inductance
+    #  enhancement lands in the 1e5 range used here. This is a plausibility
+    #  argument, not a derivation -- R5 should replace g0 with an explicit
+    #  circuit model (L_k, L_m, Q, operating point) rather than a bare
+    #  scalar; treat this number as "an achievable circuit could produce
+    #  an enhancement in this range," not as measured from any specific
+    #  device.
     g0 = 3.0e5
     mu_b = np.linspace(-1.5, 1.5, 31)
     Bc_base, Bc_ind = [], []
     for m in mu_b:
-         bc0 = openwire_boundary_Bc(N, m, T_HOP_SI, LATTICE_A,
-                               phi_ext=phi_ext, g_feedback=0.0, n_grid=300)
-         bc1 = openwire_boundary_Bc(N, m, T_HOP_SI, LATTICE_A,
-                               phi_ext=phi_ext, g_feedback=g0, n_grid=300)
-         print(f"mu={m:.3f}  Bc_base={bc0:.6f}  Bc_ind={bc1:.6f}  "
-          f"shift%={100*(bc1-bc0)/bc0:.4f}")
-         Bc_base.append(bc0)
-         Bc_ind.append(bc1)
-    
-         
+        bc0 = openwire_boundary_Bc(N, m, T_HOP_SI, LATTICE_A,
+                                   phi_ext=phi_ext, g_feedback=0.0, n_grid=300)
+        bc1 = openwire_boundary_Bc(N, m, T_HOP_SI, LATTICE_A,
+                                   phi_ext=phi_ext, g_feedback=g0, n_grid=300)
+        Bc_base.append(bc0)
+        Bc_ind.append(bc1)
     Bc_base = np.array(Bc_base)
     Bc_ind = np.array(Bc_ind)
 
@@ -927,26 +1050,17 @@ def figure4_phase_shift_preview(fname: str = "r4_figure4_phase_shift_preview.png
 
     i0 = int(np.argmin(np.abs(mu_b)))                 # report the shift at mu=0
     shift_pct = 100.0 * (Bc_ind[i0] - Bc_base[i0]) / Bc_base[i0]
-    return fname, shift_pct
-    """
-Figure 5 — Self-consistent field profile at mu=1.4*Delta (the parameter
-point with the largest validated boundary shift, -8.76%, from Figure 4).
 
-Wrapped as a proper reusable function (per the cleanup plan discussed
-earlier), so it can sit alongside the other figure-generation functions
-and be called once from __main__, rather than living as standalone
-script code at the bottom of the file.
-"""
-import numpy as np
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-from scipy.linalg import eigh
+    all_shift_pct = 100.0 * (Bc_ind - Bc_base) / Bc_base
+    imax = int(np.argmax(np.abs(all_shift_pct)))      # largest-magnitude shift
+    largest = {"mu": float(mu_b[imax]), "Bc_ind": float(Bc_ind[imax]),
+               "shift_pct": float(all_shift_pct[imax])}
+    return fname, shift_pct, largest
 
 
 def figure5_flux_density_profile(N: int = 80,
                                   mu_fixed: float = 1.4,
-                                  B_at_shift: float = 1.270465,
+                                  B_at_shift: float | None = None,
                                   delta: float = 1.0,
                                   g0: float = 3.0e5,
                                   fname: str = "r4_figure5_flux_density.png"):
@@ -965,8 +1079,15 @@ def figure5_flux_density_profile(N: int = 80,
     ----------
     N           : number of lattice sites
     mu_fixed    : chemical potential (units of Delta) -- fixed throughout
-    B_at_shift  : Zeeman field (units of Delta) at this mu, from the
-                  validated Bc_ind sweep (n_grid=2000/interpolated)
+    B_at_shift  : Zeeman field (units of Delta) at this mu. If None
+                  (default), it is computed live via openwire_boundary_Bc
+                  at g_feedback=g0, rather than being a hardcoded number
+                  -- a previous version hardcoded 1.270465, which turned
+                  out to be a window-clipping artifact of
+                  openwire_boundary_Bc (see that function's docstring for
+                  the "Window-clipping bug" section), not a genuine
+                  detected crossing. Pass an explicit value only to
+                  reproduce a specific historical figure.
     delta       : pairing amplitude (units of Delta, =1.0)
     g0          : inductive feedback coupling constant
     fname       : output path for the saved figure
@@ -977,7 +1098,23 @@ def figure5_flux_density_profile(N: int = 80,
     phi_raw_peak    : float, peak unscaled (real, g=1) Peierls phase, rad
     phi_scaled_peak : float, peak scaled (g=g0) Peierls phase, rad
     """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from scipy.linalg import eigh
+
     phi_ext = np.pi * 0.1 / N
+
+    if B_at_shift is None:
+        B_at_shift = openwire_boundary_Bc(N, mu_fixed, T_HOP_SI, LATTICE_A,
+                                          phi_ext=phi_ext, g_feedback=g0,
+                                          n_grid=1000)
+        Bc_base = openwire_boundary_Bc(N, mu_fixed, T_HOP_SI, LATTICE_A,
+                                       phi_ext=phi_ext, g_feedback=0.0,
+                                       n_grid=1000)
+        shift_pct_here = 100.0 * (B_at_shift - Bc_base) / Bc_base
+    else:
+        shift_pct_here = None
 
     H0 = build_bdg_lo(N, mu=mu_fixed, B_zeeman=B_at_shift, delta=delta)
     evals, evecs = eigh(apply_peierls_phases(H0, N, phi_ext))
@@ -1035,9 +1172,11 @@ def figure5_flux_density_profile(N: int = 80,
 
     ax.grid(True, alpha=0.3)
 
+    shift_label = (f"{shift_pct_here:+.2f}\\%" if shift_pct_here is not None
+                   else "shift not recomputed (explicit B_at_shift passed)")
     fig.suptitle(
         fr'Figure 5: Self-Consistent Field Profile at $\mu={mu_fixed}\Delta$ '
-        f'(largest validated shift, $-8.76\\%$)',
+        fr'(boundary shift $={shift_label}$)',
         fontsize=13, fontweight='bold'
     )
     fig.tight_layout(rect=(0, 0, 1, 0.92))
@@ -1154,21 +1293,3 @@ if __name__ == "__main__":
     print(f"  {fname5}")
 
     _run_validations()
-
-from scipy.linalg import eigvalsh
-
-mu_test = 1.5
-delta_test = 1.0
-ana_test = np.sqrt(mu_test**2 + delta_test**2)
-half_test = 0.45
-N_test = 80   # match whatever N you've been using for the openwire sweeps
-Bg_test = np.linspace(max(0.05, ana_test - half_test), ana_test + half_test, 50)
-
-print(f"\nDiagnostic scan at mu={mu_test}, analytic ana={ana_test:.4f}")
-print(f"Search window: [{Bg_test[0]:.4f}, {Bg_test[-1]:.4f}]")
-print("-" * 50)
-for B in Bg_test:
-    H = build_bdg_lo(N_test, mu=mu_test, B_zeeman=B, delta=delta_test)
-    gap = np.min(np.abs(eigvalsh(H)))
-    flag = " <-- below threshold" if gap < 0.25 else ""
-    print(f"B={B:.4f}  gap={gap:.4f}{flag}")
