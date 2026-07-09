@@ -652,6 +652,214 @@ def ring_boundary_Bc(N: int, mu: float, phi_ext: float = 0.0,
     return float(Bg[int(np.argmin(gaps))])
 
 
+# ════════════════════════════════════════════════════════════════════
+# PFAFFIAN Z2 BOUNDARY DETECTOR (N-independent, threshold-free)
+#
+# Motivation
+# ----------
+# openwire_boundary_Bc / ring_boundary_Bc locate the transition from the
+# *spectral* gap (a fixed absolute `threshold`, or the gap argmin). For
+# ABSOLUTE B_c that is a problem: the open-wire spectral detector's answer
+# drifts with N (finite-size sub-gap density of states grows with N, so a
+# fixed threshold triggers earlier for longer wires -- see the
+# [BASELINE OFFSET] note in openwire_boundary_Bc). Sweeping `threshold` at
+# fixed N=80, mu=0 moved the reported B_c across a ~50-percentage-point
+# band (0.05->+17%, 0.10->+6%, 0.25->-16%, 0.40->-33%), i.e. the absolute
+# number is threshold-defined, not physical.
+#
+# The detector below instead reads the Z2 topological invariant directly
+# from the sign of the Pfaffian of the (Majorana-basis, real
+# antisymmetric) BdG Hamiltonian on a periodic ring. It is a *discrete*
+# quantity that flips only at a genuine gap closing -- there is no
+# threshold knob to tune, and (for the clean ring) no finite-size drift:
+# it returns B_c = sqrt(mu^2+delta^2) to grid/bisection resolution for
+# every N tested (20..160).
+#
+# Method / literature
+# -------------------
+# Real-space Pfaffian Z2 invariant, nu = sgn Pf(H_Maj), with the physical
+# transition at the sign flip. This is the Kitaev "Majorana number"
+# (Kitaev 2001, arXiv:cond-mat/0010440) evaluated in real space; the
+# real-space / twisted-boundary formulation and its validity for finite
+# and *disordered* (non-translationally-invariant) wires is reviewed in
+# arXiv:2603.08786 (Eq. 29 there: nu = sgn[Pf(H(phi=0)) Pf(H(phi=pi))]).
+#
+# IMPORTANT deviation from the literal Eq. 29 (documented honestly):
+# We use the PERIODIC (phi=0) Pfaffian sign flip ALONE, not the
+# PBC x APBC product. Reason, verified numerically for this model: the
+# anti-periodic (k=pi) Pfaffian keeps a FIXED sign across the transition
+# in the LO regime (the k=pi gap, ~|2t+mu| with t~66, never closes near
+# B_c), so it is a constant prefactor that does not move the flip
+# location; meanwhile its finite-N zero-crossings ADD spurious flips near
+# B_c (a double-flip ambiguity window). Dropping it gives a single, clean,
+# N-independent flip. Because k=0 is an allowed PBC momentum for every N,
+# the bulk band-inversion field carries no finite-size shift -- that is
+# the mechanism behind the observed N-independence. See the methods note
+# r4_pfaffian_boundary_methods.md for the full argument, evidence, and
+# limitations.
+# ════════════════════════════════════════════════════════════════════
+def _build_ring_lo_phased(N: int, mu: float, B: float,
+                          phi_bonds: np.ndarray | None = None,
+                          delta: float = 1.0,
+                          t: float | None = None,
+                          alpha_so: float | None = None) -> np.ndarray:
+    """
+    Ring LO BdG Hamiltonian with an arbitrary PER-BOND Peierls phase.
+
+    Identical to build_ring_lo except `phi_bonds` (length N, one phase per
+    ring bond i -> (i+1) mod N, INCLUDING the wrap bond N-1 -> 0) replaces
+    the single uniform phi_ext. This lets the Pfaffian detector see a
+    spatially NON-UNIFORM self-field texture phi_self(x) -- the genuine,
+    non-gauge boundary-shifting perturbation of the project's main result.
+    phi_bonds=None reproduces the clean (phase-free) ring.
+
+    The hole block is built as -h.conj(), so particle-hole symmetry is
+    preserved for ANY phi_bonds (the hole block automatically carries the
+    conjugate phase) -- this is what keeps the Majorana-basis matrix real
+    antisymmetric and the Pfaffian sign well defined.
+    """
+    delta = float(delta)
+    t = LO_PARAMS['t_norm'] * delta if t is None else t
+    alpha = LO_PARAMS['alpha_norm'] * delta if alpha_so is None else alpha_so
+
+    if phi_bonds is None:
+        phase = np.ones(N, dtype=complex)
+    else:
+        phi_bonds = np.asarray(phi_bonds, dtype=float)
+        if phi_bonds.shape != (N,):
+            raise ValueError(
+                f"phi_bonds has shape {phi_bonds.shape}, expected {(N,)} "
+                f"(one phase per ring bond i->(i+1)%N, including the wrap bond)."
+            )
+        phase = np.exp(1j * phi_bonds)
+
+    I2 = np.eye(2, dtype=complex)
+    IN = np.eye(N, dtype=complex)
+    sy = np.array([[0, -1j], [1j, 0]], dtype=complex)
+    sz = np.array([[1, 0], [0, -1]], dtype=complex)
+    isy = np.array([[0, 1], [-1, 0]], dtype=complex)
+
+    T = np.zeros((N, N), dtype=complex)
+    for i in range(N):
+        T[i, (i + 1) % N] = phase[i]                            # bond i -> i+1
+
+    h_kin = (2.0 * t - mu) * np.kron(I2, IN) - t * np.kron(I2, T + T.conj().T)
+    h_Z   = B * np.kron(sz, IN)
+    h_SO  = (1j * alpha / 2.0) * np.kron(sy, T - T.conj().T)
+    h     = h_kin + h_Z + h_SO
+
+    Dblk = delta * np.kron(isy, IN)
+    H = np.block([[h, Dblk], [Dblk.conj().T, -h.conj()]])
+    return H
+
+
+def _ring_pfaffian_sign(N: int, mu: float, B: float,
+                        phi_bonds: np.ndarray | None = None,
+                        delta: float = 1.0) -> float:
+    """
+    Sign of the Pfaffian of the periodic ring LO BdG Hamiltonian in the
+    Majorana (real antisymmetric) basis. Returns +1 / -1 (or 0 exactly at
+    a gap closing). The topological transition is where this flips.
+
+    The 4N x 4N Nambu Hamiltonian H (basis kron(spin, site), particle
+    block first 2N, hole block last 2N) is mapped to the Majorana basis by
+    the unitary Omega = (1/sqrt2)[[I,I],[iI,-iI]] acting on the 2M=4N Nambu
+    space (M=2N). A = i * Omega (H/scale) Omega^dagger is real
+    antisymmetric; sgn Pf(A) is the invariant.
+
+    - Rescaling H by its max |entry| (a positive scalar) avoids overflow of
+      Pf (which grows like scale^(2N)); a positive rescale multiplies
+      Pf by scale^(2N) > 0 and so LEAVES THE SIGN UNCHANGED.
+    - Antisymmetry / realness are asserted (PH symmetry guarantees them);
+      a violation means a genuine bug upstream, not a tolerance issue.
+    """
+    from pfapack import pfaffian as pf           # local import; heavy module
+
+    H = _build_ring_lo_phased(N, mu, B, phi_bonds, delta)
+    scale = float(np.max(np.abs(H)))
+    M = 2 * N
+    Ib = np.eye(M, dtype=complex)
+    Omega = (1.0 / np.sqrt(2.0)) * np.block([[Ib, Ib], [1j * Ib, -1j * Ib]])
+    A = 1j * Omega @ (H / scale) @ Omega.conj().T
+
+    if np.max(np.abs(A.imag)) > 1e-8 or not np.allclose(A.real, -A.real.T, atol=1e-8):
+        raise ValueError(
+            "Majorana-basis matrix is not real antisymmetric "
+            "(particle-hole symmetry broken?) -- Pfaffian sign undefined."
+        )
+    return float(np.sign(np.real(pf.pfaffian(A.real))))
+
+
+def ring_boundary_Bc_pfaffian(N: int, mu: float,
+                              delta: float = 1.0,
+                              phi_bonds: np.ndarray | None = None,
+                              window: float = 0.6,
+                              n_coarse: int = 61,
+                              tol: float = 1e-4,
+                              _max_widenings: int = 4) -> float:
+    """
+    Critical Zeeman field B_c(mu) from the Pfaffian Z2 sign flip on the
+    periodic ring -- an N-independent, threshold-free absolute detector.
+
+    Algorithm: coarse-scan B over [ana-window, ana+window] (ana =
+    sqrt(mu^2+delta^2)) for the first sign change of _ring_pfaffian_sign,
+    widening the window if none is bracketed, then bisect that bracket to
+    `tol`. Returns the B at which the invariant flips.
+
+    Parameters
+    ----------
+    N          : ring size (sites)
+    mu, delta  : chemical potential, pairing (units of Delta)
+    phi_bonds  : optional (N,) per-bond Peierls phases (e.g. a non-uniform
+                 self-field texture); None = clean ring. When supplied, the
+                 returned B_c is the boundary INCLUDING that texture, which
+                 is exactly the non-gauge inductive shift the project cares
+                 about (a uniform phase does not move it; a non-uniform one
+                 does).
+    window     : half-width of the initial B search window around ana
+    n_coarse   : coarse-grid points for bracketing
+    tol        : bisection tolerance on B
+
+    Returns
+    -------
+    B_c : float. If no flip is found even after widening, returns nan.
+
+    Validation
+    ----------
+    validate_pfaffian_boundary() checks B_c -> sqrt(mu^2+delta^2) at mu=0
+    (=Delta exactly) and its N-independence, vs the drifting threshold
+    detector. Never touches the existing openwire_boundary_Bc /
+    ring_boundary_Bc code paths.
+    """
+    ana = np.sqrt(mu**2 + delta**2)
+
+    def s(B):
+        val = _ring_pfaffian_sign(N, mu, B, phi_bonds, delta)
+        if val == 0.0:                                   # exactly on a zero
+            val = _ring_pfaffian_sign(N, mu, B + 1e-6, phi_bonds, delta)
+        return val
+
+    h = window
+    for _ in range(_max_widenings + 1):
+        Bg = np.linspace(max(0.02, ana - h), ana + h, n_coarse)
+        signs = np.array([s(B) for B in Bg])
+        flip = np.where(signs[:-1] != signs[1:])[0]
+        if flip.size == 0:
+            h *= 2.0
+            continue
+        i = int(flip[0])                                 # first sign change
+        B_lo, B_hi = Bg[i], Bg[i + 1]
+        s_lo = signs[i]
+        while B_hi - B_lo > tol:                          # bisect the bracket
+            Bm = 0.5 * (B_lo + B_hi)
+            if s(Bm) == s_lo:
+                B_lo = Bm
+            else:
+                B_hi = Bm
+        return 0.5 * (B_lo + B_hi)
+    return float("nan")
+
+
 def openwire_boundary_Bc(N: int, mu: float,
                          t_hop_si: float, lattice_const: float,
                          phi_ext: float = 0.0, g_feedback: float = 1.0,
@@ -1190,6 +1398,81 @@ def figure5_flux_density_profile(N: int = 80,
     print(f"  phi_self_scaled peak: {phi_scaled_peak:.3e} rad")
 
     return fname, phi_raw_peak, phi_scaled_peak
+
+
+def validate_pfaffian_boundary(
+        Ns=(20, 40, 60, 80, 120, 160),
+        mu: float = 0.0,
+        delta: float = 1.0,
+        fname: str = "r4_figure6_pfaffian_vs_threshold.png",
+        make_figure: bool = True):
+    """
+    Validation + comparison figure for the Pfaffian Z2 boundary detector.
+
+    Compares, as a function of ring/wire size N at fixed mu:
+      * analytic B_c = sqrt(mu^2 + delta^2)              (exact target)
+      * ring_boundary_Bc_pfaffian  (new, threshold-free) -- expected FLAT
+      * openwire_boundary_Bc       (old, threshold=0.25) -- expected to DRIFT
+
+    At mu=0 the analytic answer is exactly Delta (=1.0), the canonical
+    known-answer check. Returns a dict of the raw numbers and (optionally)
+    saves the comparison figure. Does not modify or call into any existing
+    validated code path destructively -- it only *reads* the old detector
+    for comparison.
+    """
+    ana = np.sqrt(mu**2 + delta**2)
+    pfaff, thresh = [], []
+    for N in Ns:
+        pfaff.append(ring_boundary_Bc_pfaffian(N, mu, delta))
+        # old detector needs the SI current scale + a per-N flux seed, exactly
+        # as figure4 calls it; g_feedback=0 = the gauge-invariant baseline
+        phi_ext = np.pi * 0.1 / N
+        with contextlib.redirect_stdout(io.StringIO()):
+            thresh.append(openwire_boundary_Bc(
+                N, mu, T_HOP_SI, LATTICE_A, phi_ext=phi_ext,
+                g_feedback=0.0, n_grid=400))
+    pfaff = np.array(pfaff, dtype=float)
+    thresh = np.array(thresh, dtype=float)
+
+    pf_err = np.max(np.abs(pfaff - ana))
+    pf_spread = float(np.max(pfaff) - np.min(pfaff))
+    th_spread = float(np.max(thresh) - np.min(thresh))
+    # stability: Pfaffian must be flat (spread << threshold-method spread) and
+    # accurate (within a coarse tolerance of the analytic value at every N)
+    ok = (pf_err < 5e-3) and (pf_spread < 0.05 * max(th_spread, 1e-9) + 1e-6)
+
+    if make_figure:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        fig, ax = plt.subplots(figsize=(9, 6))
+        ax.axhline(ana, color="k", ls="--", lw=2,
+                   label=fr"analytic $B_c=\sqrt{{\mu^2+\Delta^2}}={ana:.3f}\,\Delta$")
+        ax.plot(Ns, pfaff, "o-", color="#0F6E56", lw=2, ms=8,
+                label="new: Pfaffian $Z_2$ sign flip (threshold-free)")
+        ax.plot(Ns, thresh, "s--", color="#c0392b", lw=2, ms=8,
+                label=r"old: spectral threshold ($0.25\,\Delta$)")
+        ax.set_xlabel("ring / wire size $N$ (sites)")
+        ax.set_ylabel(r"extracted $B_c\,/\,\Delta$")
+        ax.set_title(
+            f"R4 Figure 6: N-independence of the Pfaffian $B_c$ detector "
+            fr"($\mu={mu}\,\Delta$)" "\n"
+            f"Pfaffian spread over N = {pf_spread:.1e}$\\,\\Delta$   vs   "
+            f"threshold spread = {th_spread:.2f}$\\,\\Delta$",
+            fontsize=12, fontweight="bold")
+        ax.legend(loc="best", fontsize=11)
+        ax.grid(True, alpha=0.3)
+        fig.tight_layout()
+        fig.savefig(fname, dpi=150)
+        plt.close(fig)
+
+    return {"Ns": list(Ns), "analytic": ana,
+            "pfaffian_Bc": pfaff.tolist(), "threshold_Bc": thresh.tolist(),
+            "pfaffian_max_abs_err": float(pf_err),
+            "pfaffian_spread": pf_spread, "threshold_spread": th_spread,
+            "pass": bool(ok), "figure": fname if make_figure else None}
+
 
 # ════════════════════════════════════════════════════════════════════
 # VALIDATION SUITE + MAIN
