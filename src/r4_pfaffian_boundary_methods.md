@@ -179,6 +179,131 @@ subject that shift to the same checks this detector passed — (a) N-independenc
 (N ≈ 20–160), (b) tolerance/grid robustness, (c) a gauge/known-answer check
 (uniform flux → 0 shift), and (d) seed-independence of the fixed point.
 
+## 4d. R5 RESULT — the self-consistent ring self-field (what was actually found)
+
+**Module:** `src/bdg_r5_selfconsistent_ring.py` (new; `bdg_r4_em_coupling.py` is
+imported read-only and unmodified — all 6 R4 validations still pass).
+**Outputs:** `ISEF R5 data folder/` (Figures 7–9, `r5_results.json`,
+`r5_shift_comparison.csv`). **Headline:** the rigorous, fully self-consistent
+shift is **+0.05 %** at N=80 (μ=1.2 and 1.4) and **extrapolates to ≈ 0 in the
+bulk** — a further ~15× down from the interim ~0.6–0.8 %, and it changes sign.
+
+### What was built (removing both interim placeholders)
+
+1. **Ring current density** including the wrap bond (`ring_current_density`,
+   `np.roll` periodic indexing) — same SI prefactor / electron-block-only /
+   E<0-occupied conventions as the validated open-wire current.
+2. **Ring Biot–Savart self-field** (`ring_biot_savart_self`): the validated
+   open-wire kernel *adapted* — not rewritten — for the closed geometry. The
+   wire closes on itself, so the straight-segment kernel genuinely breaks
+   (distances wrap; source `dl_j` and field-point tangent `t_i` are no longer
+   parallel). Only the geometry factors change: chord distance
+   `2R sin(Δθ/2)` and the tangent projection `cos(Δθ)` for a circular loop of
+   circumference `Na`; the local finite-segment self-term `2 ln(a/r_wire)` and
+   the SI-units path are unchanged (segment locally straight, `a ≪ R`). This is
+   the "genuinely different treatment of the self-field integral" flagged in the
+   task, and it is validated (`validate_ring_biot_savart`, the closed-geometry
+   analogue of R4 Validation 2): for a uniform current the discrete loop flux
+   reproduces the discrete-exact kernel to **0.003 %**, and the textbook
+   thin-wire loop inductance `L = μ₀R[ln(8R/r_wire) − 2]` to **2.25 %** (an
+   understood constant, the difference between the loop's `ln(8R/r)` and the
+   straight-segment `2ln(...)` log factors). `g = 3×10⁵` is unchanged — the
+   amplification argument is about the *circuit*, not wire geometry, and the
+   geometric-inductance difference between a segment and a loop is only
+   logarithmic, well inside `g`'s order-of-magnitude bars.
+3. **Self-consistency** (`selfconsistent_ring_texture`) and a **fully
+   self-consistent Pfaffian B_c** (`ring_boundary_Bc_pfaffian_selfconsistent`):
+   at every field the bisection probes, the texture is converged *at that B*
+   first, then the Z₂ sign is read off the dressed ring.
+4. The **interim recipe is kept, labelled SUPERSEDED**
+   (`interim_ring_Bc_openwire_texture`) so the ~0.6–0.8 % number is reproducible
+   in committed code (it previously existed only as session work).
+
+### Convergence was NOT clean — and that itself is a reportable finding
+
+- **Plain fixed-point iteration does not converge at g₀ = 3×10⁵, from any
+  seed.** On the ring the self-consistency map closes on *uniform* textures, so
+  it reduces to a scalar map `G(φ)`; at the fixed point its slope is
+  `G′ ≈ 3.0 > 1`. The iteration is therefore Picard-**repelling**: from
+  zero / open-wire / random seeds, at β=1.0 and β=0.3 mixing, the residual
+  never contracts — it wanders boundedly (it does **not** blow up). No amount of
+  linear mixing fixes a slope-3 fixed point (Figure 7a,b). We did **not** paper
+  over this by capping iterations; instead we recognised the ring map is scalar
+  and solved `G(φ)=φ` by **bisection**, which needs no stability. Below a
+  bifurcation `g_crit ≈ 1.1×10⁵` (slope criterion; first non-convergence
+  observed at ~1.2×10⁵) iteration *does* converge, and there it is
+  **seed-independent** (all three seeds → the same fixed point, Figure 7c) and
+  agrees with the root-finder.
+
+- **The fixed point exists and is (locally) unique, but the map is
+  multi-valued.** The self-consistency has *multiple* uniform roots (a fluxoid /
+  sawtooth-CPR multiplicity: 1 root at N=40,60; 2 at N=80,120); we take the
+  **principal** (smallest |φ|) branch. Path-dependence was checked directly
+  (Figure 8): slowly ramping g from 0 to 3×10⁵ (each converged solution seeding
+  the next) lands on the **same** principal branch as jumping directly from a
+  zero seed, for every g below g_crit — path-independent. Whether a
+  *symmetry-broken non-uniform* solution also exists was tested decisively with
+  **Newton–Krylov** on the full N-dimensional `G(φ)−φ=0`
+  (`nonuniform_fixed_point_search`), seeded with large perturbations (up to 3
+  flux-periods) along the most-unstable modes: from every convergent seed it
+  collapses back to the uniform solution (texture norm ~5×10⁻¹¹). **No
+  non-uniform fixed point exists.** (Honesty note: an early N=40 spot-check saw
+  all texture-mode gains < 1 and this was briefly mis-stated as "textures always
+  decay". That is wrong at N=80, where two texture modes have Picard gain
+  1.746 > 1 — the uniform point is a *saddle under iteration*. But saddle-under-
+  iteration ≠ a second solution: the Newton–Krylov uniqueness result is the
+  correct statement, and the code/figure were corrected to say so.)
+
+### The validation battery the interim number never had
+
+- **N-independence (Figure 9a).** Shift = 0.122 / 0.085 / 0.051 / 0.024 % at
+  N = 40 / 60 / 80 / 120 — monotonically → 0, as `~N^−1.5`. This is the key
+  physical result: the total self-flux `N·φ*` is a near-constant fluxoid
+  (≈ 0.5 rad), so the per-bond self-phase ~1/N and the residual boundary move is
+  a **finite-size Aharonov–Bohm flux effect, not a bulk shift**. The
+  thermodynamic-limit self-consistent shift is **consistent with zero**.
+- **Tolerance robustness (Figure 9b).** Tightening the bisection tol
+  (1e-4→1e-6) and the root tol (1e-8→1e-12) holds the shift in
+  0.0505–0.0530 %; a warm-vs-cold-start difference of ~0.002 pp is the only
+  residual, traceable to the root multiplicity above.
+- **Gauge / decomposition check.** The self-consistent B_c equals the B_c of a
+  *frozen* uniform flux `φ_ext + φ*(B_c)` to 8.4×10⁻⁵ — i.e. the effect is
+  almost purely static-flux (AB) content, with a tiny genuine-feedback residual
+  from the B-dependence of φ*. (A strictly uniform external flux with no
+  self-field gives 0 shift, as R4 Validation 6 already showed.)
+
+### The progression, side by side (the point of the exercise)
+
+| μ | (a) threshold detector (Fig 4/5) | (b) interim ring/Pfaffian (SUPERSEDED) | (c) **self-consistent ring (this work, N=80)** |
+|---|---|---|---|
+| 1.2 | −5.86 % | −0.768 % | **+0.051 %** |
+| 1.4 | −9.36 % | −0.607 % | **+0.047 %** |
+
+Each column is a further ~10× reduction in magnitude. The fully self-consistent
+number at N=80 is ~120× smaller than the original headline, and it **changes
+sign** (a small *positive* AB shift, not the negative shift the earlier methods
+reported) — and the N-scan shows even that +0.05 % is finite-size and heads to
+zero. **The robust conclusion is now the null-ish one:** to the accuracy of this
+model the inductive self-field does *not* move the bulk topological boundary at a
+level distinguishable from a finite-size flux artifact. The earlier "topological
+region grows under feedback" direction does **not** survive making the self-field
+self-consistent on the ring.
+
+### What remains provisional even after this work
+
+- **`g = 3×10⁵` is still a plausibility placeholder, not a derived coupling.**
+  R5 (this) fixed the *geometry and self-consistency* of the self-field, not the
+  circuit amplification. A genuine circuit model (L_k, L_m, Q, operating point)
+  is still owed, and at the assumed g₀ the equilibrium sits *past* the Picard
+  bifurcation — the static fixed point is well defined (root-found), but the
+  *dynamical* response of a real feedback circuit near/above g_crit would need
+  its own analysis before any claim about time-domain behaviour.
+- **The +0.05 % at N=80 is finite-size.** The honest bulk number is
+  "≈ 0, bounded by the N-scan"; +0.05 % should be quoted only with its N and its
+  →0 extrapolation, never as a bulk magnitude.
+- **Ring vs open-end.** As in §5, this is the bulk/ring invariant, not literal
+  open-end Majorana appearance; the two coincide only in the thermodynamic limit.
+
 ## 5. Limitations (every method has some)
 
 - **It measures the bulk/ring invariant, not literal open-end Majorana

@@ -24,17 +24,30 @@ quantum computing:
   A rigorous, threshold-free, N-independent ring/Pfaffian Z₂ detector has
   been added (`ring_boundary_Bc_pfaffian`); with the *same* self-field it
   gives ~0.6–0.8 % at μ = 1.2–1.4 (vs ~6–9 % from the threshold detector).
-  Only the **sign** (topological region grows under inductive feedback) is
-  trustworthy so far. See `src/r4_pfaffian_boundary_methods.md`.
-- ⬜ R5: Self-consistent fixed-point iteration — **explicit deliverable
-  (not just a number):** make the ring self-field self-consistent (replace
-  the one-shot open-wire-seeded texture and the placeholder wrap-bond
-  choice), extract the boundary shift with the ring/Pfaffian detector, and
-  subject that shift to the *same* validation the detector itself passed —
-  (a) N-independence across N ≈ 20–160, (b) robustness to bisection/grid
-  tolerance, (c) a known-answer / gauge check (uniform flux → 0 shift), and
-  (d) seed-independence of the fixed point. The goal is a *validated* final
-  magnitude, not a second unvalidated one.
+  This ~0.6–0.8 % is itself now SUPERSEDED by R5. See
+  `src/r4_pfaffian_boundary_methods.md`.
+- ✅ R5: Self-consistent ring self-field (`src/bdg_r5_selfconsistent_ring.py`;
+  R4 imported read-only, all 6 R4 checks still pass). Replaced *both* interim
+  placeholders — the open-wire-seeded texture and the gauge-only wrap bond —
+  with a real ring calculation: periodic ring current (incl. the wrap bond),
+  a Biot–Savart kernel adapted to the closed loop and validated against the
+  analytic loop inductance, and a fully self-consistent ring/Pfaffian B_c.
+  **Findings (honest):** (i) plain fixed-point iteration does **not** converge
+  at g₀=3×10⁵ from any seed (map slope ≈3>1, Picard-repelling) — solved by
+  root-finding the scalar ring map instead; below g_crit≈1.1×10⁵ iteration
+  converges and is seed-independent; (ii) the fixed point is locally unique
+  (Newton–Krylov finds no non-uniform solution) though the map is multi-valued
+  (fluxoid branches; principal branch used; ramp = direct-jump, path-
+  independent); (iii) the shift **passes** the N-independence, tolerance and
+  gauge/decomposition checks. **Result:** the self-consistent shift is
+  **+0.05 % at N=80 (μ=1.2, 1.4) and → 0 in the bulk (~N⁻¹·⁵)** — a finite-size
+  Aharonov–Bohm flux effect, ~15× below the interim number and of *opposite
+  sign*. Progression: threshold −5.86/−9.36 % → interim −0.77/−0.61 % →
+  self-consistent +0.051/+0.047 % (μ=1.2/1.4). Net: the earlier "topological
+  region grows under feedback" claim does **not** survive self-consistency;
+  the bulk boundary shift is consistent with zero. `g=3×10⁵` remains a
+  circuit-amplification placeholder (not derived) — the one substantial
+  caveat left.
 - ⬜ R6: Phase diagram under EM feedback
 
 ## Requirements
@@ -46,9 +59,11 @@ pip install numpy scipy matplotlib pandas pfapack psutil
     python src/bdg_eigensolver_r1_r2_LOAdapted.py   # R1+R2
     python src/bdg_eigensolver_r3_lo_adapted.py     # R3
     python src/bdg_r4_em_coupling.py                # R4
+    python src/bdg_r5_selfconsistent_ring.py        # R5 (~35 min full run)
 
 Each program writes its figures and data outputs directly into its own
-data folder (`R1_R2_data_files/`, `R3_data_files/`, `ISEF R4 data folder/`).
+data folder (`R1_R2_data_files/`, `R3_data_files/`, `ISEF R4 data folder/`,
+`ISEF R5 data folder/`).
 
 ## Results
 See the per-program data folders above for all generated plots and
