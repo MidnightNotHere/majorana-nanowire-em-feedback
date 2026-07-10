@@ -1032,6 +1032,9 @@ def openwire_boundary_Bc(N: int, mu: float,
         gap_lo, gap_hi = gaps[idx - 1], gaps[idx]
         frac = (gap_lo - threshold) / (gap_lo - gap_hi)
         return float(B_lo + frac * (B_hi - B_lo))
+    # Fallback for static analysis; unreachable at runtime (the loop always
+    # runs since _max_widenings >= 0, and every branch inside returns).
+    return float("nan")
 
 
 # ════════════════════════════════════════════════════════════════════

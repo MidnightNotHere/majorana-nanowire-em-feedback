@@ -781,7 +781,7 @@ def ring_boundary_Bc_pfaffian_selfconsistent(
     if phi_ext_bond is None:
         phi_ext_bond = np.pi * 0.1 / N          # Phi = 0.1 Phi_0, as Figure 4
     ana = np.sqrt(mu**2 + delta**2)
-    mem = {"hint": None}
+    mem: dict = {"hint": None}
 
     def phi_star(B: float) -> float:
         if solver == "root":
@@ -965,7 +965,7 @@ def experiment_scalar_map(N: int = 80, mu: float = 1.2, B: float | None = None,
     """Tabulate G(phi) and enumerate its fixed points at a representative
     near-boundary point. Returns raw curve + roots (with slopes)."""
     if B is None:
-        B = 0.98 * np.sqrt(mu**2 + 1.0)
+        B = float(0.98 * np.sqrt(mu**2 + 1.0))
     phi_ext = np.pi * 0.1 / N
     span = span_periods * 2.0 * np.pi / N
     grid = np.linspace(-span, span, n_grid)
@@ -992,7 +992,7 @@ def experiment_iteration_trajectories(N: int = 80, mu: float = 1.2,
     run reports converged / diverged / still-wandering as measured.
     """
     if B is None:
-        B = 0.98 * np.sqrt(mu**2 + 1.0)
+        B = float(0.98 * np.sqrt(mu**2 + 1.0))
     phi_ext = np.pi * 0.1 / N
     rng = np.random.default_rng(rng_seed)
 
@@ -1048,7 +1048,7 @@ def experiment_mode_gains(N: int = 80, mu: float = 1.2,
     search settles existence directly.
     """
     if B is None:
-        B = 0.98 * np.sqrt(mu**2 + 1.0)
+        B = float(0.98 * np.sqrt(mu**2 + 1.0))
     phi_ext = np.pi * 0.1 / N
     phi_star = principal_uniform_fixed_point(N, mu, B, g, phi_ext)
     lam = ring_mode_gains(N, mu, B, g, phi_ext, phi_star=phi_star)
@@ -1085,7 +1085,7 @@ def experiment_g_ramp(N: int = 80, mu: float = 1.2, B: float | None = None,
     both are reported.
     """
     if B is None:
-        B = 0.98 * np.sqrt(mu**2 + 1.0)
+        B = float(0.98 * np.sqrt(mu**2 + 1.0))
     phi_ext = np.pi * 0.1 / N
     gs = np.linspace(0.0, g_max, n_steps + 1)[1:]
     ramp_seed = np.zeros(N)
