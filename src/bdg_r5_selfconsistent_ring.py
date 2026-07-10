@@ -113,6 +113,16 @@ def _out(name: str) -> str:
 
 
 # Same default feedback amplification as Figure 4/5 (see module docstring).
+#
+# CAVEAT (added after R5-revised, bdg_r5_physically_meaningful_shift.py): this
+# value is a mathematically valid coupling, but it sits ABOVE the Picard
+# bifurcation g_crit ~ 1e5 (Figure 8) — at g=3e5 NO attracting fixed point
+# exists, so results computed here at G0_DEFAULT (the "+0.05%" shift) are the
+# location of a DYNAMICALLY UNREACHABLE root, not a physical static equilibrium.
+# The physically meaningful headline comes from g < g_crit and is ~-0.06%
+# (finite-size, -> 0 in the bulk); see r4_pfaffian_boundary_methods.md §4e.
+# G0_DEFAULT is kept unchanged so Figures 7-9 remain reproducible and so the
+# g=3e5 result stays visible as the finding that REVEALED g_crit.
 G0_DEFAULT = 3.0e5
 
 

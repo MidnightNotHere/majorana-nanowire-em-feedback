@@ -304,6 +304,131 @@ self-consistent on the ring.
 - **Ring vs open-end.** As in §5, this is the bulk/ring invariant, not literal
   open-end Majorana appearance; the two coincide only in the thermodynamic limit.
 
+## 4e. THE PHYSICALLY MEANINGFUL HEADLINE — shift restricted to g < g_crit (supersedes the g = 3×10⁵ number)
+
+**Module:** `src/bdg_r5_physically_meaningful_shift.py` (imports R4/R5 read-only;
+figures `r5_figure10_shift_vs_g.png`, `r5_figure11_headline_validation.png`;
+data `r5_physical_shift_results.json`).
+
+**The problem with the §4d number.** §4d reported the self-consistent shift at
+g = 3×10⁵. But Figure 8 established a **Picard bifurcation** at g_crit: below it,
+slow g-ramp and direct-jump-from-zero converge to the *same* attracting fixed
+point (path-independent); above it there is **no attracting fixed point** — the
+root-finder still locates a mathematical root of G(φ)=φ, but nothing an
+iterative/dynamical process settles to. g = 3×10⁵ sits far above g_crit, so the
+"+0.05 %" is the location of a **dynamically unreachable root**, not a physical
+static equilibrium. (It is kept, labelled, in the code and in §4d — it is what
+revealed g_crit.) The honest headline must come from g < g_crit.
+
+**Two corrections found while doing this (documented for auditability).**
+1. *Baseline.* The shift must use the RING/Pfaffian baseline (same detector,
+   same geometry, external flux only) — `ring_boundary_Bc_pfaffian` at uniform
+   φ_ext. A first-draft sweep wrongly used the OPEN-WIRE THRESHOLD detector as
+   baseline, injecting a spurious ~+23 % detector/geometry offset that (tellingly)
+   did **not** vanish as g→0. Fixed.
+2. *Detector window.* The self-consistent B_c must be called with its validated
+   defaults (window = 0.05, n_coarse = 11), as the committed Figure 9 run did.
+   A first draft used window = 0.2, whose wide coarse B-grid caused spurious
+   bracketing failures far below g_crit — an artifact of the override, not physics.
+
+**Three regimes of g** (established by direct diagnostics — root structure and
+Picard slope scanned across the transition window):
+
+| regime | range | status of the static self-consistent boundary |
+|---|---|---|
+| 1 | g ≲ 3×10⁴ (`G_DEADZONE_ONSET`) | attracting fixed point at **every** B across the transition → B_c **unambiguously** defined |
+| 2 | 3×10⁴ ≲ g ≲ 1×10⁵ | fixed point still attracting at most B, but a **narrow dead-zone in B opens exactly at the gap-closing** (the sawtooth map jumps across the identity line without crossing it) → B_c defined only up to the dead-zone width; the Pfaffian sign flip itself stays clean (single flip) |
+| 3 | g ≳ 1×10⁵ (`G_CRIT_SINGLEPOINT`, Figure 8) | fixed point **Picard-repelling → no attracting equilibrium**. g = 3×10⁵ lives here. |
+
+The dead-zone onset was bisected to g ≈ 2.98×10⁴ at N = 80, μ = 1.2; it is
+**N-dependent** (lower for smaller N — e.g. N = 40 is already in the dead-zone at
+g = 2×10⁴). Regimes 2–3 are themselves a finding: the static mean-field
+self-consistency **breaks down at the transition** before the coupling is large
+enough to matter for a large shift.
+
+**The dose-response (Figure 10).** With the correct baseline, in regime 1 the
+shift is **small, NEGATIVE, and → 0 as g → 0** (the physical requirement the
++23 % artifact violated), growing monotonically with g and **path-independent at
+every g checked** (ramp = jump = root). μ = 1.2 and μ = 1.4 lie on top of each
+other:
+
+| g | shift μ=1.2 | shift μ=1.4 |
+|---|---|---|
+| 1×10³ | −0.0013 % | −0.0014 % |
+| 1×10⁴ | −0.0145 % | −0.0151 % |
+| 2×10⁴ | −0.0379 % | −0.0366 % |
+| 2.9×10⁴ (top of regime 1) | **−0.064 %** | **−0.066 %** |
+
+**Headline g (a judgment call, stated as such).** The shift is monotonic in g, so
+per the least-arbitrary rule the natural representative coupling is the **top of
+the unambiguous regime**, g ≈ 2.9×10⁴ (the dead-zone onset). Headline number:
+**ΔB_c/B_c ≈ −0.064 % (μ=1.2), −0.066 % (μ=1.4), at N = 80.** We deliberately do
+**not** pick the g that maximises the number, and we do not use regime-2/3 values.
+
+**Is even this a bulk effect? NO — it is a finite-size artifact (Figure 11a).**
+The decisive test. At a clean regime-1 coupling (g = 1×10⁴, where every N is
+unambiguous) the shift **vanishes as N → ∞**:
+
+| N | shift μ=1.2 | shift μ=1.4 |
+|---|---|---|
+| 40 | −0.0557 % | −0.0521 % |
+| 60 | −0.0259 % | −0.0249 % |
+| 80 | −0.0145 % | −0.0151 % |
+| 120 | −0.0076 % | −0.0076 % |
+
+|shift| ∼ **N^−1.8** for both μ (fit exponents −1.82 and −1.75) — the **same
+finite-size Aharonov–Bohm scaling** as the g = 3×10⁵ result (§4d, ∼N^−1.5). It is
+**tolerance-robust** (Figure 11b: −0.0371 → −0.0380 → −0.0379 → −0.0379 % as the
+bisection tol tightens 1e-4 → 1e-7).
+
+**THE HONEST BOTTOM LINE (a null result).** Across the **entire physically
+accessible coupling range** (every g where a static self-consistent equilibrium
+exists), the self-consistent boundary shift is (a) **tiny** (< 0.1 %), (b) slightly
+**negative** (topological region marginally shrinks — the *opposite* sign to the
+§4d +0.05 %, which was sign-flipped only because it sits past the sawtooth jump in
+regime 3), and (c) a **finite-size Aharonov–Bohm artifact that extrapolates to
+zero in the bulk**. **The inductive self-field does not move the bulk topological
+boundary anywhere a static description applies.** The direction the earlier stages
+suggested ("topological region grows/shrinks under feedback") does not survive as
+a *bulk* effect at all.
+
+**The full lineage (each stage superseding the last — the story, not just the last number):**
+
+| # | method | μ=1.2 | μ=1.4 | verdict |
+|---|---|---|---|---|
+| 1 | open-wire threshold detector (Fig 4/5) | −5.86 % | −9.36 % | PRELIMINARY — mostly a threshold artifact |
+| 2 | interim ring/Pfaffian, open-wire texture on ring | −0.768 % | −0.607 % | SUPERSEDED — stopgap self-field |
+| 3 | self-consistent ring, g = 3×10⁵ (§4d) | +0.051 % | +0.047 % | **mathematically valid root, but g > g_crit — NO attracting fixed point exists; dynamically unreachable** |
+| 4 | **self-consistent ring, g < g_crit (this §4e)** | **−0.064 %** | **−0.066 %** | **physically meaningful upper bound; but finite-size (∼N^−1.8 → 0 in bulk)** |
+
+**Revised status of the g-parameter literature justification (honest).** The
+original g = 3×10⁵ plausibility argument (CPW resonator Q ∼ 10³–10⁴ × kinetic-
+inductance enhancement ∼10–30×) sketched a range spanning roughly 10⁴ to ≳10⁶.
+That range **straddles all three regimes**: its low end (∼10⁴–3×10⁴) is in the
+physical regime 1, its middle in regime 2, its high end (≳10⁵, and the nominal
+3×10⁵ itself) in regime 3 where no static equilibrium exists. So — stated plainly,
+without retroactive narrowing — **the literature argument was never specific
+enough to pin g below g_crit; it is compatible with both sides**, and the specific
+value it was tuned to (3×10⁵, chosen to justify a ~9 % effect) lies in the
+no-static-equilibrium regime. A real device at the *low* end of that plausibility
+band would sit in regime 1 and produce the ∼−0.06 % (finite-size) shift above; a
+device at the *high* end would not admit the static self-consistent treatment used
+throughout this project at all.
+
+**What would have to happen physically at g > g_crit (open question for future
+work, not resolved here).** Above g_crit no static fixed point attracts, so the
+quasi-static/mean-field self-consistency used here simply does not describe that
+regime. Physically this leaves two possibilities, to be settled by future work
+(R6+), not by this task: (i) real readout circuits do **not** reach that effective
+coupling — the plausibility argument was an over-estimate, and the physical device
+lives in regime 1 where the effect is the null/finite-size result above; or
+(ii) at such coupling the wire–circuit feedback is genuinely **dynamical** — it
+does not relax to a static equilibrium and needs a time-dependent treatment
+(possible self-oscillation / limit cycle of current ↔ self-field), for which
+"the boundary shift" is not even the right observable. The narrow transition
+dead-zone of regime 2 is an early warning that the static mean-field picture is
+the first thing to fail as g grows.
+
 ## 5. Limitations (every method has some)
 
 - **It measures the bulk/ring invariant, not literal open-end Majorana
