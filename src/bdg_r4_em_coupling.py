@@ -96,6 +96,24 @@ def _out(name: str) -> str:
     return os.path.join(_OUTPUT_DIR, os.path.basename(str(name)))
 
 
+# ── Detector caveat, stamped on every figure that reports a boundary SHIFT.
+# Single source of truth so the "preliminary" label cannot drift out of sync
+# with the number. The shifts in figure4/figure5 come from the OPEN-WIRE
+# spectral-threshold detector (openwire_boundary_Bc, 0.25*Delta), which
+# over-estimates the shift by ~10x: swapping in the rigorous ring/Pfaffian
+# Z2 invariant (ring_boundary_Bc_pfaffian, threshold-free, N-independent),
+# with the *same* self-field, gives ~0.6-0.8% at mu=1.2-1.4 instead of
+# ~6-9%. Only the SIGN/direction (topological region grows) is trustworthy
+# so far; the final magnitude awaits R5's self-consistent ring self-field.
+_SHIFT_CAVEAT = (
+    "PRELIMINARY magnitude: open-wire threshold detector (0.25 Delta) "
+    "over-estimates the shift ~10x. Rigorous ring/Pfaffian Z2 estimate "
+    "(same self-field) is ~0.6-0.8% at mu=1.2-1.4; sign is robust, final "
+    "magnitude pending R5 self-consistent self-field. "
+    "See r4_pfaffian_boundary_methods.md."
+)
+
+
 # ════════════════════════════════════════════════════════════════════
 # PHYSICAL CONSTANTS (SI) — used only at the Biot-Savart / circuit layer
 # ════════════════════════════════════════════════════════════════════
@@ -1180,6 +1198,14 @@ def figure4_phase_shift_preview(fname: str = "r4_figure4_phase_shift_preview.png
     diagram with two numerically traced open-wire boundaries -- the
     gauge-invariant baseline (external flux only) and the inductive
     self-field boundary -- showing the inductive shift.
+
+    PRELIMINARY MAGNITUDE. The traced boundaries use the open-wire spectral
+    threshold detector (openwire_boundary_Bc), which over-estimates the
+    shift ~10x relative to the rigorous ring/Pfaffian Z2 detector
+    (ring_boundary_Bc_pfaffian): with the same self-field the rigorous shift
+    is ~0.6-0.8% at mu=1.2-1.4, not ~6-9%. Only the SIGN is trustworthy so
+    far. The figure is stamped with _SHIFT_CAVEAT; final magnitude is an R5
+    deliverable. See r4_pfaffian_boundary_methods.md sections 4b/4c.
     """
     import matplotlib
     matplotlib.use("Agg")
@@ -1260,12 +1286,19 @@ def figure4_phase_shift_preview(fname: str = "r4_figure4_phase_shift_preview.png
     ax2.plot(mu_b, Bc_base, "wo-", lw=2, ms=6,
              label=r"baseline ($\Phi_{\rm ext}$ only)")
     ax2.plot(mu_b, Bc_ind, "y^--", lw=2, ms=7, label="+ inductive self-field")
-    ax2.set_title("inductive feedback shifts boundary ($g=%.0e$)" % g0)
+    ax2.set_title("inductive feedback shifts boundary ($g=%.0e$)\n"
+                  "[threshold detector -- magnitude preliminary]" % g0,
+                  fontsize=11)
     ax2.legend(loc="upper right", fontsize=11)
 
     fig.suptitle("R4 Figure 4: Topological Phase Boundary Shift Under "
-                 "Inductive Feedback (preview)", fontsize=14, fontweight="bold")
-    fig.tight_layout(rect=(0, 0, 1, 0.95))
+                 "Inductive Feedback (PRELIMINARY -- threshold detector)",
+                 fontsize=14, fontweight="bold")
+    # rect leaves an explicit bottom margin (0.10) for the caveat footer below,
+    # separate from the top margin (0.90) reserved for the suptitle.
+    fig.tight_layout(rect=(0, 0.10, 1, 0.90))
+    fig.text(0.5, 0.02, _SHIFT_CAVEAT, ha="center", va="bottom",
+             fontsize=7.5, style="italic", color="#555555", wrap=True)
     fig.savefig(_out(fname), dpi=150)
     plt.close(fig)
 
@@ -1394,13 +1427,15 @@ def figure5_flux_density_profile(N: int = 80,
     ax.grid(True, alpha=0.3)
 
     shift_label = (f"{shift_pct_here:+.2f}\\%" if shift_pct_here is not None
-                   else "shift not recomputed (explicit B_at_shift passed)")
+                   else "n/a (explicit B_at_shift passed)")
     fig.suptitle(
         fr'Figure 5: Self-Consistent Field Profile at $\mu={mu_fixed}\Delta$ '
-        fr'(boundary shift $={shift_label}$)',
+        fr'(threshold-detector shift $={shift_label}$ -- PRELIMINARY)',
         fontsize=13, fontweight='bold'
     )
-    fig.tight_layout(rect=(0, 0, 1, 0.92))
+    fig.tight_layout(rect=(0, 0.10, 1, 0.90))
+    fig.text(0.5, 0.02, _SHIFT_CAVEAT, ha="center", va="bottom",
+             fontsize=7.5, style="italic", color="#555555", wrap=True)
     fig.savefig(_out(fname), dpi=150)
     plt.close(fig)
 

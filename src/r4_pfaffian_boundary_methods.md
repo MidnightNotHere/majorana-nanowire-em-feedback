@@ -135,6 +135,50 @@ k=0 band inversion, which is far more robust to finite-size effects than the
 continuous spectral gap the old detector measured — and k=0 is an allowed
 momentum even for a 20-site ring.
 
+## 4b. Consequence for the headline: the reported boundary SHIFT is ~10× inflated
+
+The point of a threshold-free detector is not just cleaner absolute B_c — it
+changes the project's headline number. Two controlled comparisons (N=80):
+
+**Absolute B_c, isolating detector method (both on the clean ring):** the
+threshold detector (0.25·Δ) lands **exactly −0.25000 below** the Pfaffian/analytic
+B_c at μ = 1.2, 1.3, 1.4 — i.e. off by exactly `threshold`, because the bulk gap
+closes linearly (E ≈ |B − B_c|) so a fixed threshold fires exactly `threshold`
+early. On the open wire the offset grows to −0.29…−0.33 (adds the end/finite-size
+contribution). So absolute B_c from the reported detector is ~15–19 % low.
+
+**The relative SHIFT (the actual headline), keeping figure4's *exact* self-field
+and only swapping the detector:**
+
+| μ | threshold-detector shift (Figure 4/5) | ring/Pfaffian shift (same self-field) |
+|---|---|---|
+| 1.2 | −5.86 % | **−0.77 %** |
+| 1.4 | −9.36 % | **−0.60 %** |
+
+The headline shift is **largely a threshold-detector artifact**: the tiny
+self-field (~0.015 rad peak) barely moves the true k=0 band inversion, but it
+noticeably moves the near-zero *sub-gap* states that the absolute threshold keys
+on. The **sign/direction survives** (topological region grows under inductive
+feedback); the **magnitude is ~an order of magnitude smaller** than reported, and
+even the μ-ranking changes (μ=1.4 is the threshold method's "largest" shift but
+not the Pfaffian method's). Figure 4/5 are therefore labelled PRELIMINARY
+(threshold detector) until R5.
+
+Caveat on the 0.6–0.8 %: that number itself is not yet final — the self-field
+texture is open-wire-derived but applied to the ring with the wrap bond carrying
+only the gauge phase (a modelling choice). The *order-of-magnitude* conclusion
+(rigorous shift ≪ threshold shift) is robust to that choice; the exact sub-percent
+value is an R5 deliverable.
+
+## 4c. R5 deliverable (explicit)
+
+R5 must produce a **validated** final magnitude, not a second unvalidated number:
+make the ring self-field self-consistent (remove the open-wire seed and the
+wrap-bond placeholder), extract the shift with `ring_boundary_Bc_pfaffian`, and
+subject that shift to the same checks this detector passed — (a) N-independence
+(N ≈ 20–160), (b) tolerance/grid robustness, (c) a gauge/known-answer check
+(uniform flux → 0 shift), and (d) seed-independence of the fixed point.
+
 ## 5. Limitations (every method has some)
 
 - **It measures the bulk/ring invariant, not literal open-end Majorana
