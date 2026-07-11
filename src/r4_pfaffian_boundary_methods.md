@@ -429,6 +429,162 @@ does not relax to a static equilibrium and needs a time-dependent treatment
 dead-zone of regime 2 is an early warning that the static mean-field picture is
 the first thing to fail as g grows.
 
+## 4f. ANDERSON MIXING — is g_crit real physics, or an artifact of PLAIN (Picard) iteration?
+
+**Module:** `src/bdg_r5_anderson_mixing.py` (imports R3/R4/R5 read-only; the
+existing Picard iteration `selfconsistent_ring_texture` and the bisection/
+Newton–Krylov root-finders are UNCHANGED and remain the baselines).
+**Outputs:** `ISEF R5 data folder/` — Figure 12 (Task 2), Figure 13 (Task 3),
+`r5_anderson_results.json`.
+
+**Why this was done.** Every result above `g_crit ≈ 1.1×10⁵` (§4d/§4e) rested on
+one solver: plain fixed-point / Picard iteration, which is *provably* repelling
+where the scalar-map slope `G′ ≈ 3 > 1` (no linear mixing β can rescue a slope-3
+fixed point: `|1−β+βG′| > 1` for every β∈(0,1]). The §4e clause — above g_crit
+"there is no attracting fixed point … nothing an iterative/dynamical process
+settles to" — had **not** been tested against a stronger iteration. Anderson
+mixing (Anderson acceleration) is a multi-secant **quasi-Newton** method for
+`F(φ)=G(φ)−φ=0`: it builds a least-squares linear model of `F` from the last `m`
+iterate/residual differences and takes Newton-like steps, so — like Newton's
+method — it can locate a root even where the bare map is repelling, provided the
+root is simple (`J_F = J_G − I` non-singular there). It is precisely the tool to
+separate two statements the prior work was careful to keep apart:
+**(A)** a fixed point *exists* above g_crit — never in doubt (bisection and
+Newton–Krylov already locate it); **(B)** the fixed point is *attracting under
+the physical relaxation dynamics* — FALSE for |G′|>1, a property of the MAP, not
+the solver, and the meaning of "no attracting fixed point".
+
+**Variant implemented (Task 1).** **Type-II Anderson** (the original Walker–Ni
+form: γ minimizes the linearized residual ‖f_k − ΔF_k γ‖ directly), chosen over
+Type-I because it is the standard, better-conditioned default and degrades
+gracefully when ΔF goes rank-deficient near convergence — robustness that matters
+because the sawtooth current–phase relation can make the LS step ill-conditioned.
+**History depth m = 4.** Regularization: **relative Tikhonov** on the tiny m×m
+normal matrix, `λ = reg·trace(ΔFᵀΔF)/m` with `reg = 1e-10` (standard "regularized
+Anderson"; the condition number is recorded and never blows up). **Convergence
+criterion (Task 1.4):** the relative change in the self-field,
+`‖ΔA‖/‖A‖ < 1e-6` (equal to `‖Δφ_self‖/‖φ_self‖` since φ_self ∝ A_t). Because
+that step criterion alone can be met at a *sawtooth-branch stall*, the
+fixed-point residual `max|G(φ)−φ|` is ALSO recorded, and a result is a genuine
+fixed point only if BOTH are small — stalls are flagged, never reported as
+solutions. (This distinction is load-bearing: see the far-seed cases below.)
+
+**Warm-start (Task 1.3) — confirmed wired in, and honestly bounded.** R3's
+rank-2 PH-symmetric Woodbury near-zero-mode update (DPT→RR1→RR2→residual/
+fallback, with R3's thresholds) is reused via `RingWoodburyWarmStart`, adapted
+from R3's open wire + (δμ,δB,δΔ) steps to the RING Hamiltonian + the Peierls-phase
+step δφ the SCF actually takes. A direct large-gap probe confirms the raw rank-2
+update reproduces the full-eigh near-zero eigenvalues to **9.4×10⁻⁶** — so the
+update is genuinely correct — but R3's *conservative* residual safety net
+(`resid > 10·‖δH‖`) trips on these phase steps (the eigenvector residual ≈5×10⁻³
+just exceeds 10·‖δH‖≈3.6×10⁻³), so in practice it falls back to a full solve
+(8/8 probe steps, 4/4 SCF iterations). Either way it cannot help: the ring
+current sums over ALL occupied states, so the SCF map needs the **full** occupied
+spectrum every iteration — the full `eigh` is **~96–98% of the per-map cost** and
+is unavoidable, and a rank-2 near-zero update cannot supply it. **Net: the
+near-zero Woodbury warm-start gives ~1× on the SCF loop, reported plainly and not
+conflated with Anderson's own gain.** The separable warm-start that *could* help
+is *iterate* seeding (start each solve from a nearby converged texture); it is
+isolated in Task 3, where — at these coupling values — it also gives no gain
+because cold Anderson already converges at the ~3–5-iteration floor.
+
+### THE TASK-2 RESULT — stated as plainly as the g_crit discovery itself
+
+> **Anderson mixing DOES converge above g_crit, where plain Picard provably
+> cannot — but it converges to the SAME already-known, still-Picard-REPELLING
+> root, reproducing the IDENTICAL §4d shift (+0.05 %, → 0 in the bulk) about
+> 20× faster. This does NOT overturn the null result. It refines a
+> methodological claim (a stronger solver *reaches* the root; g_crit is a
+> Picard-iteration stability threshold, not a barrier to *locating* the
+> equilibrium) and makes the physics MORE robust — three independent solvers
+> now agree on the same root and the same → 0 shift.**
+
+At the representative near-boundary point (N=80, μ=1.2, B=0.98√(μ²+1)=1.531),
+plain Picard wanders without converging at every g below, while Anderson reaches
+a **genuine** fixed point (both `‖ΔA‖/‖A‖<1e-6` AND `max|G−φ|` small):
+
+| g | Picard (β=1) | Anderson from zero seed | genuine fixed pts / 4 seeds | seed-independent? |
+|---|---|---|---|---|
+| 1.5×10⁵ | wanders (res 1.1×10⁻²) | converges, **5 iter**, φ*=−0.01177 | **4/4** (all match bisection) | **YES** |
+| 3.0×10⁵ | wanders (res 1.0×10⁻¹) | converges, **5 iter**, φ*=−0.005886 | 2/4 (zero, random) | YES (among genuine) |
+| 6.0×10⁵ | wanders | converges, 8 iter, φ*=−0.004711 | 3/4 | NO (fluxoid branches) |
+| 1.0×10⁶ | wanders | converges, φ*=+0.0386 (non-principal) | 3/4 | NO (fluxoid multiplicity) |
+
+- **The criterion is genuinely met.** At g=3×10⁵ from the zero seed,
+  `‖ΔA‖/‖A‖ = 5.4×10⁻⁷` is reached at **iteration 5**, with fixed-point residual
+  **6.3×10⁻⁹** (a true fixed point, not a stall).
+- **Same root, same physics, ~20× faster.** The full self-consistent Pfaffian
+  B_c at g=3×10⁵ (N=80) via Anderson = **1.561738** (μ=1.2), shift **+0.0505 %** —
+  *identical* to the bisection root-finder's B_c (1.5617377, +0.05052 %) at both
+  μ, in **15.3 s vs 299.5 s**. Anderson found the SAME root the root-finder did.
+- **Seed dependence is the fluxoid multiplicity, reported honestly.** From
+  physically reasonable seeds (zero, small random) Anderson lands on the
+  *principal* root; from far seeds (±0.02, a full fluxoid period away) it either
+  **stalls on another sawtooth branch** — correctly flagged (fp-residual ≈5×10⁻²,
+  NOT a fixed point) — or, at very large g (10⁶), converges to a genuine
+  *non-principal* fluxoid root (+0.039 / −0.047). This is the metastable-flux-
+  state multiplicity §4d/§3b already documented, not a defect: the raw
+  `‖ΔA‖/‖A‖<1e-6` step criterion alone would have mislabeled the stalls as
+  "converged", which is exactly why the fixed-point-residual gate is enforced.
+
+### Validation battery on the Anderson-converged g=3×10⁵ solution
+
+Because Anderson reaches a genuine fixed point above g_crit, the SAME battery
+§4d/§4e used was applied to it — and it reproduces the §4d finding exactly:
+
+- **N-independence — the shift scales to zero as N→∞** (the decisive test).
+  Anderson shift vs N: **+0.1223 / +0.0854 / +0.0505 / +0.0238 %** at
+  N=40/60/80/120 (μ=1.2, `~N^−1.51`); **+0.1879 / +0.0793 / +0.0469 / +0.0232 %**
+  (μ=1.4, `~N^−1.90`). This is the SAME finite-size Aharonov–Bohm scaling as §4d
+  (`~N^−1.5`): the bulk shift is consistent with zero.
+- **It is the same root.** Anderson B_c = bisection root-finder B_c at N=80 to
+  6 digits for BOTH μ (1.561738 vs 1.5617377; 1.720153 vs 1.7201529).
+- **Tolerance-robust.** Shift = +0.0530 → +0.0508 → +0.0505 → +0.0505 % as the
+  bisection tol and Anderson `‖ΔA‖/‖A‖` tol tighten (1e-4 → 1e-7).
+- **Path-independent (among genuine roots).** From 5 seeds at fixed (N,μ,B,g),
+  the **3 genuine fixed points agree to 5.5×10⁻¹⁰** (φ*=−0.005886, matching the
+  bisection root); the 2 far seeds stall on another branch and are reported
+  separately (per the multiplicity above), not silently dropped.
+
+### What this DOES and does NOT change (the honest reading)
+
+Anderson converging above g_crit **refines** — it does not overturn — the §4e
+sentence "above g_crit … nothing an iterative/dynamical process settles to." That
+clause is too strong as literally written: a *quasi-Newton* iterative process
+(Anderson) settles to the root easily. The precise statement is that no
+**Picard-class** (fixed-contraction) iteration converges, and that the fixed
+point is still **physically repelling** (|G′|≈3>1) — a solver-independent
+property of the map. A real analog feedback circuit *relaxing* implements
+(approximately) Picard dynamics (current→field→phase→current, applied
+repeatedly), not Anderson history-extrapolation, so the physical instability
+stands. And the observable is unchanged: Anderson, bisection, and Newton–Krylov
+all give the **same +0.05 % shift that scales to zero in the bulk**. **g_crit is a
+Picard-iteration stability threshold, not a barrier to *locating* the
+equilibrium; the null result (no bulk boundary shift; no attracting *static*
+equilibrium above g_crit under relaxation dynamics) STANDS, now on firmer footing.**
+
+### TASK 3 — efficiency below g_crit (honest, not fit to "5×")
+
+Where both converge (fixed near-boundary B, g<g_crit), iterations to
+`‖ΔA‖/‖A‖<1e-6` (N=80, μ=1.2):
+
+| g | simple β=1 | simple β=0.5 | Anderson (m=4) | speedup (simple β=1 / Anderson) |
+|---|---|---|---|---|
+| 1×10³ | 4 | 21 | 3 | **1.3×** |
+| 1×10⁴ | 7 | 23 | 4 | **1.8×** |
+| 3×10⁴ | 13 | 31 | 4 | **3.3×** |
+| 6×10⁴ | 27 | 56 | 5 | **5.4×** |
+
+The measured speedup is **1.3× → 5.4×** and **grows as g→g_crit** (Picard suffers
+critical slowing as G′→1; Anderson stays at the 3–5-iteration floor). It is
+reported as measured — *not* tuned to the "~5×" figure in the original scope
+notes (it happens to reach ~5.4× only at the top of the sub-critical range, and
+is well below 5× for most of it). The separable *iterate* warm-start gives no
+extra reduction here (cold Anderson is already at the floor). The R3 near-zero
+Woodbury warm-start is wired in and its rank-2 update verified correct (9.4×10⁻⁶),
+but it gives ~1× on the SCF loop because the full-spectrum current dominates —
+reported separately so the two effects are never conflated.
+
 ## 5. Limitations (every method has some)
 
 - **It measures the bulk/ring invariant, not literal open-end Majorana
