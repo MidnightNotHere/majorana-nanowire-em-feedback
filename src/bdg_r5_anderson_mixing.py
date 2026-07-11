@@ -1063,14 +1063,21 @@ def figure12_anderson_above_gcrit(
         same_root = ("Anderson B_c MATCHES the bisection root-finder B_c at every N "
                      "-> it is the SAME root.\n" if matches else
                      "Anderson B_c differs from the root-finder at some N (see table).\n")
+    seeds = hrow["anderson_seeds"]
+    fp_names = [s for s in seeds if seeds[s]["fixed_point"]]
+    other_names = [s for s in seeds if not seeds[s]["fixed_point"]]
     txt = (
         f"TASK-2 VERDICT: does Anderson converge above $g_{{crit}}$?  ->  {verdict}\n\n"
-        f"At g={hg:.0e} (above g_crit): {n_fp}/{hrow['n_seeds']} seeds reach a GENUINE\n"
-        f"fixed point (phi*={hrow['root_bisection']*1e3:.3f} mrad), in single-to-tens of\n"
-        f"iterations, where plain Picard provably cannot (slope G'~3>1).\n\n"
+        f"At g={hg:.0e} (above g_crit): {n_fp}/{hrow['n_seeds']} seeds "
+        f"({', '.join(fp_names)}) reach a\n"
+        f"GENUINE fixed point (phi*={hrow['root_bisection']*1e3:.3f} mrad, matching\n"
+        f"the bisection root); {', '.join(other_names)} land on a different sawtooth\n"
+        "branch or fail to converge -- consistent with the map's multi-valued/\n"
+        "fluxoid structure (§4d), not a defect of the solver.\n\n"
         "WHAT THIS DOES — AND DOES NOT — MEAN (the honest reading):\n"
-        "  (A) A fixed point EXISTS above g_crit: never in doubt — bisection and\n"
-        "      Newton-Krylov already located it. Anderson is a third root-finder.\n"
+        "  (A) A fixed point EXISTS above g_crit: already established via\n"
+        "      bisection/Newton-Krylov. Anderson CORROBORATES it via a\n"
+        "      structurally different algorithm, from seeds close to the root.\n"
         "  (B) Is it ATTRACTING under the physical relaxation dynamics? NO: |G'|~3>1\n"
         "      is a property of the MAP, not the solver, and is unchanged.\n\n"
         f"{same_root}"

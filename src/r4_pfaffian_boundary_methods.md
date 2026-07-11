@@ -449,10 +449,12 @@ iterate/residual differences and takes Newton-like steps, so — like Newton's
 method — it can locate a root even where the bare map is repelling, provided the
 root is simple (`J_F = J_G − I` non-singular there). It is precisely the tool to
 separate two statements the prior work was careful to keep apart:
-**(A)** a fixed point *exists* above g_crit — never in doubt (bisection and
-Newton–Krylov already locate it); **(B)** the fixed point is *attracting under
-the physical relaxation dynamics* — FALSE for |G′|>1, a property of the MAP, not
-the solver, and the meaning of "no attracting fixed point".
+**(A)** a fixed point *exists* above g_crit — already established via bisection
+and Newton–Krylov, so Anderson's job here is to corroborate it via a
+structurally different algorithm, from seeds sufficiently close to the root;
+**(B)** the fixed point is *attracting under the physical relaxation dynamics*
+— FALSE for |G′|>1, a property of the MAP, not the solver, and the meaning of
+"no attracting fixed point".
 
 **Variant implemented (Task 1).** **Type-II Anderson** (the original Walker–Ni
 form: γ minimizes the linearized residual ‖f_k − ΔF_k γ‖ directly), chosen over
@@ -493,11 +495,12 @@ because cold Anderson already converges at the ~3–5-iteration floor.
 > **Anderson mixing DOES converge above g_crit, where plain Picard provably
 > cannot — but it converges to the SAME already-known, still-Picard-REPELLING
 > root, reproducing the IDENTICAL §4d shift (+0.05 %, → 0 in the bulk) about
-> 20× faster. This does NOT overturn the null result. It refines a
-> methodological claim (a stronger solver *reaches* the root; g_crit is a
-> Picard-iteration stability threshold, not a barrier to *locating* the
-> equilibrium) and makes the physics MORE robust — three independent solvers
-> now agree on the same root and the same → 0 shift.**
+> 20× faster, from seeds sufficiently close to the root (2 of 4 tried at the
+> headline g; see below for the other 2). This does NOT overturn the null
+> result. It refines a methodological claim (a stronger solver *reaches* the
+> root; g_crit is a Picard-iteration stability threshold, not a barrier to
+> *locating* the equilibrium) and makes the physics MORE robust — three
+> independent solvers now agree on the same root and the same → 0 shift.**
 
 At the representative near-boundary point (N=80, μ=1.2, B=0.98√(μ²+1)=1.531),
 plain Picard wanders without converging at every g below, while Anderson reaches
@@ -517,15 +520,21 @@ a **genuine** fixed point (both `‖ΔA‖/‖A‖<1e-6` AND `max|G−φ|` small
   B_c at g=3×10⁵ (N=80) via Anderson = **1.561738** (μ=1.2), shift **+0.0505 %** —
   *identical* to the bisection root-finder's B_c (1.5617377, +0.05052 %) at both
   μ, in **15.3 s vs 299.5 s**. Anderson found the SAME root the root-finder did.
-- **Seed dependence is the fluxoid multiplicity, reported honestly.** From
-  physically reasonable seeds (zero, small random) Anderson lands on the
-  *principal* root; from far seeds (±0.02, a full fluxoid period away) it either
-  **stalls on another sawtooth branch** — correctly flagged (fp-residual ≈5×10⁻²,
-  NOT a fixed point) — or, at very large g (10⁶), converges to a genuine
-  *non-principal* fluxoid root (+0.039 / −0.047). This is the metastable-flux-
-  state multiplicity §4d/§3b already documented, not a defect: the raw
-  `‖ΔA‖/‖A‖<1e-6` step criterion alone would have mislabeled the stalls as
-  "converged", which is exactly why the fixed-point-residual gate is enforced.
+- **Seed agreement, stated precisely (not "all seeds agree").** At the headline
+  g=3×10⁵: **2 of 4 seeds (zero, random) converge to the known root; 2 of 4
+  (far_neg, far_pos) land on a different branch or fail to converge** —
+  consistent with the map's multi-valued/fluxoid structure, not a defect of the
+  solver. Concretely, the far seeds (±0.02, a full fluxoid period away)
+  **stall on another sawtooth branch** — correctly flagged (fp-residual ≈5×10⁻²,
+  NOT a fixed point), since the raw `‖ΔA‖/‖A‖<1e-6` step criterion alone would
+  have mislabeled the stall as "converged", which is exactly why the
+  fixed-point-residual gate is enforced. At very large g (10⁶) far seeds instead
+  converge to a genuine *non-principal* fluxoid root (+0.039 / −0.047) — the
+  metastable-flux-state multiplicity §4d/§3b already documented. This is a
+  strictly more interesting result than blanket seed-independence: Anderson's
+  basin of convergence to the principal root is seed-dependent in the same way
+  the underlying physics is multi-valued, and the solver reports that honestly
+  rather than papering over it.
 
 ### Validation battery on the Anderson-converged g=3×10⁵ solution
 
