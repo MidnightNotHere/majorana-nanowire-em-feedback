@@ -42,9 +42,11 @@ root even where the bare map is repelling, provided the root is simple
 sits exactly at 1). This is exactly why it is the right tool to separate two
 DISTINCT statements that the prior work was careful to keep apart:
 
-   (A) a fixed point EXISTS above g_crit  -- never in doubt: bisection and
-       Newton-Krylov already locate it (`principal_uniform_fixed_point`,
-       `nonuniform_fixed_point_search`).
+   (A) a fixed point EXISTS above g_crit  -- already established: bisection
+       and Newton-Krylov already locate it (`principal_uniform_fixed_point`,
+       `nonuniform_fixed_point_search`). Anderson corroborates it via a
+       structurally different algorithm, from seeds sufficiently close to
+       the root (not every seed -- see the seed-breakdown table below).
    (B) the fixed point is ATTRACTING under the physical relaxation dynamics
        -- FALSE for |G'| > 1; this is a property of the MAP, not of the solver,
        and is what "no attracting fixed point" means.
@@ -1013,8 +1015,8 @@ def figure12_anderson_above_gcrit(
     ax.set_xscale("log")
     ax.set_xlabel("feedback amplification $g$")
     ax.set_ylabel(r"self-consistent self-phase $\phi^*$ (mrad/bond)")
-    ax.set_title("(b) Anderson lands on the SAME root the bisection finds,\n"
-                 "from reasonable seeds, on BOTH sides of $g_{\\rm crit}$",
+    ax.set_title("(b) where it converges, Anderson lands on the SAME root\n"
+                 "bisection finds (not every seed converges -- see (a)/(d))",
                  fontsize=10.5)
     ax.legend(fontsize=7.5, loc="best")
     ax.grid(True, alpha=0.3, which="both")
