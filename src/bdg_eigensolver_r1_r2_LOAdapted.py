@@ -25,6 +25,8 @@ O1 UPDATE — Lutchyn-Oreg (InAs/Al) model:
   - plot_lo_phase_diagram(), plot_lo_finite_size() added
   - PH symmetry verified via check_ph_symmetry_complex() at all N
   - Phase boundary B_z = sqrt(mu^2 + Delta^2) confirmed numerically
+    [CORRECTED 2026-07-11 — see correction note below; the original check
+    was tautological, not a genuine confirmation]
 
 Architecture note:
   This file covers R1 + R2 (Kitaev chain + Lutchyn-Oreg validation).
@@ -49,6 +51,8 @@ Changes from previous version:
        with published InAs/Al parameters. PH symmetry enforced.
   [12] ADDED pfaffian_trim_lo() — numerical Pfaffian at TRIM points
        for the LO model via 4×4 antisymmetric TRIM matrices.
+       [CORRECTED 2026-07-11 — see correction note below; this originally
+       built the matrices described here but discarded them]
   [13] ADDED LO_PARAMS dict — single source of truth for all published
        device parameters. Cite Mourik 2012 and Das Sarma 2010.
   [14] ADDED run_lo_phase_sweep() — B_zeeman vs mu phase diagram.
@@ -56,6 +60,38 @@ Changes from previous version:
   [16] ADDED plot_lo_phase_diagram() — 2D (B, mu) with analytic boundary.
   [17] ADDED plot_lo_finite_size() — LO gap finite-size scaling.
   [18] ADDED _validate_lo_ph_symmetry() — module-import assertion for LO.
+
+CORRECTION (2026-07-11, found during R6 reconnaissance; full writeup in
+src/r2_o1_pfaffian_trim_lo_correction.md):
+  pfaffian_trim_lo() originally built the 4×4 TRIM matrices its docstring
+  described, then DISCARDED them and returned the closed-form
+  nu = sign(mu^2 + Delta^2 - B_zeeman^2) directly — it never called
+  pf.pfaffian(). That made _validate_lo_phase_boundary() (which runs at
+  module import) tautological: it checked the closed-form value against
+  itself, not against a genuine Pfaffian of the LO Hamiltonian.
+  A call-site audit confirmed this bug's blast radius was fully contained
+  to this file — no R3/R4/R5 result imports or depends on
+  pfaffian_trim_lo(); R4/R5 use a separately implemented, genuinely
+  independent detector (_ring_pfaffian_sign / ring_boundary_Bc_pfaffian in
+  bdg_r4_em_coupling.py, which always called the real pf.pfaffian() and was
+  validated on its own terms). pfaffian_trim_kitaev() (the original R2
+  Kitaev-chain function) was checked and found to genuinely call
+  pf.pfaffian() throughout — it did not have this problem and required
+  no fix.
+  pfaffian_trim_lo() now performs a genuine Pfaffian computation at both
+  TRIM points (see its docstring). Re-validated result: across the full
+  (mu, B_zeeman) grid used by run_lo_phase_sweep() and by
+  _validate_lo_phase_boundary(), at both the toy t=2.0 used by the sweep
+  and the physical t_norm≈66.3 used elsewhere in this module, the genuine
+  invariant reproduces the IDENTICAL sign as the old closed-form value at
+  every point tested (0 disagreements) — the k=pi TRIM stays deep in the
+  trivial state (|eps_kpi|=|4t-mu| >> B, Delta) for every t used anywhere
+  in this codebase, so it never affects the k=0 band-inversion result.
+  B_z = sqrt(mu^2 + Delta^2) is therefore now a GENUINELY validated result
+  in the regime this codebase actually explores — not merely an assumed
+  one — but this was an open empirical question before the fix, not a
+  foregone conclusion: deviations DO appear at small t (t ≲ 1, verified
+  numerically), just not anywhere this project currently uses.
 """
 
 import os
@@ -373,93 +409,107 @@ def pfaffian_trim_kitaev(t: float, mu: float, delta: float
 def pfaffian_trim_lo(mu: float,
                      B_zeeman: float,
                      delta: float = 1.0,
-                     alpha_so: float | None = None
+                     alpha_so: float | None = None,
+                     t: float | None = None
                      ) -> tuple[float, float, float]:
     """
-    Z₂ topological invariant for the Lutchyn-Oreg model via numerical
-    Pfaffian at TRIM points k=0 and k=π.
+    Z₂ topological invariant for the Lutchyn-Oreg model via a GENUINE
+    numerical Pfaffian at the two TRIM points k=0 and k=π.
 
-    At k=0 and k=π, sin(k)=0 so the Rashba term vanishes (α sin(k) → 0).
-    The bulk 4×4 BdG at TRIM reduces to a block structure determined
-    by the Zeeman and pairing terms only:
+    [CORRECTED 2026-07-11 — see the module-header correction note and
+    src/r2_o1_pfaffian_trim_lo_correction.md. A previous version of this
+    function built these same TRIM matrices but discarded them and
+    returned the closed-form nu = sign(mu^2+delta^2-B_zeeman^2) directly,
+    without ever calling pf.pfaffian() — this version genuinely does.]
 
-    At k=0:  ε(k=0)  = 2t - μ  (kinetic energy at Γ point)
-    At k=π:  ε(k=π)  = -2t - μ (kinetic energy at zone boundary)
+    At a TRIM point k ∈ {0, π}, sin(k) = 0 so the Rashba term
+    -α·sin(k)·σ_y vanishes identically (exactly, not approximately — α is
+    genuinely irrelevant here, kept as a parameter for API symmetry only)
+    and the 2×2 normal-state Bloch block collapses to
+      h(k) = ε_k·I₂ + B_zeeman·σ_z   (real, diagonal),
+    with ε_k = (2t - μ) - 2t·cos(k) — the same on-site + hopping
+    dispersion build_bdg_lo assembles in real space (ε_{k=0} = -μ exactly,
+    independent of t since 2t(1-cos 0)=0; ε_{k=π} = 4t - μ). Because h(k)
+    is real at TRIM, the PH-symmetric hole block -h(-k)* collapses to
+    -h(k). The 4×4 BdG matrix at that TRIM point, in the (↑,↓,↑†,↓†)
+    Nambu-spin basis, is:
 
-    The 4×4 TRIM Hamiltonian in the (↑,↓,↑†,↓†) Nambu-spin basis:
-      H_TRIM = [[ε_k + B_z,    0,         0,     Δ  ],
-                [0,          ε_k - B_z,  -Δ,     0  ],
-                [0,          -Δ*,        -ε_k-B_z, 0],
-                [Δ*,          0,          0,    -ε_k+B_z]]
+      H_TRIM = [[ ε_k+B,   0,        0,        Δ       ],
+                [ 0,       ε_k-B,   -Δ,        0        ],
+                [ 0,      -Δ,       -(ε_k+B),  0        ],
+                [ Δ,       0,        0,       -(ε_k-B)  ]]
 
-    The Pfaffian of the antisymmetrised form A = H_TRIM (already
-    antisymmetric in Majorana basis after the standard transformation)
-    gives the Z₂ invariant as ν = sgn[Pf(k=0)] × sgn[Pf(k=π)].
+    This is rotated to the real antisymmetric Majorana basis with the same
+    unitary used by R4's _ring_pfaffian_sign (bdg_r4_em_coupling.py),
+    restricted to a single momentum (M=2 complex modes here):
+      Ω = (1/√2)[[I₂, I₂], [i·I₂, -i·I₂]],   A = i·Ω·H_TRIM·Ω†
+    A is real antisymmetric (asserted at runtime); its Pfaffian sign is
+    the invariant at that TRIM point, via pf.pfaffian(A) — the same recipe
+    as pfaffian_trim_kitaev() and R4's ring construction.
 
-    Analytic result (Lutchyn 2010):
-      Pf(k) ∝ ε_k² - B_z² + Δ² — but sign depends on ordering.
-      Phase boundary: B_z² = μ² + Δ²  (where Pf changes sign)
+      ν = sgn[Pf(k=0)] × sgn[Pf(k=π)]   (same convention as
+      pfaffian_trim_kitaev: ν=-1 topological, +1 trivial, 0 at a closing)
+
+    Re-validated result (2026-07-11): across the (μ, B_zeeman) grid used
+    by run_lo_phase_sweep() and _validate_lo_phase_boundary(), at both the
+    toy t=2.0 and the physical t_norm≈66.3 used in this module, this
+    genuine invariant agrees with the old closed-form sign at every point
+    tested — the k=π TRIM stays deep in the trivial state
+    (|ε_{k=π}| = |4t-μ| ≫ B, Δ) for every t used in this codebase.
+    Deviations do appear for small t (t ≲ 1, verified numerically) but
+    that regime is not used anywhere here.
 
     Parameters
     ----------
     mu       : chemical potential (dimensionless, normalised to Delta)
     B_zeeman : effective Zeeman energy (same units as mu)
     delta    : proximity gap (default 1.0 — dimensionless)
-    alpha_so : Rashba coupling (irrelevant at TRIM but kept for API consistency)
+    alpha_so : Rashba coupling — genuinely irrelevant at TRIM (sin(k)=0);
+               kept for API consistency only, unused
+    t        : hopping amplitude, used only to locate ε_{k=π} = 4t-μ
+               (ε_{k=0} = -μ is exactly t-independent). Default
+               LO_PARAMS['t_norm']*delta, matching build_bdg_lo's own
+               default.
 
     Returns
     -------
     nu     : Z₂ invariant (+1 trivial, -1 topological, 0 critical)
-    pf_k0  : float, Pfaffian value at k=0
-    pf_kpi : float, Pfaffian value at k=π
+    pf_k0  : float, signed Pfaffian at k=0 (sign is the meaningful part;
+             not separately rescaled)
+    pf_kpi : float, signed Pfaffian at k=π
     """
-    # t_norm >> 1 for InAs/Al in physical units — use dimensionless t=1
-    # for the TRIM calculation which only needs the phase structure
-    t_trim = 1.0   # dimensionless hopping for TRIM; topology only from
-                   # sgn(B_z^2 - mu^2 - Delta^2), not magnitude of t
+    if t is None:
+        t = LO_PARAMS['t_norm'] * delta
 
-    for k_label, eps_k in [('k0', 2*t_trim - mu), ('kpi', -2*t_trim - mu)]:
-        pass  # build both below
+    def _trim_H(eps_k: float) -> np.ndarray:
+        h = np.diag([eps_k + B_zeeman, eps_k - B_zeeman]).astype(complex)
+        Dblk = delta * np.array([[0, 1], [-1, 0]], dtype=complex)
+        h_hole = -h
+        return np.block([[h, Dblk], [Dblk.conj().T, h_hole]])
 
-    def _trim_matrix(eps_k: float) -> np.ndarray:
-        """
-        4×4 antisymmetric BdG matrix at a TRIM point (Majorana basis).
-        Constructed so that Pf(A) gives the correct sign of the invariant.
+    def _pf_sign(eps_k: float) -> float:
+        H = _trim_H(eps_k)
+        Ib = np.eye(2, dtype=complex)
+        Omega = (1.0 / np.sqrt(2.0)) * np.block([[Ib, Ib], [1j * Ib, -1j * Ib]])
+        A = 1j * Omega @ H @ Omega.conj().T
+        if (np.max(np.abs(A.imag)) > 1e-8 or
+                not np.allclose(A.real, -A.real.T, atol=1e-8)):
+            raise ValueError(
+                "LO TRIM Majorana-basis matrix is not real antisymmetric "
+                "(particle-hole symmetry broken?) — Pfaffian sign undefined."
+            )
+        return float(np.real(pf.pfaffian(A.real)))
 
-        In the Majorana representation γ = (c + c†)/√2, (c - c†)/i√2,
-        the BdG Hamiltonian becomes real antisymmetric. At TRIM (SOC=0):
+    eps_k0  = -mu                 # = (2t-mu) - 2t*cos(0); t cancels exactly
+    eps_kpi = 4.0 * t - mu        # = (2t-mu) - 2t*cos(pi)
 
-        A = [[  0,      ε+B,   0,      Δ  ],
-             [-(ε+B),   0,    -Δ,      0  ],
-             [  0,      Δ,     0,    -(ε-B)],
-             [ -Δ,      0,   (ε-B),   0  ]]
-        """
-        
-        A = np.array([
-        [ 0,      eps_k + B_zeeman,   0,   delta         ],
-        [-(eps_k + B_zeeman),  0,    -delta,       0     ],
-        [0,   delta,          0,     -(eps_k - B_zeeman)],
-        [ -delta,      0,      (eps_k - B_zeeman),  0    ]
-        ], dtype=float)
-        return A
+    pf_k0  = _pf_sign(eps_k0)
+    pf_kpi = _pf_sign(eps_kpi)
 
-    A_k0  = _trim_matrix(2.0 * t_trim - mu)    # k=0: cos(0)=1
-    A_kpi = _trim_matrix(-2.0 * t_trim - mu)   # k=π: cos(π)=-1
-
-    pf_k0  = mu**2 + delta**2 - B_zeeman**2
-    pf_kpi = pf_k0
-
-    if abs(pf_k0) < 1e-14:
+    if abs(pf_k0) < 1e-12 or abs(pf_kpi) < 1e-12:
         return 0.0, pf_k0, pf_kpi
 
-    print(
-    f"mu={mu:.3f}",
-    f"B={B_zeeman:.3f}",
-    f"pf_k0={pf_k0:.6f}",
-    f"pf_kpi={pf_kpi:.6f}"
-)
-
-    nu = float(np.sign(pf_k0))
+    nu = float(np.sign(pf_k0) * np.sign(pf_kpi))
     return nu, pf_k0, pf_kpi
 
 
@@ -500,7 +550,17 @@ def _validate_lo_ph_symmetry(N: int = 20,
 
 def _validate_lo_phase_boundary(n_points: int = 20) -> None:
     """
-    LO model: assert phase boundary ν changes sign at B_z = sqrt(mu^2 + Δ^2)
+    LO model: assert the phase boundary nu changes sign at
+    B_z = sqrt(mu^2 + Delta^2), using pfaffian_trim_lo()'s GENUINE Pfaffian
+    computation (default t = LO_PARAMS['t_norm']*delta, physical regime).
+
+    [CORRECTED 2026-07-11] Before the pfaffian_trim_lo() fix, this
+    assertion was tautological: it fed the closed-form
+    sign(mu^2+delta^2-B_zeeman^2) formula 0.5x/1.5x of its own boundary and
+    trivially recovered the expected sign, independent of whether the LO
+    Hamiltonian's actual topology matched. It now exercises a real
+    TRIM-point Pfaffian and genuinely confirms the boundary in this regime
+    — see src/r2_o1_pfaffian_trim_lo_correction.md.
     """
 
     rng = np.random.default_rng(7)
@@ -522,13 +582,6 @@ def _validate_lo_phase_boundary(n_points: int = 20) -> None:
             mu,
             B_boundary * 1.5,
             delta
-        )
-
-        print(
-            f"mu={mu:.3f}",
-            f"B_test={B_boundary*1.5:.3f}",
-            f"Bc={B_boundary:.3f}",
-            f"nu={nu_topo}"
         )
 
         assert nu_trivial in (+1.0, 0.0), (
@@ -696,10 +749,13 @@ def run_lo_phase_sweep(
     nu_map = np.zeros((n_Bz, n_mu))
     gap_map = np.zeros((n_Bz, n_mu))
 
+    sweep_t = 2.0  # LO_PARAMS['t_norm'] * delta; toy t shared by nu_map and
+                   # gap_map below so both panels describe the SAME H(mu,Bz)
+
     for i, Bz in enumerate(Bz_vals):
         for j, mu in enumerate(mu_vals):
 
-            nu, _, _ = pfaffian_trim_lo(mu, Bz, delta)
+            nu, _, _ = pfaffian_trim_lo(mu, Bz, delta, t=sweep_t)
             nu_map[i, j] = nu
 
             H = build_bdg_lo(
@@ -707,7 +763,7 @@ def run_lo_phase_sweep(
                 mu=float(mu),
                 B_zeeman=float(Bz),
                 delta=delta,
-                t=2.0,  # LO_PARAMS['t_norm'] * delta
+                t=sweep_t,
             )
 
             ev, _ = eigh(H)
@@ -1113,7 +1169,11 @@ if __name__ == '__main__':
     print(f"  [Kitaev]  Scaling exponent:         O(N^{exponent:.2f})")
     print(f"  [O1 LO]   Max PH error (all N):     {max_lo_ph:.2e}  "
           f"[target < 1e-12  →  {'PASS ✓' if max_lo_ph < 1e-12 else 'FAIL ✗'}]")
-    print(f"  [O1 LO]   Phase boundary validated: B_z = sqrt(μ² + Δ²)  ✓")
+    print(f"  [O1 LO]   Phase boundary GENUINELY validated (2026-07-11 fix): "
+          f"B_z = sqrt(μ² + Δ²)  ✓")
+    print(f"  [O1 LO]   (prior claim of this line was tautological — closed-form")
+    print(f"             checked against itself; now a real TRIM Pfaffian —")
+    print(f"             see src/r2_o1_pfaffian_trim_lo_correction.md)")
     print(f"  [O1 LO]   Published params cited:   Mourik 2012, Das Sarma 2010  ✓")
     print(f"  [O1 LO]   Figures generated:        figure6_lo_phase_diagram.png,")
     print(f"                                       figure7_lo_finite_size.png")
