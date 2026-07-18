@@ -472,8 +472,8 @@ fixed point only if BOTH are small — stalls are flagged, never reported as
 solutions. (This distinction is load-bearing: see the far-seed cases below.)
 
 **Warm-start (Task 1.3) — confirmed wired in, and honestly bounded.** R3's
-rank-2 PH-symmetric Woodbury near-zero-mode update (DPT→RR1→RR2→residual/
-fallback, with R3's thresholds) is reused via `RingWoodburyWarmStart`, adapted
+rank-2 PH-symmetric subspace near-zero-mode update (DPT→RR1→RR2→residual/
+fallback, with R3's thresholds) is reused via `RingSubspaceWarmStart`, adapted
 from R3's open wire + (δμ,δB,δΔ) steps to the RING Hamiltonian + the Peierls-phase
 step δφ the SCF actually takes. A direct large-gap probe confirms the raw rank-2
 update reproduces the full-eigh near-zero eigenvalues to **9.4×10⁻⁶** — so the
@@ -484,7 +484,7 @@ just exceeds 10·‖δH‖≈3.6×10⁻³), so in practice it falls back to a fu
 current sums over ALL occupied states, so the SCF map needs the **full** occupied
 spectrum every iteration — the full `eigh` is **~96–98% of the per-map cost** and
 is unavoidable, and a rank-2 near-zero update cannot supply it. **Net: the
-near-zero Woodbury warm-start gives ~1× on the SCF loop, reported plainly and not
+near-zero subspace warm-start gives ~1× on the SCF loop, reported plainly and not
 conflated with Anderson's own gain.** The separable warm-start that *could* help
 is *iterate* seeding (start each solve from a nearby converged texture); it is
 isolated in Task 3, where — at these coupling values — it also gives no gain
@@ -590,9 +590,151 @@ reported as measured — *not* tuned to the "~5×" figure in the original scope
 notes (it happens to reach ~5.4× only at the top of the sub-critical range, and
 is well below 5× for most of it). The separable *iterate* warm-start gives no
 extra reduction here (cold Anderson is already at the floor). The R3 near-zero
-Woodbury warm-start is wired in and its rank-2 update verified correct (9.4×10⁻⁶),
+subspace warm-start is wired in and its rank-2 update verified correct (9.4×10⁻⁶),
 but it gives ~1× on the SCF loop because the full-spectrum current dominates —
 reported separately so the two effects are never conflated.
+
+## 4g. R7 — CIRCUIT INDUCTANCE / WIRE LENGTH L AS A THIRD AXIS (B, μ, L)
+
+**Module:** `src/bdg_r7_inductance_sweep.py` (imports R4/R5 read-only; figures
+`r7_figure1_shift_vs_BmuL.png`, `r7_figure2_regime_and_validation.png`; data
+`r7_results.json`, `r7_points_cache.json` in `ISEF R7 data folder/`). R1–R6 code,
+figures and results are untouched — this is additive.
+
+**Hypothesis-neutral framing.** R7 re-opens the boundary-shift question along the
+one axis R4/R5 never varied: the wire length `L = N·a_lat`, which sets the loop's
+self-inductance. It has **no target result**. The old ">1 %" goal is superseded;
+R5's validated headline was a null result (§4e); R7 reports what the L-sweep
+actually shows, and a continuation of the null is exactly as reportable as an
+L-dependence. Everything is at the ONE validated coupling **g = 2.9×10⁴** (top of
+regime 1, §4e) — g is held fixed by a guard (`assert_g_consistent` refuses any call
+that reverts to the R5 module default 3×10⁵) — at the fixed lattice constant
+**a_lat = 10 nm**, μ ∈ {1.2, 1.4}, Δ = 1.
+
+**What "L" is, and the N↔L confound this module is built to break.** In the R5 ring
+the circumference is exactly `N·a_lat` (`ring_biot_savart_self`, R = N a/2π), so the
+physical length / inductance axis is set by (N, a_lat). At fixed a_lat, growing N
+grows L — but it also refines finite-size. R5's N-scan (Fig 9/11) grew both together
+(∼N⁻¹·⁸ → 0) and could not separate "shift is small because the ring is physically
+long" from "…because the mesh is coarse", because it used a single lattice constant.
+R7 breaks the confound with two orthogonal scans:
+  1. **L-axis** — fix a=10 nm, vary N ⟹ L = N·a (R5's scan, along L AND N together).
+  2. **Fixed-L mesh refinement** — hold L fixed, vary N with a = L/N (finer mesh of
+     the SAME physical ring). This is the task's "N-independence at fixed L via
+     a_lat": does the shift at a FIXED physical length survive the continuum limit
+     (a bulk value) or vanish (a discretisation/finite-size artifact)? R4/R5 never
+     did this. (Modelling choice, stated: t_hop is held at its physical 10 nm value
+     while only the geometric a in the Biot–Savart/Peierls self-field is refined, so
+     the clean-ring baseline B_c is identical at each N and the refinement isolates
+     the self-field's mesh dependence; a fully dimensionful continuum limit with
+     t∼1/a² is heavier future work.)
+
+The L range here (0.4–2.0 μm intended; **0.4–1.2 μm actually computed** — see the
+N-ceiling note below) is a **tractability subrange**, explicitly not a literal
+reproduction of Chang et al. 2015's ~5–10 μm wire (N∼500–1000, impractical for
+dense self-consistent runs).
+
+**Solver (additive, validated bit-for-bit).** B_c is measured with an a-aware port
+of R5's warm-hint continuation bisection, `ring_Bc_selfconsistent_a`, built only
+from R5 primitives that thread `lattice_const`. It reproduces
+`ring_boundary_Bc_pfaffian_selfconsistent` **exactly at a=10 nm** (|ΔB_c| = 0 at
+N=80; `validate_solver`) and follows the same fluxoid branch. The self-consistency
+map is multivalued near the transition (fluxoid branches); R5's continuation picks a
+specific branch, and the port matches it. Exactly at the gap-closing the principal
+self-phase branch detaches over a razor-thin (~3×10⁻⁵) window; whether a single
+bisection path lands on it is path-dependent (R5's own `principal_uniform_fixed_point`
+returns nan at B=1.560000, and R5's default path spuriously dead-zones some large N,
+e.g. N=100). R7 runs R5's algorithm on the R5 default grid first (a success matches
+R5 exactly, `retries`=0) and, only on failure, retries with jittered coarse grids; if
+**every** path hits a no-root region it is a genuine finite-width regime-2 dead-zone
+(no shift reported). Measured no-root window widths: N=80 ≈ 3×10⁻⁵ (knife-edge),
+N=40 ≈ 7.5×10⁻⁴ (genuine).
+
+### FINDING 1 — an L-dependent DYNAMICAL-STABILITY boundary (new; R4/R5 could not see it)
+
+At the fixed g=2.9×10⁴, the static self-consistent boundary is cleanly defined only
+for **N ≳ 70–80** (L ≳ 0.8 μm at a=10 nm); **N = 40 and 60 (L = 0.4, 0.6 μm) are
+regime-2 dead-zones** — no static B_c (the sawtooth self-consistency map jumps across
+the identity line at the gap-closing). This is the first direct confirmation of
+Task-2.3's suspicion that the dead-zone / g_crit structure is **not L-independent**:
+since L is set by N, the regime-1/2 boundary R5 characterised at a single N appears as
+an **L-dependent** (and, via the mesh, a-dependent) stability threshold. It is a
+STABILITY finding, not a bulk-shift finding — Picard iteration still converges at the
+generic transition field for every N tried (`picard_converges_at_ana` = True even at
+N=40/60), so the dead-zone is the thin window at the gap-closing, not a repelling
+fixed point.
+
+### FINDING 2 — where the boundary IS defined, the shift is tiny and VANISHES under fixed-L mesh refinement
+
+**L-axis (a=10 nm), the clean points:**
+
+| N | L (μm) | ΔB_c/B_c (μ=1.2) | ΔB_c/B_c (μ=1.4) | regime |
+|---|---|---|---|---|
+| 40 | 0.4 | — | — | **dead-zone** |
+| 60 | 0.6 | — | — | **dead-zone** |
+| 80 | 0.8 | **−0.0640 %** | −0.0647 % | clean |
+| 100 | 1.0 | −0.0430 % | — | clean (robustified) |
+| 120 | 1.2 | −0.0342 % | — | clean |
+
+The two μ coincide at N=80 (−0.0640 vs −0.0647 %), as in R5. The fixed-a L-axis shift
+decays as **|shift| ∼ N⁻¹·⁵⁵** — the same finite-size Aharonov–Bohm scaling as R5
+(§4d ∼N⁻¹·⁵, §4e ∼N⁻¹·⁸). But this scan moves along L AND N together, so on its own it
+cannot say whether L or finite-size drives the decay. The **fixed-L mesh refinement**
+does:
+
+**Fixed-L mesh refinement at L = 0.8 μm (μ=1.2) — hold the physical length fixed, refine the mesh:**
+
+| N | a (nm) | ΔB_c/B_c |
+|---|---|---|
+| 80 | 10.0 | −0.0640 % |
+| 100 | 8.0 | −0.0285 % |
+| 120 | 6.67 | −0.0183 % |
+
+At a **fixed physical length**, refining the mesh drives the shift toward zero **even
+faster — |shift| ∼ N⁻³·¹¹**. So the shift does **not** survive the continuum limit at
+fixed L: it is a **discretisation / finite-size artifact, not a genuine bulk
+L-dependent effect**. (The steeper fixed-L exponent is consistent with the geometry:
+the per-bond self-phase φ_self = (e/ħ)A_t·a ∝ a = L/N, so at fixed L the feedback
+falls off faster with N than along the fixed-a axis.)
+
+### Validation (matching R5 standards)
+
+- **Solver** reproduces R5 bit-for-bit at a=10 nm (|ΔB_c| = 0, N=80).
+- **Tolerance robustness (N=80):** −0.0621 → −0.0637 → −0.0640 → −0.0640 % as the
+  bisection tol tightens 1e-4 → 1e-7 — stable.
+- **Path-independence / attracting-ness:** `picard_converges_at_ana` = True at every
+  point (the fixed point is attracting at the generic transition field, dead-zone or
+  not), and the off-transition map slope is < 1 at every clean point.
+- **Dead-zone / g_crit-at-this-L map** (Figure 2a): clean for N ≥ 80 at a=10 nm and
+  for all finer-mesh points; dead-zone for N = 40, 60.
+
+### N-ceiling (honest constraint, not hidden)
+
+The dense 4N×4N `eigh` that every SCF iteration needs ran ~5× slower under sustained
+load on this machine (a single N=80 self-consistent B_c reached ~450 s at worst), so
+per-solve cost ∼N³ made N ≳ 160 impractical for a dense self-consistent sweep in the
+available time. The grid was capped at **N = 120**; the Task-1.3 spot checks to
+N≈300 and the primary range's N=160–200 were not run. This does not change the
+finding — the dead-zone floor, the tiny shift, and its **fixed-L** mesh scaling are
+all resolved within N=40–120, and the fixed-L exponent (∼N⁻³·¹¹) is the decisive
+disentangler that R4/R5 never had — but the larger-N spot checks remain a clean
+follow-up whenever more compute is available. (An independent low-cost diagnostic run
+of the raw self-phase φ*(B_c) at fixed L=0.8 μm out to N=320 showed φ* ∼ N⁻² and the
+total self-flux N·φ* → 0, consistent with the ∼N⁻³·¹¹ shift decay above.)
+
+### HONEST BOTTOM LINE — L does not move the bulk boundary; the only L-dependence is dynamical stability
+
+Within the accessible range, **the circuit inductance / wire length L does not
+produce a bulk topological-boundary shift.** Where a static self-consistent boundary
+exists (L ≳ 0.8 μm), the shift is tiny (< 0.07 %) and **vanishes under mesh refinement
+at fixed physical length (∼N⁻³·¹¹)** — the decisive test, showing the effect is a
+discretisation / finite-size artifact, not a genuine L-dependence. This is a
+**continuation of the R4/R5 finite-size null result, now established along the L axis
+R4/R5 never varied.** The one genuinely L-dependent thing R7 finds is **not a bulk
+shift but the dynamical-stability (dead-zone) boundary**: at this fixed, physically
+meaningful g, shorter wires (L ≤ 0.6 μm) lose the clean static self-consistent
+equilibrium at the transition. Stated on its own terms — not as confirming or
+refuting the old ">1 %" figure or the R5 null number.
 
 ## 5. Limitations (every method has some)
 

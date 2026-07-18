@@ -10,7 +10,7 @@ Electromagnetic Feedback**
 ## Project Overview
 This project develops three contributions toward fault-tolerant 
 quantum computing:
-1. A PH-symmetric rank-2 Woodbury eigensolver for BdG Hamiltonians
+1. A PH-symmetric rank-2 subspace eigensolver for BdG Hamiltonians
 2. A real-time Pfaffian topological phase indicator
 3. A self-consistent quasi-static EM feedback loop (Biot-Savart)
 
@@ -58,7 +58,25 @@ quantum computing:
   plausibility range straddles all three regimes and never pinned g below g_crit;
   what happens at g > g_crit (device doesn't reach it, or needs a *dynamical*
   treatment) is an open R6 question. See `src/r4_pfaffian_boundary_methods.md` §4e.
-- ⬜ R6: Phase diagram under EM feedback
+- ✅ R6: Phase diagram under EM feedback (`src/bdg_r6_lo_phase_diagram.py`).
+  Lutchyn–Oreg InAs/Al 2D (B, μ) phase diagram with a genuine TRIM Pfaffian
+  invariant, reproducing the ORV (arXiv:1003.1145) gap-closing structure. See
+  `src/r6_lo_phase_diagram_methods.md`.
+- ✅ R7: Circuit inductance / wire length **L = N·a** as a third axis (B, μ, L)
+  (`src/bdg_r7_inductance_sweep.py`; imports R4/R5 read-only; all R4 checks and
+  the R5 detector still pass — solver validated bit-for-bit vs R5, |ΔB_c| = 0).
+  Hypothesis-neutral re-opening at the one validated coupling g = 2.9×10⁴
+  (top of R5 regime 1). Two orthogonal scans disentangle L from finite-size:
+  a fixed-a=10 nm **L-axis** (varies L and N together) and a **fixed-L mesh
+  refinement** (holds the physical length fixed, a = L/N). **Finding: L does
+  NOT move the bulk topological boundary.** Where a static boundary exists
+  (L ≳ 0.8 μm) the shift is tiny (−0.06 % at L=0.8 μm, μ=1.2/1.4) and **vanishes
+  under fixed-L mesh refinement (∼N⁻³·¹¹)** — a discretisation/finite-size
+  artifact, a continuation of the R4/R5 null result along the new L axis. The
+  **one** genuinely L-dependent effect is not a bulk shift but the
+  **dynamical-stability (dead-zone) boundary**: at this fixed g, short wires
+  (L ≤ 0.6 μm) lose the clean static self-consistent boundary (regime-2). See
+  `src/r4_pfaffian_boundary_methods.md` §4g.
 
 ## Requirements
 
@@ -71,10 +89,15 @@ pip install numpy scipy matplotlib pandas pfapack psutil
     python src/bdg_r4_em_coupling.py                # R4
     python src/bdg_r5_selfconsistent_ring.py        # R5 (~35 min full run)
     python src/bdg_r5_physically_meaningful_shift.py # R5-revised (g<g_crit headline; ~40 min)
+    python src/bdg_r6_lo_phase_diagram.py           # R6 (LO 2D phase diagram)
+    python src/bdg_r7_inductance_sweep.py           # R7 (B,mu,L sweep; resumable, eigh-bound)
 
 Each program writes its figures and data outputs directly into its own
 data folder (`R1_R2_data_files/`, `R3_data_files/`, `ISEF R4 data folder/`,
-`ISEF R5 data folder/`).
+`ISEF R5 data folder/`, `R6_data_files/`, `ISEF R7 data folder/`).
+R7 is **resumable**: it caches every (μ, N, a) point to
+`ISEF R7 data folder/r7_points_cache.json` and skips already-computed points,
+so a long, eigh-bound run can be stopped and restarted freely.
 
 ## Results
 See the per-program data folders above for all generated plots and
