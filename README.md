@@ -18,14 +18,18 @@ quantum computing:
 - ✅ R1: Baseline BdG eigensolver (validated vs Kitaev 2001)
 - ✅ R2: Pfaffian topological indicator (finite-size scaling confirmed)
 - ✅ R3: PH-symmetric rank-2 update
-- 🔄 R4: Biot-Savart EM coupling layer — pipeline validated (6/6 checks).
-  **Headline boundary-shift magnitude is PRELIMINARY:** it comes from an
-  open-wire spectral-threshold detector that over-estimates the shift ~10×.
-  A rigorous, threshold-free, N-independent ring/Pfaffian Z₂ detector has
-  been added (`ring_boundary_Bc_pfaffian`); with the *same* self-field it
-  gives ~0.6–0.8 % at μ = 1.2–1.4 (vs ~6–9 % from the threshold detector).
-  This ~0.6–0.8 % is itself now SUPERSEDED by R5. See
-  `src/r4_pfaffian_boundary_methods.md`.
+- ✅ R4: Biot-Savart EM coupling layer — pipeline complete and validated
+  (6/6 checks: uniform-A Peierls phases, Biot-Savart vs. analytic, PH
+  symmetry, zero-flux invariance, current-density units/sign, phase-boundary
+  shift under flux). R4's own open-wire spectral-threshold detector
+  over-estimates the boundary-shift magnitude ~10×, so a rigorous,
+  threshold-free, N-independent ring/Pfaffian Z₂ detector was added within
+  R4 itself (`ring_boundary_Bc_pfaffian`, independently validated); with the
+  *same* self-field it gives ~0.6–0.8 % at μ = 1.2–1.4 (vs ~6–9 % from the
+  threshold detector). Deriving the final, physically-grounded headline
+  number was deliberately handed off to R5 — and that number has since been
+  superseded three more times (R5 → R5-revised → R7). See
+  `src/r4_pfaffian_boundary_methods.md` §1–4b.
 - ✅ R5: Self-consistent ring self-field (`src/bdg_r5_selfconsistent_ring.py`;
   R4 imported read-only, all 6 R4 checks still pass). Replaced *both* interim
   placeholders — the open-wire-seeded texture and the gauge-only wrap bond —
