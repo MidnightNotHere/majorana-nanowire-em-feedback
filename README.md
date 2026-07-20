@@ -82,7 +82,7 @@ quantum computing:
   (L ≤ 0.6 μm) lose the clean static self-consistent boundary (regime-2). See
   `src/r4_pfaffian_boundary_methods.md` §4g.
 - ✅ R8: **Reactive impedance Z_r as a second observable**, alongside the bulk
-  gap, split into two tracks (`src/r8_reactive_impedance_methods.md`).
+  gap, in three tracks (`src/r8_reactive_impedance_methods.md`).
   - **Track A — static feedback-renormalized reactance**
     (`src/bdg_r8_reactive_impedance.py`): `Z_r = iωL_eff`, `L_eff =
     L_geo/(1−s)`, where `s` is confirmed (bit-exact) to be R5's bifurcation
