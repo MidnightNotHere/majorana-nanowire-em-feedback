@@ -20,7 +20,7 @@ impedance Z_r(omega) used as the experimental observable.
 Pipeline position
 -----------------
   R1/R2  : BdG eigensolver + Pfaffian indicator (Kitaev) ............ COMPLETE
-  R3     : PH-symmetric rank-2 Woodbury update ...................... COMPLETE
+  R3     : PH-symmetric rank-2 subspace update ...................... COMPLETE
   R6     : Lutchyn-Oreg 4N x 4N BdG Hamiltonian (InAs/Al) ........... COMPLETE
   R4     : Quasi-static Biot-Savart EM coupling layer ...... THIS MODULE
   R5     : Self-consistent fixed-point loop (Anderson mixing) ....... NOT STARTED

@@ -1,6 +1,18 @@
 """
 ISEF 2027 — Symmetry-Aware BdG Eigensolver
-Phase: R3 — PH-Symmetric Rank-2 Woodbury Near-Zero Mode Update (LO MODEL)
+Phase: R3 — PH-Symmetric Rank-2 Subspace Near-Zero Mode Update (LO MODEL)
+
+NAMING NOTE: earlier versions of this module called the update "Woodbury."
+It is NOT a literal Woodbury (A+UCV)^-1 matrix-inversion identity -- the
+physical perturbations tracked here (delta_mu, delta_B, delta_Delta, and
+the R5 Peierls-phase step) are all full rank (verified: rank(dH) = 4N for
+every perturbation type at N=50), so the classic Woodbury speedup (which
+needs update rank << N) would not apply and would cost the same O(N^3) as
+a direct solve. What IS implemented, and what actually gives the O(N)
+speedup, is a rank-2 SUBSPACE update: project onto the K=2 tracked
+near-zero eigenspace, then DPT -> RR1 -> RR2 refinement within it. "Rank-2"
+refers to the tracked eigenspace dimension (K_MODES=2), not the rank of
+the perturbation matrix.
 
 Project: Inductive Circuit Feedback Shifts the Topological Phase Boundary
          in InAs/Al Majorana Nanowires: A Self-Consistent Symmetry-Preserving
@@ -27,7 +39,7 @@ O1 MIGRATION NOTES (changes from Kitaev-chain R3):
       checked to confirm no spurious near-zero spin-orbit states enter
       the tracked subspace at the parameters used here
 
-Everything else — Woodbury identity, DPT→RR1→RR2 refinement chain,
+Everything else — the DPT→RR1→RR2 refinement chain,
 residual fallback, REFRESH_INTERVAL subspace reset, gap-collapse
 fallback — is algorithm-level and unchanged from the validated Kitaev R3.
 
@@ -84,12 +96,12 @@ T_TRIM                  = 2.0   # dimensionless hopping for LO (matches O1 fix)
 
 
 # ════════════════════════════════════════════════════════════════════
-# SECTION 2 — Core Woodbury update class (LO model)
+# SECTION 2 — Core rank-2 subspace update class (LO model)
 # ════════════════════════════════════════════════════════════════════
 
-class PHSymmetricWoodburyLO:
+class PHSymmetricSubspaceLO:
     """
-    PH-symmetric rank-2 Woodbury updater for Lutchyn-Oreg BdG near-zero
+    PH-symmetric rank-2 subspace updater for Lutchyn-Oreg BdG near-zero
     modes. Same algorithm as the validated Kitaev-chain version; only
     the Hamiltonian, PH operator, and perturbation set change.
 
@@ -171,7 +183,7 @@ class PHSymmetricWoodburyLO:
             )
 
     def update(self, delta_mu: float = 0.0, delta_B: float = 0.0,
-              delta_delta: float = 0.0) -> 'WoodburyResultLO':
+              delta_delta: float = 0.0) -> 'SubspaceResultLO':
         """
         Apply a (δμ, δB_z, δΔ) step. Algorithm identical to validated
         Kitaev R3: REFRESH_INTERVAL subspace reset → perturbation/gap
@@ -179,7 +191,7 @@ class PHSymmetricWoodburyLO:
         → PH re-symmetrisation.
         """
         if delta_mu == 0.0 and delta_B == 0.0 and delta_delta == 0.0:
-            return WoodburyResultLO(
+            return SubspaceResultLO(
                 eigenvalues=self._evals.copy(), eigenvectors=self._evecs.copy(),
                 used_fallback=False, ph_error=0.0, perturbation_norm=0.0,
                 mu=self.mu, B_zeeman=self.B_zeeman, delta=self.delta,
@@ -199,7 +211,7 @@ class PHSymmetricWoodburyLO:
             self._full_solve()
             self._steps_since_refresh = 0
             ph_error = check_ph_symmetry_complex(self._H, self.N)
-            return WoodburyResultLO(
+            return SubspaceResultLO(
                 eigenvalues=self._evals.copy(), eigenvectors=self._evecs.copy(),
                 used_fallback=True, ph_error=ph_error, perturbation_norm=rel_norm,
                 mu=self.mu, B_zeeman=self.B_zeeman, delta=self.delta,
@@ -222,7 +234,7 @@ class PHSymmetricWoodburyLO:
             self._full_solve()
             self._steps_since_refresh = 0
             ph_error = check_ph_symmetry_complex(self._H, self.N)
-            return WoodburyResultLO(
+            return SubspaceResultLO(
                 eigenvalues=self._evals.copy(), eigenvectors=self._evecs.copy(),
                 used_fallback=True, ph_error=ph_error, perturbation_norm=rel_norm,
                 mu=self.mu, B_zeeman=self.B_zeeman, delta=self.delta,
@@ -263,7 +275,7 @@ class PHSymmetricWoodburyLO:
             self._full_solve()
             self._steps_since_refresh = 0
             ph_error = check_ph_symmetry_complex(self._H, self.N)
-            return WoodburyResultLO(
+            return SubspaceResultLO(
                 eigenvalues=self._evals.copy(), eigenvectors=self._evecs.copy(),
                 used_fallback=True, ph_error=ph_error, perturbation_norm=rel_norm,
                 mu=self.mu, B_zeeman=self.B_zeeman, delta=self.delta,
@@ -280,7 +292,7 @@ class PHSymmetricWoodburyLO:
         self._evals, self._evecs = new_evals, new_evecs
         ph_error = check_ph_symmetry_complex(self._H, self.N)
 
-        return WoodburyResultLO(
+        return SubspaceResultLO(
             eigenvalues=new_evals, eigenvectors=new_evecs, used_fallback=False,
             ph_error=ph_error, perturbation_norm=rel_norm,
             mu=self.mu, B_zeeman=self.B_zeeman, delta=self.delta,
@@ -293,7 +305,7 @@ class PHSymmetricWoodburyLO:
         self._full_solve()
         self._steps_since_refresh
 
-class WoodburyResultLO:
+class SubspaceResultLO:
     __slots__ = ('eigenvalues', 'eigenvectors', 'used_fallback', 'ph_error',
                 'perturbation_norm', 'mu', 'B_zeeman', 'delta')
 
@@ -305,7 +317,7 @@ class WoodburyResultLO:
         self.mu, self.B_zeeman, self.delta  = mu, B_zeeman, delta
 
     def __repr__(self):
-        return (f"WoodburyResultLO(mu={self.mu:.4f}, B_z={self.B_zeeman:.4f}, "
+        return (f"SubspaceResultLO(mu={self.mu:.4f}, B_z={self.B_zeeman:.4f}, "
                 f"fallback={self.used_fallback}, ph_err={self.ph_error:.2e})")
 
 
@@ -313,14 +325,14 @@ class WoodburyResultLO:
 # SECTION 3 — Benchmarking and validation
 # ════════════════════════════════════════════════════════════════════
 
-def timed_woodbury_update_lo(solver: PHSymmetricWoodburyLO, delta_B: float,
-                             runs: int = 5) -> tuple[float, WoodburyResultLO]:
+def timed_subspace_update_lo(solver: PHSymmetricSubspaceLO, delta_B: float,
+                             runs: int = 5) -> tuple[float, SubspaceResultLO]:
     if runs < 1:
         raise ValueError("runs must be >= 1")
 
     base_mu, base_Bz = solver.mu, solver.B_zeeman - delta_B
     times: list[float] = []
-    result: WoodburyResultLO
+    result: SubspaceResultLO
 
     for _ in range(runs):
         solver.reset(base_mu, base_Bz)
@@ -344,7 +356,7 @@ def run_accuracy_validation_lo(N: int = 100, mu0: float = 0.0,
         idx_exact = np.argsort(np.abs(ev_all))[:K_MODES]
         ev_exact  = np.sort(ev_all[idx_exact])
 
-        solver  = PHSymmetricWoodburyLO(N, mu0, B0, delta0)
+        solver  = PHSymmetricSubspaceLO(N, mu0, B0, delta0)
         result  = solver.update(delta_B=dB)
         ev_wood = np.sort(result.eigenvalues)
         eval_error = float(np.mean(np.abs(ev_exact - ev_wood)))
@@ -361,14 +373,14 @@ def run_accuracy_validation_lo(N: int = 100, mu0: float = 0.0,
 def run_performance_comparison_lo(mu0: float = 0.0, B0: float = 1.5,
                                   delta0: float = 1.0, delta_B: float = 0.02,
                                   N_values=(50, 100, 200), runs: int = 5) -> pd.DataFrame:
-    """LO head-to-head: full eigh vs Woodbury. Matrix is 4N×4N (2× Kitaev at same N)."""
+    """LO head-to-head: full eigh vs rank-2 subspace update. Matrix is 4N×4N (2× Kitaev at same N)."""
     rows = []
     for N in N_values:
         H_base    = build_bdg_lo(N, mu=mu0, B_zeeman=B0, delta=delta0, t=T_TRIM)
         time_full = timed_eigh(H_base, runs=runs)
 
-        solver = PHSymmetricWoodburyLO(N, mu0, B0, delta0)
-        time_wood, result = timed_woodbury_update_lo(solver, delta_B, runs=runs)
+        solver = PHSymmetricSubspaceLO(N, mu0, B0, delta0)
+        time_wood, result = timed_subspace_update_lo(solver, delta_B, runs=runs)
 
         H_new    = build_bdg_lo(N, mu=mu0, B_zeeman=B0 + delta_B, delta=delta0, t=T_TRIM)
         ev_all, _= eigh(H_new)
@@ -397,7 +409,7 @@ def run_sweep_comparison_lo(N=100, mu0=0.0, delta0=1.0,
     Bz_vals  = np.linspace(Bz_start, Bz_end, n_steps)
     delta_B  = float(Bz_vals[1] - Bz_vals[0])
 
-    solver = PHSymmetricWoodburyLO(N, mu0, Bz_vals[0], delta0)
+    solver = PHSymmetricSubspaceLO(N, mu0, Bz_vals[0], delta0)
     rows   = []
     cumulative_rel_norm = 0.0
     RESYNC_REL_NORM_THRESHOLD = 0.008  # just under the Figure 1 breakdown point
@@ -440,7 +452,7 @@ def plot_accuracy_vs_perturbation_lo(df, save_path='r3_lo_figure1_accuracy.png')
     fb, wd = df[df['used_fallback']], df[~df['used_fallback']]
 
     ax.loglog(wd['rel_norm'], wd['eval_error'], 'o-', color=COLORS['Topological'],
-              linewidth=2, markersize=8, label='Woodbury DPT + Double-RR (LO model)')
+              linewidth=2, markersize=8, label='Subspace DPT + Double-RR (LO model)')
     if not fb.empty:
         ax.loglog(fb['rel_norm'], fb['eval_error'], 's', color=COLORS['Trivial'],
                   markersize=10, label='Fallback (full eigh — exact)')
@@ -471,7 +483,7 @@ def plot_speedup_lo(df, save_path='r3_lo_figure2_speedup.png'):
     fig, axes = plt.subplots(1, 2, figsize=(13, 5))
     ax = axes[0]; x = np.arange(len(df)); w = 0.35
     ax.bar(x-w/2, df['time_full_ms'], w, label='Full eigh (4N×4N)', color=COLORS['Trivial'], alpha=0.85)
-    ax.bar(x+w/2, df['time_wood_ms'], w, label='Woodbury (R3-LO)', color=COLORS['Topological'], alpha=0.85)
+    ax.bar(x+w/2, df['time_wood_ms'], w, label='Subspace update (R3-LO)', color=COLORS['Topological'], alpha=0.85)
     for i, row in df.iterrows():
         ax.text(i+w/2, row['time_wood_ms']+0.3, f"{row['speedup']:.1f}×",
                 ha='center', fontsize=11, color=COLORS['Topological'], fontweight='bold')
@@ -481,7 +493,7 @@ def plot_speedup_lo(df, save_path='r3_lo_figure2_speedup.png'):
     ax2 = axes[1]
     ax2.semilogy(df['N'], df['eval_error'], 'o-', color=COLORS['accent'], linewidth=2, markersize=8)
     ax2.set_xlabel('System size N'); ax2.set_ylabel('Mean eigenvalue error (log)')
-    ax2.set_title('LO Woodbury Error vs N'); ax2.grid(True, alpha=0.3); ax2.set_xticks(df['N'].tolist())
+    ax2.set_title('LO Subspace-Update Error vs N'); ax2.grid(True, alpha=0.3); ax2.set_xticks(df['N'].tolist())
     plt.suptitle('R3-LO Performance and Accuracy Summary', fontsize=13, fontweight='bold')
     plt.tight_layout(); plt.savefig(_out(save_path), dpi=300, bbox_inches='tight')
     plt.close(); print(f"Saved: {save_path}")
@@ -493,7 +505,7 @@ def plot_sweep_tracking_lo(df, mu0=0.0, delta0=1.0,
     ax1 = axes[0]
     ax1.plot(df['B_zeeman'], df['ev_exact_min'], 'k-', linewidth=2, label='Exact (full eigh)')
     ax1.plot(df['B_zeeman'], df['ev_wood_min'], '--', color=COLORS['Topological'],
-             linewidth=2, label='Woodbury (LO)')
+             linewidth=2, label='Subspace update (LO)')
     fb = df[df['used_fallback']]
     if not fb.empty:
         ax1.scatter(fb['B_zeeman'], fb['ev_wood_min'], color=COLORS['Trivial'],
@@ -501,7 +513,7 @@ def plot_sweep_tracking_lo(df, mu0=0.0, delta0=1.0,
     Bc = np.sqrt(mu0**2 + delta0**2)
     ax1.axvline(Bc, color='gray', linestyle=':', linewidth=1.5, label=f'Analytic boundary B_z={Bc:.2f}')
     ax1.set_ylabel('Min |eigenvalue| (Majorana gap)')
-    ax1.set_title(f'R3-LO Chained Woodbury: B_z sweep at μ=0 (N=100, simulates R5)')
+    ax1.set_title(f'R3-LO Chained Subspace Update: B_z sweep at μ=0 (N=100, simulates R5)')
     ax1.legend(loc='upper right', fontsize=9, framealpha=0.9)
     ax1.grid(True, alpha=0.3)
 
@@ -540,7 +552,7 @@ def plot_sweep_tracking_lo(df, mu0=0.0, delta0=1.0,
 
 if __name__ == '__main__':
     print("=" * 65)
-    print("R3-LO — PH-Symmetric Rank-2 Woodbury, Lutchyn-Oreg InAs/Al Model")
+    print("R3-LO — PH-Symmetric Rank-2 Subspace Update, Lutchyn-Oreg InAs/Al Model")
     print("=" * 65)
 
     info = device_info()
@@ -558,7 +570,7 @@ if __name__ == '__main__':
     print(df_perf[['N','time_full_ms','time_wood_ms','speedup','eval_error','ph_error']].to_string(index=False))
     df_perf.to_csv(_out('r3_lo_performance.csv'), index=False)
 
-    print("\n[3/4] Chained Woodbury sweep (N=100, B_z: 0.5→1.8, 130 steps, μ=0)...")
+    print("\n[3/4] Chained subspace-update sweep (N=100, B_z: 0.5→1.8, 130 steps, μ=0)...")
     df_sweep = run_sweep_comparison_lo(N=100)
     max_err, max_ph, n_fb = (df_sweep['abs_error'].max(), df_sweep['ph_error'].max(),
                              df_sweep['used_fallback'].sum())
@@ -575,7 +587,7 @@ if __name__ == '__main__':
     print("R3-LO VALIDATION SUMMARY")
     print("=" * 65)
     wd = df_acc[~df_acc['used_fallback']]
-    print(f"  Max PH error (Woodbury, LO):   {wd['ph_error'].max():.2e}  [target < 1e-10]")
+    print(f"  Max PH error (subspace update, LO):   {wd['ph_error'].max():.2e}  [target < 1e-10]")
     print(f"  Max eigenvalue error (δB<5%):  {wd['eval_error'].max():.2e}")
     print(f"  Speedup range:                 {df_perf['speedup'].min():.1f}×–{df_perf['speedup'].max():.1f}×")
     print(f"  Chained sweep max error:       {max_err:.2e}")

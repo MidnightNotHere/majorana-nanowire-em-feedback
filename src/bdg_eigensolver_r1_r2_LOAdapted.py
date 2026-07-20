@@ -31,7 +31,7 @@ O1 UPDATE — Lutchyn-Oreg (InAs/Al) model:
 Architecture note:
   This file covers R1 + R2 (Kitaev chain + Lutchyn-Oreg validation).
   The self-consistent EM feedback loop is R4/R5.
-  The rank-2 Woodbury update is R3. All downstream phases import from this
+  The rank-2 subspace update is R3. All downstream phases import from this
   module via: from bdg_r1_r2 import build_bdg, build_bdg_lo,
   check_ph_symmetry_real, check_ph_symmetry_complex,
   pfaffian_trim_kitaev, pfaffian_trim_lo, timed_eigh
@@ -1179,5 +1179,5 @@ if __name__ == '__main__':
     print(f"                                       figure7_lo_finite_size.png")
     print()
     print("R1 + R2 + O1 complete.")
-    print("Next: R3 imports build_bdg_lo() for the Lutchyn-Oreg Woodbury update.")
+    print("Next: R3 imports build_bdg_lo() for the Lutchyn-Oreg rank-2 subspace update.")
     print("=" * 65)

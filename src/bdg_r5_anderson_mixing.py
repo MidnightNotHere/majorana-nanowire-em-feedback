@@ -91,8 +91,8 @@ confirm the stopped point is a genuine fixed point and not a stalled step.
 
 Warm-start integration with R3 (Task 1.3)
 -----------------------------------------
-The R3 rank-2 PH-symmetric Woodbury near-zero-mode updater is wired in as
-`RingWoodburyWarmStart` (it reuses R3's exact DPT -> RR1 -> RR2 -> residual/
+The R3 rank-2 PH-symmetric subspace near-zero-mode updater is wired in as
+`RingSubspaceWarmStart` (it reuses R3's exact DPT -> RR1 -> RR2 -> residual/
 fallback update sequence and its thresholds, imported from
 `bdg_eigensolver_r3_lo_adapted`, adapted from the open wire to the ring
 Hamiltonian and from (dmu,dB,dDelta) steps to the Peierls-phase step dphi that
@@ -147,7 +147,7 @@ with contextlib.redirect_stdout(io.StringIO()):
         selfconsistent_ring_texture,
         scalar_ring_map,
     )
-    # R3 Woodbury machinery (algorithm + thresholds) reused for the warm start
+    # R3 subspace-update machinery (algorithm + thresholds) reused for the warm start
     from bdg_eigensolver_r3_lo_adapted import (  # noqa: E402
         K_MODES as R3_K_MODES,
         PERTURBATION_THRESHOLD as R3_PERT_THRESH,
@@ -234,7 +234,7 @@ def anderson_selfconsistent_ring_texture(
         tol_relA: float = 1e-6, max_iter: int = 200,
         delta: float = 1.0, t_hop: float = T_HOP_SI,
         lattice_const: float = LATTICE_A, wire_radius: float | None = None,
-        warm: "RingWoodburyWarmStart | None" = None,
+        warm: "RingSubspaceWarmStart | None" = None,
         record_history: bool = False,
         fp_resid_check: float = 1e-3) -> dict:
     """
@@ -248,7 +248,7 @@ def anderson_selfconsistent_ring_texture(
     to be flagged a genuine fixed point.
 
     Parameters mirror `selfconsistent_ring_texture` where they overlap.
-    `warm`, if given, is an R3-Woodbury near-zero-mode warm-start object that is
+    `warm`, if given, is an R3-subspace near-zero-mode warm-start object that is
     updated every iteration and verified against the full solve (its diagnostics
     are returned); it does not change the iterate (the current still uses the
     full spectrum) -- see the module docstring's structural finding.
@@ -281,7 +281,7 @@ def anderson_selfconsistent_ring_texture(
         f = gx - x
         fp_res = float(np.max(np.abs(f)))
 
-        # ── R3-Woodbury warm-start verification (does not alter the iterate) ──
+        # ── R3-subspace warm-start verification (does not alter the iterate) ──
         if warm is not None:
             werr, wfb = warm.step(aux["H"], aux["evals"])
             warm_diag["max_eval_err"].append(werr)
@@ -372,16 +372,16 @@ def simple_mixing_ring_texture(
 
 
 # ════════════════════════════════════════════════════════════════════
-# FUNCTION C — R3-Woodbury warm-start for the near-zero modes on the ring
+# FUNCTION C — R3-subspace warm-start for the near-zero modes on the ring
 # (rank-K PH-symmetric DPT -> RR1 -> RR2 -> residual/fallback update, reusing
 #  the R3 algorithm and thresholds, adapted to the ring + Peierls-phase step).
 # ════════════════════════════════════════════════════════════════════
-class RingWoodburyWarmStart:
+class RingSubspaceWarmStart:
     """
     Warm-start the K near-zero BdG eigenpairs of the RING Hamiltonian across
-    self-consistency iterations, reusing R3's rank-K Woodbury update.
+    self-consistency iterations, reusing R3's rank-K subspace update.
 
-    R3's `PHSymmetricWoodburyLO` is hard-wired to the OPEN-wire `build_bdg_lo`
+    R3's `PHSymmetricSubspaceLO` is hard-wired to the OPEN-wire `build_bdg_lo`
     and to (dmu, dB, dDelta) parameter steps, so it cannot be pointed at the
     ring directly. This class applies R3's *algorithm* -- the same
     DPT (direction) -> RR1 (2nd order) -> RR2 (3rd order) -> residual-check,
@@ -852,13 +852,13 @@ def task3_efficiency_benchmark(
 
 
 # ════════════════════════════════════════════════════════════════════
-# TASK 1.3 verification — R3 Woodbury warm-start wired in, correct, and its
+# TASK 1.3 verification — R3 subspace warm-start wired in, correct, and its
 # honest (in)ability to accelerate the full-current SCF map, measured.
 # ════════════════════════════════════════════════════════════════════
 def warmstart_verification(N: int = 80, mu: float = 1.2, g: float = 3.0e4,
                            m_history: int = 4, max_iter: int = 60) -> dict:
     """
-    Confirm the R3-Woodbury near-zero warm-start is actually wired into the
+    Confirm the R3-subspace near-zero warm-start is actually wired into the
     Anderson loop and correct, and MEASURE why it cannot accelerate the SCF map
     (the current needs the full spectrum). Returns:
       * a DIRECT accuracy probe of the rank-2 DPT->RR update at a deep-in-phase
@@ -880,7 +880,7 @@ def warmstart_verification(N: int = 80, mu: float = 1.2, g: float = 3.0e4,
     B_deep = float(0.5 * np.sqrt(mu**2 + 1.0))       # trivial side, large gap
     phi_seq = phi_ext + np.linspace(0.0, 5e-3, 9)    # 8 small steps
     H_prev = _build_ring_lo_phased(N, mu, B_deep, np.full(N, phi_seq[0]), 1.0)
-    probe = RingWoodburyWarmStart(H_prev)
+    probe = RingSubspaceWarmStart(H_prev)
     probe_err, probe_forced_err, probe_fb = [], [], 0
     for p in phi_seq[1:]:
         Hn = _build_ring_lo_phased(N, mu, B_deep, np.full(N, p), 1.0)
@@ -899,7 +899,7 @@ def warmstart_verification(N: int = 80, mu: float = 1.2, g: float = 3.0e4,
 
     # Wire the warm-start object into the actual SCF loop (near-boundary B).
     H0 = _build_ring_lo_phased(N, mu, B, np.full(N, phi_ext), 1.0)
-    warm = RingWoodburyWarmStart(H0)
+    warm = RingSubspaceWarmStart(H0)
     res = anderson_selfconsistent_ring_texture(
         N, mu, B, g, phi_ext, seed_phi_self=None, m_history=m_history,
         tol_relA=1e-6, max_iter=max_iter, warm=warm)
@@ -1109,7 +1109,7 @@ def figure13_efficiency_benchmark(
         bench: dict, warm: dict,
         fname: str = "r5_figure13_efficiency_benchmark.png"):
     """Task-3 deliverable: iteration counts simple vs Anderson (cold & warm)
-    below g_crit, the measured speedup, and the R3-Woodbury warm-start
+    below g_crit, the measured speedup, and the R3-subspace warm-start
     verification + timing breakdown."""
     import matplotlib
     matplotlib.use("Agg")
@@ -1170,13 +1170,13 @@ def figure13_efficiency_benchmark(
     ax.legend(fontsize=8)
     ax.grid(True, alpha=0.3, axis="y")
 
-    # (d) R3-Woodbury warm-start verification + timing breakdown
+    # (d) R3-subspace warm-start verification + timing breakdown
     ax = axes[1, 1]
     ax.axis("off")
     t = warm["timing_s"]
     total = sum(t.values())
     lines = [
-        "R3-WOODBURY WARM-START (Task 1.3) — wired in & verified",
+        "R3-SUBSPACE WARM-START (Task 1.3) — wired in & verified",
         "",
         f"  wired into Anderson loop : {warm['warm_wired_in']}",
         "  RAW rank-2 update accuracy (deep-in-phase probe, no fallback):",
@@ -1233,7 +1233,7 @@ def main():
           "artifact?")
     print("=" * 72)
 
-    print("\n[1] Warm-start verification (R3 Woodbury wired in + timing)...")
+    print("\n[1] Warm-start verification (R3 subspace update wired in + timing)...")
     warm = warmstart_verification(N=80, mu=1.2, g=3.0e4)
     print(f"    wired_in={warm['warm_wired_in']}  "
           f"max near-zero eig err={warm['warm_max_nearzero_eval_error']:.2e}  "
@@ -1308,7 +1308,7 @@ def main():
    (no attracting static equilibrium; bulk shift -> 0) is UNCHANGED.
  * TASK 3 — below g_crit both converge; measured Anderson speedup (iteration
    count) is reported per-g in Figure 13 (grows toward g_crit), honestly, not
-   fit to the '5×' scope figure. Warm-start: R3 Woodbury near-zero update is
+   fit to the '5×' scope figure. Warm-start: R3 subspace near-zero update is
    wired in & verified, but cannot accelerate the full-spectrum-current SCF
    loop (~1×); the separable win is iterate warm-seeding (Figure 13c).""")
     print(f"\n total runtime: {(time.time() - t_start)/60:.1f} min")
