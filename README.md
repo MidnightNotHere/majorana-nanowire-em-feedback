@@ -116,6 +116,29 @@ quantum computing:
     continuum). Confirms — does not overturn — the R8 verdict.
   - Independent sweeps are process-parallelised (`src/bdg_parallel.py`;
     serial-vs-parallel **bit-identical**).
+- ✅ R9 (Track 1): **characterizing the reactive-impedance "pole" near g_crit**
+  (`src/bdg_r9_pole_characterization.py`; appended to
+  `src/r8_reactive_impedance_methods.md`). Closes the one place R8 said `Z_r`
+  carries orthogonal information. **Finding (revises R8's reading):** on the
+  physical principal branch the enhancement `1/(1−s)` does **not** diverge — it
+  rises to a **bounded ~5.7×** (s plateaus at ~0.825) and the static fixed
+  point then **detaches** (fluxoid-sawtooth dead-zone) before s reaches 1, so
+  the reactance grows by a bounded factor and becomes undefined rather than
+  blowing up. Detachment (`g≈8.67×10⁴`) is the *same* uniform-mode bifurcation
+  as R5's g_crit (its leading edge); R5's own slope-crossing-1 rule is in fact
+  **unsatisfiable** in this band, so R5's published 1.1–1.2×10⁵ band likely
+  comes from its coarser empirical Picard-failure criterion instead. It is
+  **purely reactive** (DC gate intact near the pole, no Im χ counterpart), the
+  SO correction to the loop gain stays small (its `L_eff` effect grows only
+  through the pole's own sensitivity), and the enhancement cap **grows** under
+  mesh refinement (5.6→9.8× over N=80→200) — so a genuine continuum divergence
+  is neither demonstrated nor excluded. **Net: `Z_r` is even more redundant
+  with the gap than R8 concluded** — its lone orthogonal feature is a soft,
+  bounded, resolution-sensitive proximity marker to a dynamical instability,
+  not a sharp new observable. Parallelised via `bdg_parallel` (measured:
+  capping BLAS to 1 thread/worker is the dominant win — machine-default
+  multithreaded BLAS is *slower* than 1 thread even serially for these small
+  matrices; serial-vs-parallel bit-identical).
 
 ## Requirements
 
@@ -133,6 +156,7 @@ pip install numpy scipy matplotlib pandas pfapack psutil
     python src/bdg_r8_reactive_impedance.py         # R8 Track A (Z_r vs gap; add --regen to recompute)
     python src/bdg_r8b_kubo_impedance.py            # R8-B (finite-w Kubo impedance + tasks 1-5)
     python src/bdg_r8c_so_selfconsistent.py         # R8-C (self-consistent spin-orbit current)
+    python src/bdg_r9_pole_characterization.py      # R9 Track 1 (Z_r pole near g_crit; add --regen to recompute, --quick for a fast smoke test)
 
 Each program writes its figures and data outputs directly into its own
 data folder (`R1_R2_data_files/`, `R3_data_files/`, `ISEF R4 data folder/`,

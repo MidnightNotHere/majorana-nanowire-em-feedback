@@ -281,3 +281,146 @@ finite-size) bulk topological boundary shift is unchanged. The overall R8
 verdict stands: `Z_r` is largely redundant with the gap + geometry. Outputs:
 `ISEF R8 data folder/R8C_SO_SUMMARY.md`, `r8c_figure_so_selfconsistent.png`,
 `r8c_so_data.json`.
+
+---
+
+## R9 Track 1 — characterizing the reactive-impedance "pole" near g_crit (BUILT & staged: `src/bdg_r9_pole_characterization.py`)
+
+R8 flagged the ONE place `Z_r = iωL_geo/(1−s)` carries information the
+`g`-independent bulk gap cannot: sweeping the feedback strength `g`, the
+enhancement `1/(1−s)` grows steeply and the static fixed point "detaches" near
+`g ~ 9×10⁴`, at the leading edge of R5's `g_crit` band — read as an `s→1`
+pole. R9 Track 1 characterizes that feature quantitatively. Everything REUSES
+the validated modules (Track A `bdg_r8_reactive_impedance`, Track B
+`bdg_r8b_kubo_impedance`, Track C `bdg_r8c_so_selfconsistent`, and
+`bdg_parallel`) as read-only imports; nothing in R1–R8 is modified. Outputs in
+`ISEF R8 data folder/` (`R9_TRACK1_SUMMARY.md`, `r9_figure1_bounded_pole.png`,
+`r9_figure2_kubo_trackC.png`, `r9_pole_data.json`).
+
+**Headline (honest, and it revises R8's reading).** At every lattice actually
+simulated the reactance does **not** diverge. Tracked with Track A's own
+validated bisection path `_phi_star_a` (a root-finder, **not** Picard, so it
+finds the fixed point regardless of stability) under warm-hint continuation,
+the physical *principal* branch's enhancement `1/(1−s)` climbs smoothly from
+~1.1 (`g=1×10⁴`) to a bounded maximum of **~5.71×** (N=80, μ=1.2, a=10 nm,
+B=ana−0.05; `s` plateaus at **~0.825**), and the static fixed point then
+**detaches** at `g≈8.67×10⁴` via the fluxoid **sawtooth** structure of the
+self-consistency map (R7's "razor-thin no-root windows"), **before `s` ever
+reaches 1**. The reactance grows by a bounded factor and becomes UNDEFINED (no
+static equilibrium); the branch that reappears at higher `g` is already
+Picard-repelling (`s>1`). So R8's "`L_eff` diverges as `s→1`" is, on the
+accessible static branch, a **bounded rise cut off by a detachment/dead-zone**
+— the outcome the R9 brief explicitly allowed for ("a pole that doesn't
+survive scrutiny would itself be an important finding").
+
+**Task 1 — scaling, fit, and resolution.** The power-law fit
+`1/(1−s) ~ (g_c−g)^(−p)` is honestly ill-posed with a free `g_c` (`p` and `g_c`
+trade off): best free fit `p≈1.7` at `g_c≈1.26×10⁵` (R²=0.9998, landing near
+R5's band), but a fit anchored at the detachment itself gives a much poorer
+`p≈0.34` (R²=0.92). The rising trend, extrapolated, IS consistent with a pole
+at `g_crit`, but the physical branch detaches before ever reaching it — a
+clean simple pole is **not realized** on the accessible branch. Root
+detection near the boundary depends on the scan **window/span** used (a
+narrow warm-hint bracket can miss a root a wide multi-period scan still
+finds), though a controlled density-only comparison (same ±2-period span,
+n=61/121/241) was fully converged (spread=0) — so every detachment number here
+is accurate to its scan window, not absolute.
+
+**Task 1.3 — detachment vs R5's g_crit (sharper than "leading edge vs upper
+edge").** Both are the same loss of an attracting static uniform fixed point
+(R5's uniform-mode bifurcation), but R5's own `g_crit_predicted_from_slope`
+rule (`bdg_r5_selfconsistent_ring.py:1137`, interpolates the smallest-|φ| root
+slope crossing 1) is **literally unsatisfiable** at fine `g`-resolution here:
+the root has `s=0.84` at `g=1.0×10⁵` (still <1), vanishes again over
+`1.03–1.17×10⁵`, and reappears only at `g=1.2×10⁵` already at `s=1.17` (>1) —
+no adjacent scanned pair straddles `s=1`. So R5's *published* "g_crit ≈
+1.1–1.2×10⁵" almost certainly comes from `g_crit_measured` (R5's coarser
+**empirical** Picard-iteration-failure criterion, an upper bound by
+construction), not a literal slope-crossing root — the same dead-zone this
+work maps prevents pinning either definition to one sharp number. Verdict: the
+pole marks the bifurcation's onset (leading edge, `g≈8.67×10⁴`); R5's g_crit a
+point ~30% higher, past the same dead-zone.
+
+**Task 1 — finite-size discipline (a genuine correction to an earlier
+draft).** Two distinct statements must be kept apart. At **fixed production
+g**, Track A already showed the enhancement is a finite-size effect
+(`s∝a→0`, enhancement→1) — unchanged. But the **max enhancement reached before
+detachment** (at the *moving* `g_pole∝1/a`) **grows** under fixed-L mesh
+refinement: 5.6→6.6→7.7→8.9→9.8 over N=80→200 (L=0.8 μm, per-N g-grids
+centered on each expected detachment for a fair comparison). The pole
+**sharpens** as the mesh refines — the ~6× cap is **not a universal, N-
+independent bound**. This does not establish a genuine continuum divergence
+either: at every N studied (60–200) the branch still detaches at a *finite*
+enhancement before `s=1`, and no continuum extrapolation is claimed (it would
+need much larger N and carries R7/Track A's fixed-hopping caveat). The honest,
+robust claim: at every lattice simulated the reactance is bounded and detaches
+before `s=1`; the continuum fate of the cap is left open.
+
+**Task 2 — is the pole in the dissipative (Kubo) channel? No.** Reusing Track
+B's validated machinery (`_converged_state`, `current_operators`, `kubo_chi`)
+at the `g`-dependent converged state from production up toward detachment: the
+ω→0 DC gate (Track B ≡ Track A) **holds throughout** (worst relative mismatch
+9.6×10⁻⁴ ≪ 10⁻³ — does not degrade or break down as `s` approaches its
+plateau), and Im χ develops **no matching feature** — absorption weight at the
+topological edge stays ≤7.2×10⁻⁴ with the dominant peak fixed at the
+bulk-pairing scale. The pole lives entirely in Re χ / `L_eff`; it is purely
+reactive.
+
+**Task 3 — does Track C's SO self-consistency change near the pole?** Cleanly
+separates two things. The SO correction to the **loop slope `s`** is
+essentially constant at **−7.1% to −8.2%** across the whole `g`-range — the
+same value Track C found at production coupling; the SO *physics* does not
+grow or change character near `g_crit`. But its effect on **`L_eff`** grows
+from −3.2% (production) to −23.5% (near detachment) — not because the SO
+physics amplifies, but because `L_eff=L_geo/(1−s)` is a steep function of `s`
+near the plateau, so a constant `s`-shift maps to a growing `L_eff` shift.
+This is exactly the effect anticipated ("the loop itself becomes more
+sensitive there, independent of the SO physics"): yes, but the amplification
+is **geometric** (a property of the bounded pole), not new SO physics.
+
+**Task 4 — parallelization (measured on this sweep).** BLAS is
+scipy-openblas 0.3.31 (DYNAMIC_ARCH, Haswell, MAX_THREADS=24),
+multithreaded-capable with **no thread-cap env var set by default**; 10
+physical cores, ~2 GB free at bench time ⇒ workers (each re-importing the
+R4–R8 stack, ~0.4 GB) are RAM-limited to `n_proc≈3`, matching
+`bdg_parallel.default_workers()`. Benchmark (12 independent `g`-points via
+`s_worker`): serial/default-BLAS 84.8 s; serial/1-thread-BLAS 85.9 s (≈1.0×);
+parallel/default-BLAS 36.9 s (2.3×); **parallel/1-thread-BLAS 13.7 s
+(6.2×, fastest)**. Two separable, measured effects: for these small 4N=320
+matrices, machine-default multithreaded BLAS is *slower* than 1 thread even
+serially (thread-sync overhead ≫ the tiny eigendecomposition), and
+process-parallelism adds a further ~n_proc× — so "more BLAS threads" is
+actively harmful here. Equivalence gate (serial vs parallel, both 1-thread
+BLAS): `max_abs_diff=0` over 72 values, bit-identical, the same standard R8
+held `bdg_parallel` to. Config used for the R9 sweeps: `default_workers()` +
+1-thread BLAS per worker.
+
+**Task 5 — is the pole a measurable, realistic device quantity? Marginal,
+leaning negative.** Using R4/R5's plausibility decomposition
+`g = Q·(L_k/L_m)` and the R6-verified InAs/Al scales (Δ=0.19 meV ⇒ interband
+~46 GHz), the leading-edge pole `g≈8.67×10⁴` is ~3.0× the production coupling
+— nominally reachable by pushing resonator `Q` or the kinetic-inductance
+ratio (e.g. `L_k/L_m=30 ⇒ Q≈2889`, within the achievable Q~10³–10⁶ envelope).
+Three reasons it is unlikely to be a practically useful diagnostic: (1) the
+feature is **bounded** (a few-fold enhancement, not a divergence) — no sharp
+resonance to lock onto; (2) it sits on a **detachment/dead-zone** whose
+location is scan-window-dependent even numerically — a soft, hard-to-place
+crossover in a real device; (3) reaching it means operating right at the
+dynamical-instability threshold, where by construction no stable static
+equilibrium exists — the wire would self-oscillate rather than sit at a
+measurable operating point. Its honest value is as a *qualitative*
+proximity-to-instability indicator, not a sharp new observable.
+
+**Net effect on the R8 verdict.** R9 Track 1 **weakens** R8's one exception.
+The apparent pole is not a realized divergence but a bounded (at every finite
+lattice) enhancement cut off by the fluxoid-sawtooth detachment — the reactive
+face of R5's loss of a static equilibrium. It is purely reactive (no
+dissipative Kubo counterpart, DC gate intact), the SO correction to the loop
+gain stays small (its `L_eff` effect grows only through the pole's own
+geometric sensitivity), and the cap climbs with mesh refinement so a genuine
+continuum divergence is neither demonstrated nor excluded. `Z_r`'s single
+orthogonal feature is a soft, bounded, resolution-sensitive proximity marker
+to a dynamical instability — informative physics about *where the static
+self-consistent description breaks down*, but not a sharp new device
+observable, and **even more redundant with the gap** than R8's cautious
+verdict allowed.
