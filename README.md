@@ -81,6 +81,41 @@ quantum computing:
   **dynamical-stability (dead-zone) boundary**: at this fixed g, short wires
   (L ≤ 0.6 μm) lose the clean static self-consistent boundary (regime-2). See
   `src/r4_pfaffian_boundary_methods.md` §4g.
+- ✅ R8: **Reactive impedance Z_r as a second observable**, alongside the bulk
+  gap, split into two tracks (`src/r8_reactive_impedance_methods.md`).
+  - **Track A — static feedback-renormalized reactance**
+    (`src/bdg_r8_reactive_impedance.py`): `Z_r = iωL_eff`, `L_eff =
+    L_geo/(1−s)`, where `s` is confirmed (bit-exact) to be R5's bifurcation
+    slope and `L_geo` the R5-validated ring inductance — reuses the cached
+    converged state, **zero new eigendecompositions**. **Verdict:** at
+    production g = 2.9×10⁴, Z_r is largely *redundant* with the gap + geometry
+    (nearly flat across the transition; its 1/(1−s) enhancement is a finite-size
+    effect → 1 under fixed-L mesh refinement). Its one orthogonal feature is
+    *dynamical, not topological*: `L_eff` diverges as s→1 (g ≈ 8–9×10⁴, R5's
+    g_crit band), which the g-independent gap cannot see.
+  - **Track B / Phase 8B — finite-ω Kubo current–current correlator**
+    (`src/bdg_r8b_kubo_impedance.py`): `χ_JJ(ω)` (Lehmann sum over the full BdG
+    spectrum) → complex `Z(ω) = iωL_eff(ω)` with a resistive part from interband
+    absorption (new physics). **DC-limit cross-check PASSES** (`χ_JJ(0)`
+    reproduces Track A's static response to ~1×10⁻⁴ at all 6 clean points, incl.
+    the near-B_c region) — **this lifts the PRELIMINARY label off Track A**.
+    Adversarial follow-ups: the dissipation onset is a bulk-pairing feature that
+    does **not** track the topological minigap; the η→0 non-convergence is
+    **finite-size** (roughness ∝ N⁻⁰·⁵), not an intrinsic linewidth; the omitted
+    spin-orbit current is propagated as an explicit **−2 to −4 %** band; gap
+    provenance corrected to the R6-verified **Δ = 0.19 meV** (Chang et al. 2015).
+    Net: Z(ω) confirms Track A in the read-out band and adds no trustworthy
+    topological information there.
+  - **Track C — self-consistent spin-orbit current**
+    (`src/bdg_r8c_so_selfconsistent.py`): sources the self-field from the
+    **total** current (kinetic + SO) and re-solves φ*, promoting Task 4's linear
+    SO band to a self-consistent treatment. Result: L_eff drops **−2.3 to
+    −4.0 %** (agreeing with the linear estimate to ~0.01 %, since φ*~1e-3 makes
+    the feedback correction second order), and the SO shift is **itself a
+    finite-size effect** (shrinks −3.2 %→−1.3 % under mesh refinement, →0 in the
+    continuum). Confirms — does not overturn — the R8 verdict.
+  - Independent sweeps are process-parallelised (`src/bdg_parallel.py`;
+    serial-vs-parallel **bit-identical**).
 
 ## Requirements
 
@@ -95,10 +130,14 @@ pip install numpy scipy matplotlib pandas pfapack psutil
     python src/bdg_r5_physically_meaningful_shift.py # R5-revised (g<g_crit headline; ~40 min)
     python src/bdg_r6_lo_phase_diagram.py           # R6 (LO 2D phase diagram)
     python src/bdg_r7_inductance_sweep.py           # R7 (B,mu,L sweep; resumable, eigh-bound)
+    python src/bdg_r8_reactive_impedance.py         # R8 Track A (Z_r vs gap; add --regen to recompute)
+    python src/bdg_r8b_kubo_impedance.py            # R8-B (finite-w Kubo impedance + tasks 1-5)
+    python src/bdg_r8c_so_selfconsistent.py         # R8-C (self-consistent spin-orbit current)
 
 Each program writes its figures and data outputs directly into its own
 data folder (`R1_R2_data_files/`, `R3_data_files/`, `ISEF R4 data folder/`,
-`ISEF R5 data folder/`, `R6_data_files/`, `ISEF R7 data folder/`).
+`ISEF R5 data folder/`, `R6_data_files/`, `ISEF R7 data folder/`,
+`ISEF R8 data folder/`).
 R7 is **resumable**: it caches every (μ, N, a) point to
 `ISEF R7 data folder/r7_points_cache.json` and skips already-computed points,
 so a long, eigh-bound run can be stopped and restarted freely.
