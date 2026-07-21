@@ -199,6 +199,4 @@ so a long, eigh-bound run can be stopped and restarted freely.
 See the per-program data folders above for all generated plots and
 CSV/NPY outputs.
 
-## Science Fair
-Denver Metro Regional Science and Engineering Fair (DMRSEF)  
-February 19, 2027
+
