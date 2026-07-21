@@ -139,6 +139,34 @@ quantum computing:
   capping BLAS to 1 thread/worker is the dominant win — machine-default
   multithreaded BLAS is *slower* than 1 thread even serially for these small
   matrices; serial-vs-parallel bit-identical).
+- ✅ R9 (Track 2): **finite temperature** in the BdG / Pfaffian / Kubo stack
+  (`src/bdg_r9_finite_temperature.py`; `src/r9_finite_temperature_methods.md`).
+  R1–R8 were all implicitly **T=0** (sharp Fermi sea, T=0 Kubo). This track adds
+  Fermi–Dirac occupation of the BdG quasiparticle spectrum (self-field current,
+  boundary, and Kubo Lehmann sum) as a **strictly additive** layer and asks
+  whether the null results survive realistic thermal broadening. **Task 1 sets
+  the scale first:** the R6-verified Δ = 0.19 meV (Chang et al. 2015; base
+  temperature **20 mK**, verified against the primary source) gives
+  Δ/k_B ≈ 2.20 K, so at operating conditions **T/T_c ≈ θ = k_BT/Δ ≈ 0.009** and
+  the thermal quasiparticle population is **~10⁻⁴⁸** — a tiny perturbation. Every
+  finite-T quantity is validated to reproduce its R5/R7/R8 T=0 counterpart as
+  θ→0 (**bit-for-bit** for the current, self-consistency map, operating point,
+  and B_c solver; ~10⁻¹⁶ for the Kubo χ), and the finite-T ω→0 DC gate holds to
+  ~10⁻⁶ at multiple θ. **A finding en route:** the finite-T Kubo must use the
+  **full** current Ĵ = ∂H/∂φ, not R8-B's kinetic-only Ĵ — the thermal
+  reoccupation term samples the full current, so kinetic-only cannot satisfy the
+  finite-T gate. **Finding (a null, consistent with R4–R9):** at realistic
+  operating temperature **finite temperature does not matter** — the bulk
+  boundary shift is unchanged (−0.131 % vs −0.132 % at T=0, still decaying
+  ~N⁻¹·⁹ → 0 with size at all T), the g_crit "pole" keeps its bounded ~6×
+  enhancement, and the Kubo dissipation is unchanged. Thermal effects turn on
+  only **far above** operating temperature (θ ≳ 0.05, ≈110 mK, approaching the
+  fixed-Δ model's validity ceiling): there the boundary shift weakens *further*
+  (more null), the pole **washes out** (enh 5.9→2.3 by θ=0.15), and a new
+  intraband Drude peak + sub-gap absorption appear in the dissipation. The T-axis
+  is process-parallelised via `bdg_parallel` (serial-vs-parallel bit-identical;
+  per-point cost θ-independent → static scheduling; 1-thread BLAS 2.2× faster
+  than default here). Confirms — does not overturn — the project's null lineage.
 
 ## Requirements
 
@@ -157,11 +185,12 @@ pip install numpy scipy matplotlib pandas pfapack psutil
     python src/bdg_r8b_kubo_impedance.py            # R8-B (finite-w Kubo impedance + tasks 1-5)
     python src/bdg_r8c_so_selfconsistent.py         # R8-C (self-consistent spin-orbit current)
     python src/bdg_r9_pole_characterization.py      # R9 Track 1 (Z_r pole near g_crit; add --regen to recompute, --quick for a fast smoke test)
+    python src/bdg_r9_finite_temperature.py --full  # R9 Track 2 (finite temperature; --validate for T->0 checks only)
 
 Each program writes its figures and data outputs directly into its own
 data folder (`R1_R2_data_files/`, `R3_data_files/`, `ISEF R4 data folder/`,
 `ISEF R5 data folder/`, `R6_data_files/`, `ISEF R7 data folder/`,
-`ISEF R8 data folder/`).
+`ISEF R8 data folder/`, `ISEF R9 data folder/`).
 R7 is **resumable**: it caches every (μ, N, a) point to
 `ISEF R7 data folder/r7_points_cache.json` and skips already-computed points,
 so a long, eigh-bound run can be stopped and restarted freely.

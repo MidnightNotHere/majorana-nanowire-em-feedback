@@ -1,0 +1,84 @@
+
+=== TASK 1: temperature scale ===
+Delta = 0.190 meV (Chang 2015, R6-verified)
+Delta/k_B = 2.2049 K   (k_B*Tc ~ Delta convention)
+BCS Tc = Delta/(1.764 k_B) = 1.2499 K
+theta at 20 mK base = 0.00907
+  T(mK)      theta       T/Tc     f(E=Delta)
+     10    0.00454    0.00454      1.755e-96
+     20    0.00907    0.00907      1.325e-48
+     30    0.01361    0.01361      1.206e-32
+     50    0.02268    0.02268      7.061e-20
+    100    0.04535    0.04535      2.657e-10
+    200    0.09071    0.09071      1.630e-05
+    300    0.13606    0.13606      6.425e-04
+    500    0.22677    0.22677      1.201e-02
+
+=== T->0 VALIDATION ===
+{
+  "current_T0_vs_R5_maxabs": 0.0,
+  "opcurrent_ratio": 32863145.294999063,
+  "opcurrent_ratio_theta_relspread": 5.52051959441335e-14,
+  "scalarmap_T0_vs_R5_absdiff": 0.0,
+  "phistar_T0_vs_R8A_absdiff": 0.0,
+  "slope_T0_vs_R8A_absdiff": 0.0,
+  "kubo_chi_T0_vs_R8B_maxabs": 8.881784197001252e-16,
+  "kubo_chi0_T0_vs_R8B_absdiff": 0.0,
+  "dc_gate_rel_by_theta": {
+    "0": 2.536453750515845e-07,
+    "0.009": 3.933040307301479e-07,
+    "0.05": 8.535441344052686e-07,
+    "0.1": 2.1748441786394657e-06,
+    "0.15": 4.756991314999286e-06
+  },
+  "dc_gate_max_rel": 4.756991314999286e-06,
+  "ALL_PASS": true
+}
+
+=== TASK 3: parallel benchmark ===
+{
+  "equivalence": {
+    "match": true,
+    "n_values": 24,
+    "max_abs_diff": 0.0,
+    "max_rel_diff": 0.0
+  },
+  "blas": {
+    "serial_1thread_s": 16.085253300028853,
+    "serial_defaultBLAS_s": 15.51184180000564,
+    "parallel_capped_s": 6.297863700019661,
+    "n_workers": 6,
+    "n_tasks": 6
+  },
+  "per_theta_cost_s": {
+    "0": 2.7889555000001565,
+    "0.05": 2.501003799960017,
+    "0.1": 2.4262280000257306,
+    "0.15": 2.4877702000085264
+  },
+  "cost_spread_ratio": 1.1495026435976252,
+  "scheduling_note": "static equal-chunking OK (cost ~theta-independent)"
+}
+
+=== TASK 4.1: boundary shift vs T ===
+  theta=0: sc_Bc=1.55995 shift=-0.13190%
+  theta=0.009: sc_Bc=1.55996 shift=-0.13131%
+  theta=0.05: sc_Bc=1.55996 shift=-0.13131%
+  theta=0.1: sc_Bc=1.55999 shift=-0.12947%
+  theta=0.15: sc_Bc=1.56013 shift=-0.12060%
+
+=== TASK 4.2: pole vs T ===
+  theta=0: max_enh=5.941
+  theta=0.05: max_enh=3.789
+  theta=0.1: max_enh=2.780
+  theta=0.15: max_enh=2.347
+
+=== TASK 4.3: dissipation vs T ===
+  theta=0: subgap_reZ_peak=8.373e-05 drude=False
+  theta=0.05: subgap_reZ_peak=9.979e-05 drude=True
+  theta=0.1: subgap_reZ_peak=1.648e-04 drude=True
+  theta=0.15: subgap_reZ_peak=4.254e-04 drude=True
+
+Wrote C:\Users\drohi\OneDrive\Documents\GitHub\ISEF-2027-bdg-eigensolve\src\..\ISEF R9 data folder\r9_finiteT_data.json
+      ['C:\\Users\\drohi\\OneDrive\\Documents\\GitHub\\ISEF-2027-bdg-eigensolve\\src\\..\\ISEF R9 data folder\\r9_finiteT_summary.png']
+Total wall: 915.5s
