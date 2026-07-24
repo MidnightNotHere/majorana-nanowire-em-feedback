@@ -203,6 +203,40 @@ quantum computing:
   failure — invisible to an isolated per-task benchmark — costs *more* than a
   successful solve, a limitation flagged explicitly rather than discovered
   silently mid-run.
+- 📋 R9 (Track 4): **multi-subband extension — SCOPING ONLY, no implementation**
+  (`src/r9_multisubband_scoping.md`). No simulation code was written or run; no
+  file in `src/` was modified. Asks whether extending R6's single-subband 4N×4N
+  Lutchyn–Oreg Hamiltonian to multiple transverse subbands is tractable and
+  worth a track. **Three findings.** (1) *Literature* (verified primary
+  sources): the odd-occupied-subband rule and the resulting multi-lobe phase
+  diagram are established (Potter–Lee PRL 105, 227003; Lutchyn–Stanescu–Das
+  Sarma PRL 106, 127001 / PRB 84, 144522), but inter-subband Rashba coupling
+  **hybridizes Majorana pairs and closes the gap** (Lim et al., PRB 86,
+  121103) — so the naive "M subbands → count the parity" picture is wrong, and
+  omitting that term would be qualitatively wrong rather than merely
+  approximate. (2) *A caveat against R6/R8, independent of whether this track
+  runs*: the single-subband assumption is **not realistic** for Chang-class
+  InAs/Al devices — Woods/Das Sarma/Stanescu (PRB 101, 045405) find realistic
+  surface charge makes a few-subband regime *"difficult or impossible"* (≥10
+  subbands occupied), and Chang et al. 2015's own measured n = 5×10¹⁸ cm⁻³
+  implies many tens. This is an idealisation of the device, to be carried
+  alongside the existing fixed-Δ caveat. (3) *Cost* (**measured**, not assumed):
+  the correct generalization has dimension **4NM** (not 4NM²), so memory ∝ M²
+  and dense-`eigh` cost ∝ **M³** — confirmed by a 1-thread benchmark on this
+  machine (fitted exponent **2.98**; ratios 8/28/66/130/977× vs M³ =
+  8/27/64/125/1000). The workload is *the same number of solves, each M³
+  larger*, so **`bdg_parallel` gives zero additional relief**: 6 cores buy a
+  flat ~2× on one large solve (33% efficiency) and 6 workers × 1 thread already
+  beats 1 worker × 6 threads by ~3× at every dim ≥ 1280. **Honest verdict:**
+  the multi-subband *phase diagram* is tractable to M ≈ 4–6, but multi-subband
+  *self-consistent EM feedback* is **not** — M=3 turns R9 Track 3's measured
+  77-min run into ~35 h, M=5 into ~6.7 days, before R7's ~5× throttling.
+  **Recommendation: conditional yes at a bounded scope** — the one question no
+  other track can ask (does the EM-feedback null survive more channels? the loop
+  gain s plausibly grows ∝ M, which would drag R9-T1's g≈8.67×10⁴ instability
+  *below* the production g=2.9×10⁴) is answerable in **minutes**, because the
+  loop-gain slope needs ~30 `eigh`, not the full B_c bisection's ~2000. The full
+  self-consistent sweep is explicitly excluded as out of reach.
 
 ## Requirements
 
