@@ -167,6 +167,42 @@ quantum computing:
   is process-parallelised via `bdg_parallel` (serial-vs-parallel bit-identical;
   per-point cost θ-independent → static scheduling; 1-thread BLAS 2.2× faster
   than default here). Confirms — does not overturn — the project's null lineage.
+- ✅ R9 (Track 3): **on-site disorder** in the BdG / Pfaffian / self-consistent-
+  ring stack (`src/bdg_r9_disorder.py`; `src/r9_disorder_methods.md`). R1–R8
+  and R9 Tracks 1–2 were all perfectly translationally ordered; this track adds
+  on-site ε_i ~ Uniform[−W/2,W/2] as a **strictly additive** layer (PH-symmetry
+  preserved exactly, proven and verified), with **mandatory ensemble
+  averaging** (SeedSequence-based, reproducible seeding; every reported number
+  carries a realization count and spread) over independent disorder draws. The
+  W=0 gate reproduces every clean R4/R5 result **bit-identically** before any
+  W>0 result is trusted. **Realistic W is literature-grounded** (re-verified
+  primary source: Ahn, Pan, Woods, Stanescu, Das Sarma, PRMaterials 5, 124602
+  (2021), arXiv:2109.00007 — σ_μ=2.5 meV Gaussian on-site fit → **W≈10–46Δ**,
+  an order of magnitude above the R6-verified gap, matching that paper's own
+  headline conclusion). **Finding (a genuine non-null — the one R9 track where
+  the project's null lineage does NOT uniformly survive):** at realistic W the
+  ensemble-averaged topological classification **smoothly smears** (up to ~30%
+  of realizations near the clean boundary misclassified at the top of the
+  realistic band, saturating there, not diverging); the mean spurious sub-gap
+  count does **not** grow but its realization-to-realization **spread** does
+  (a physical mechanism for the *sporadic* — not universal — disorder-induced
+  sub-gap structure the literature already links to contested zero-bias-peak
+  claims); and most strikingly, the R4/R5/R7 self-consistent inductive-feedback
+  solver's **convergence rate collapses from 100% (W=0) to 5–20% (realistic
+  W)** — where it does converge, the shift is ~100× the clean-model null, though
+  that magnitude rests on only 1–4 successful samples per W and is reported
+  with that explicit caveat. A real bug was caught and fixed in the
+  convergence-failure bookkeeping itself (a silent-NaN return path bypassed
+  the exception-based failure flag, undercounting the true failure rate
+  ~15–18×) — the underlying shift statistics were unaffected. Serial-vs-
+  parallel is bit-identical (both a cheap classification engine and the
+  expensive self-consistent engine); the cheap engine is dispatched **serially**
+  (measured: pool overhead exceeds its ~0.05s/task cost) while the expensive
+  engine is parallelised (~2.3–4×  speedup); the pre-run time estimate (~21 min)
+  undershot the real wall-clock (~77 min) because disorder-driven convergence
+  failure — invisible to an isolated per-task benchmark — costs *more* than a
+  successful solve, a limitation flagged explicitly rather than discovered
+  silently mid-run.
 
 ## Requirements
 
@@ -186,6 +222,7 @@ pip install numpy scipy matplotlib pandas pfapack psutil
     python src/bdg_r8c_so_selfconsistent.py         # R8-C (self-consistent spin-orbit current)
     python src/bdg_r9_pole_characterization.py      # R9 Track 1 (Z_r pole near g_crit; add --regen to recompute, --quick for a fast smoke test)
     python src/bdg_r9_finite_temperature.py --full  # R9 Track 2 (finite temperature; --validate for T->0 checks only)
+    python src/bdg_r9_disorder.py --full            # R9 Track 3 (on-site disorder; --validate for W=0 gate only, --benchmark for the parallel/time estimate)
 
 Each program writes its figures and data outputs directly into its own
 data folder (`R1_R2_data_files/`, `R3_data_files/`, `ISEF R4 data folder/`,
