@@ -790,8 +790,60 @@ picked before the reachability check existed. The specification:
 2. **Exclude, by pre-declared radius, any μ within δ of a van Hove threshold
    ε_n** (any n ≤ M) or of a lobe-crossing point identified in item 2's phase
    diagram — this is §6.1b point 3 and point 2 respectively, operationalized.
-   δ is fixed as a numerical value (e.g. in units of the local level spacing)
-   before any s(μ) is computed at M > 1, not chosen after looking at the curve.
+   **δ is derived from the bare spectrum alone — closed-form, not a knob:**
+
+   > The longitudinal dispersion near any subband bottom is R6's own tight-
+   > binding chain, E(k) − ε_n = −2t_hop·cos(k) (already published, already
+   > used for the t_hop cross-check in §3.4 — no Hamiltonian is diagonalized
+   > to get this; it is the known dispersion evaluated as a formula). Near
+   > k = 0 the discrete level spacing s_j = E_{j+1} − E_j grows from the edge
+   > toward the "bulk" spacing s_bulk = 4t_hop/N as j increases. Requiring
+   > |s_j/s_bulk − 1| < ε and solving for the smallest such j (three
+   > consecutive levels, to avoid a fluke) gives, in the large-N limit,
+   >
+   > **δ(ε) = t_hop · (2(1−ε)/π)²  — independent of N.**
+   >
+   > Verified numerically against the *exact* discrete chain spectrum
+   > (`E_j = −2t_hop·cos(jπ/(N+1))`) at N = 40…640: the formula is stable
+   > across that entire range (confirming N-independence) and runs
+   > systematically **~10–15% below** the exact measured value at every ε
+   > tested. Reported with a **+15% safety margin** (rounding toward *more*
+   > exclusion, the safe direction, since under-excluding — not
+   > over-excluding — is what would let a van Hove artifact leak into the
+   > accepted window). At R6's own t_hop = 16.565 meV:
+
+   | ε (tolerance) | δ, closed form | δ, +15% margin (used) |
+   |---:|---:|---:|
+   | 0.10 | 5.44 meV | **6.25 meV** (33 Δ) |
+   | 0.15 | 4.85 meV | **5.58 meV** (29 Δ) |
+   | 0.20 | 4.30 meV | **4.94 meV** (26 Δ) |
+   | 0.30 | 3.29 meV | **3.78 meV** (20 Δ) |
+
+   ε itself must still be fixed before any s(μ) is computed — the closed form
+   removes the *N*-dependence and the *"looking at the curve"* dependence, but
+   ε (how strict "close to bulk" means) is still a free choice, and must be
+   pinned on spectral/geometric grounds alone, per the tension below, not
+   loosened later because a tighter ε left too little surviving window.
+
+   **A tension this arithmetic surfaces, and that must be resolved before
+   picking wire geometry for the M=1→4 study, not after:** δ is a property of
+   the *longitudinal* lattice (t_hop, fixed by a_lat = 10 nm) while ΔE_sb is a
+   property of *transverse* confinement (wire width). They needn't be
+   comparable — but at R6's parameters they are. Checking δ against §3.4's
+   subband-spacing table: at ε = 0.15, δ ≈ 5.58 meV consumes **56–114%** of
+   ΔE_sb at W = 70–100 nm and at R = 50 nm cylindrical confinement — i.e. the
+   exclusion radius alone could swallow most or all of the window step 1
+   defines, leaving little or nothing to take a median over. Only the
+   narrowest geometry checked (W = 50 nm, ΔE_sb ≈ 19.6 meV) keeps comfortable
+   headroom (δ/ΔE_sb ≈ 0.28). **Consequence:** the wire width used for the
+   M=1→4 study and the tolerance ε must be chosen together, before the sweep,
+   specifically so that δ(ε) ≪ ΔE_sb at that geometry (e.g. W = 50 nm with
+   ε ≤ 0.15) — a choice made on this arithmetic alone, with zero visibility
+   into any s(μ) value, for the same reason ε cannot be loosened after the
+   fact. If no geometry/ε combination in the tractable range leaves adequate
+   headroom, that is itself a finding (the window is too narrow to test
+   cleanly at this M range) and must be reported as such rather than papered
+   over by a post-hoc parameter change.
 3. The reported statistic is the **median of s(μ)** over the surviving
    (non-excluded) window at each M — median, not max, specifically because max
    would be pulled toward whatever point happens to sit closest to an excluded
@@ -800,10 +852,19 @@ picked before the reachability check existed. The specification:
    informative (§6.1b): rising median-s supports the "null is a single-channel
    artifact" hypothesis; flat/bounded median-s supports "the null is robust
    and gets stronger."
-5. This specification — the window, the exclusion rule and δ, and the
+5. **The lobe-crossing exclusion radius (step 2's other clause) is not closed-
+   form the way δ is** — it depends on the actual coupled multi-subband
+   spectrum, which does not exist before item 1/2 are implemented. It must be
+   read off item 2's phase diagram output and locked at that point — still
+   blind to s(μ), since item 2 (the phase diagram) is generated independently
+   of and prior to item 3b, but not derivable in closed form ahead of time the
+   way the van Hove radius is. Do not conflate "not yet computable" with "free
+   to set after looking at s."
+6. This specification — the window, δ(ε) and its derivation, the wire-
+   geometry/ε pairing, the lobe-crossing exclusion rule, and the median
    statistic — is committed as its own commit, separate from and prior to any
-   commit containing computed s(μ;M) numbers, so the choice is auditably made
-   before the outcome is known.
+   commit containing computed s(μ;M) numbers, so every choice is auditably
+   made before the outcome is known.
 
 Cost: one point is the same *slope-of-the-self-consistency-map* probe used in
 the original draft — a root-solve plus a finite-difference derivative
@@ -902,6 +963,19 @@ fact, from having quietly assumed the answer.
   square-well and cylindrical Bessel-zero) at m\* = 0.023 mₑ / 0.026 m₀.
   The lattice cross-check reproduced R6's t_hop = 16.565 meV exactly from
   ħ²/2m\*a² — confirming the arithmetic is on R6's own footing.
+- **Van Hove exclusion radius δ(ε)** (§7 item 3b): closed form
+  δ = t_hop·(2(1−ε)/π)², derived from R6's own published tight-binding chain
+  dispersion (no Hamiltonian diagonalized — the dispersion formula was
+  evaluated, the way the t_hop cross-check above was). Verified against the
+  *exact* discrete chain spectrum E_j = −2t_hop·cos(jπ/(N+1)) at
+  N = 40, 80, 160, 320, 640: N-independence confirmed (measured δ stable to
+  within a few % across that range at fixed ε), formula runs ~10–15% low
+  against the exact value at every ε tested (0.10–0.30), reported with a +15%
+  margin in the direction of more exclusion. **The first version of this
+  derivation, before verification, had an algebra error** (ε where 1−ε was
+  required, giving a value ~35–90× too small) — caught by checking the
+  closed form against the exact spectrum before it went into the document,
+  the same discipline the derivation itself argues for.
 - **Inter-subband matrix element** (§5.4): closed form verified against direct
   numerical quadrature, exact at all 16 pairs with n, m ≤ 4.
 - **Timings** (§4.2–4.6): `scipy.linalg.eigh` on random complex Hermitian
