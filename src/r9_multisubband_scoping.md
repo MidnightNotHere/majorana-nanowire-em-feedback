@@ -29,10 +29,18 @@ next step — and if so, at what scope?
    machine (§4.5, §7). Extending the **phase diagram only** (R6) is tractable to
    M ≈ 4–6.
 5. Recommendation (§8): **conditional yes, at a sharply bounded scope.** The
-   minimum viable scope is a phase-diagram structural study plus one cheap,
-   targeted probe of the loop gain vs M — the single measurement that could
-   overturn the project's null lineage. Full multi-subband self-consistency is
-   explicitly out of reach and should be named as such, not deferred vaguely.
+   minimum viable scope is a phase-diagram structural study plus one targeted,
+   **pre-registered** probe of the loop gain vs occupancy (§6.1, §7 item 3b) —
+   the single measurement that could overturn the project's null lineage.
+   That probe is *not* a smooth 3-point curve read at a hand-picked chemical
+   potential; §6.1a–b give three independent reasons (this project's own R9-T1
+   measurement of a peaked, not smooth, s; the Lim et al. gap-closing
+   mechanism; a van Hove sampling risk at each subband threshold) to expect
+   s(μ;M) to be structured, so the protocol fixes a μ-window, an exclusion
+   rule, and a median statistic *before* any s value is computed — costing a
+   couple of hours rather than minutes, still a large saving over the excluded
+   full sweep. Full multi-subband self-consistency is explicitly out of reach
+   and should be named as such, not deferred vaguely.
 
 ---
 
@@ -654,10 +662,70 @@ I want to be careful about the status of this: **it is a hypothesis with a
 plausible mechanism, not a result.** The ∝ M scaling is a heuristic (channels
 near their band bottoms contribute less than channels well above; inter-subband
 coupling redistributes current). Measuring whether s actually scales with M —
-and with what exponent — *is the experiment*, and it is well-posed precisely
-because both outcomes are informative: linear scaling means the null is a
-single-channel artifact; sub-linear or flat scaling means the null is robust and
-the project's headline gets *stronger*, not weaker.
+and with what exponent — *is the experiment*.
+
+**6.1a — a hidden assumption in "the experiment", caught before any number was
+computed.** "Measure s vs M" as stated conflates two different protocols that a
+naive implementation could silently swap between:
+
+- **(a) Truncation convergence at fixed μ.** Hold μ near ε₁ (the first subband
+  bottom, R6's existing operating point) and raise the basis size M. Subbands
+  2…M stay *unoccupied* — they enter only virtually, through second-order
+  inter-subband admixture (§5.4), with matrix elements ∝ 4nm/(W(n²−m²)) and
+  energy denominators growing as n². This converges quickly and should be
+  smooth in M essentially by construction. **It is the wrong experiment for
+  §6.1's question** — no new current-carrying channel has been added, so it
+  cannot show whether s grows with occupancy. It is useful only as a basis-size
+  sanity check, distinct from §5.7's parity-convergence gate.
+- **(b) Genuine added occupancy.** To test §6.1's actual claim, μ must be
+  re-tuned upward with M so that channel M is genuinely occupied — μ of order
+  tens of meV once M ≳ 3 (§3.4's ~5–20 meV subband spacing), with channels
+  1…M−1 deep and channel M near its own threshold. **This is the experiment
+  §6.1 needs, and it was not distinguished from (a) in the original draft of
+  this section.**
+
+**6.1b — why (b) is not expected to be smooth in M, and should not be tested
+as if it were.** Three independent reasons, none of them speculative:
+
+1. *This project's own R9 Track 1 measurement.* s is strongly peaked near a
+   gap closing and plateaus at ~0.825 — it is not a slowly-varying function of
+   (B, μ); its structure tracks the low-energy spectrum. Multi-subband adds
+   *more* gap closings (one per lobe boundary, plus lobe crossings), so s(μ)
+   should acquire more structure as M grows, not less.
+2. *Lim et al.'s own mechanism (§2.3).* Inter-subband Rashba coupling closes
+   the effective gap specifically **near lobe crossings**. Since s is a
+   response function governed by the gap edge, s should be most enhanced
+   exactly where inter-subband coupling is strongest — i.e. at a location that
+   moves and multiplies as M grows, not at a fixed point that shifts smoothly.
+3. **The van Hove sampling risk (its own hazard, not a restatement of 1–2).**
+   Each subband bottom carries a 1D density-of-states divergence
+   ρ(E) ∝ 1/√(E−ε_n). Protocol (b) as naturally implemented parks μ at ≈ε_M by
+   construction, at *every* M — so every single data point in a naive (b) sweep
+   would sit on a regularized singularity (regularized only by finite N and Δ)
+   rather than at a generic operating point. This would not fail loudly: it
+   would produce a smooth-*looking*, internally consistent s(M) curve that is
+   actually an artifact of where each point was sampled relative to its nearest
+   threshold, not a measurement of occupancy-driven current growth. This is
+   flagged as its own numbered risk because it is exactly the kind of thing
+   that produces a clean wrong number rather than an obviously broken one —
+   the same shape of error as R4's threshold detector and R5's g=3×10⁵ root:
+   plausible-looking, silently answering an easier question than the one
+   asked.
+
+Both real outcomes of a *correctly specified* (b) remain informative: growth
+in s with occupancy (by whatever functional form, not necessarily linear)
+means the null is a single-channel artifact; a flat or bounded envelope means
+the null is robust and the project's headline gets *stronger*. But that
+conclusion is only trustworthy if the comparison statistic is pre-registered
+before the sweep runs — see §7 item 3 for the exact protocol, which exists
+because "s at M=1,2,3" read off three hand-picked points cannot distinguish a
+real trend from van Hove sampling or from lobe-crossing proximity, and with a
+structured, multi-featured s(μ), there is real risk of the window or the
+exclusion radius being chosen — consciously or not — after seeing which choice
+makes the "does the null survive" question come out one way. The same
+after-the-fact-framing risk this project already caught once, in choosing
+R5's g=3×10⁵ headline before the dynamical-reachability check flagged it as
+unreachable.
 
 ### 6.2 Secondary — perturbing a multicritical point, not a generic one
 
@@ -702,15 +770,45 @@ factor — apply it mentally to anything over an hour.
 | 0 | Record the §3.5 caveat against R6/R8 | — | — | **zero** | — |
 | 1 | Mode-space builder + validation suite §5.1–5.5, §5.8–5.9 | 40–60 | 1–3 | minutes | **M=1 bit-for-bit or stop** |
 | 2 | Multi-subband phase diagram, 40×40, incl. lobe structure & analytic check §5.6 | 60 | 1→4 | ~0.7 h cumulative | truncation scan §5.7 |
-| 3 | **Loop gain s vs M** (§6.1) — the headline probe | 80 | 1→4 | **~3.5 min/point** | s(M=1) reproduces R9-T1 |
+| 3a | Truncation sanity check (§6.1a) — μ fixed near ε₁, M=1→4 | 80 | 1→4 | ~4 min | reference only, NOT the §6.1 answer |
+| 3b | **Loop-gain **s**(μ; M) scan — the headline probe (§6.1b)** | 80 | 1→4 | **~40 min total** | pre-registered statistic (below), locked before running |
 | 4 | Gap & feedback at a lobe crossing vs a generic point (§6.2) | 60–80 | 3–4 | ~1–2 h | — |
 | — | *Full self-consistent B_c sweep vs M* | 80 | ≥3 | **35–160 h — EXCLUDED** | — |
 
-Item 3 is the crux and is **cheap**, which is the finding that makes this track
-viable. The loop gain s is the *slope of the self-consistency map at a fixed
-operating point* — it needs one root-solve plus a finite-difference derivative
-(~30 `eigh`), **not** the full B_c bisection (~2000 `eigh`). That is a ~65×
-saving and it is what separates item 3 from the excluded row:
+**Item 3a** is the fast, uninteresting half: it converges the basis at fixed
+occupancy and answers "is M=4 enough to represent one occupied channel," not
+"does adding channels raise s." Report it, but do not use it to answer §6.1.
+
+**Item 3b is the actual test, and its protocol must be written down and
+committed *before* it is run** — the same discipline this project applied
+after the g=3×10⁵ headline turned out to be a dynamically-unreachable root
+picked before the reachability check existed. The specification:
+
+1. At each M ∈ {1,2,3,4}, sweep μ over a window spanning one full occupied
+   subband's worth of spectrum below its own threshold ε_M — i.e. μ ∈
+   [ε_M − ΔE_sb, ε_M − δ], **not** a single point at μ ≈ ε_M.
+2. **Exclude, by pre-declared radius, any μ within δ of a van Hove threshold
+   ε_n** (any n ≤ M) or of a lobe-crossing point identified in item 2's phase
+   diagram — this is §6.1b point 3 and point 2 respectively, operationalized.
+   δ is fixed as a numerical value (e.g. in units of the local level spacing)
+   before any s(μ) is computed at M > 1, not chosen after looking at the curve.
+3. The reported statistic is the **median of s(μ)** over the surviving
+   (non-excluded) window at each M — median, not max, specifically because max
+   would be pulled toward whatever point happens to sit closest to an excluded
+   boundary, reintroducing the sampling risk item 3 exists to avoid.
+4. Compare median-s(M) across M=1→4. Both directions are pre-declared as
+   informative (§6.1b): rising median-s supports the "null is a single-channel
+   artifact" hypothesis; flat/bounded median-s supports "the null is robust
+   and gets stronger."
+5. This specification — the window, the exclusion rule and δ, and the
+   statistic — is committed as its own commit, separate from and prior to any
+   commit containing computed s(μ;M) numbers, so the choice is auditably made
+   before the outcome is known.
+
+Cost: one point is the same *slope-of-the-self-consistency-map* probe used in
+the original draft — a root-solve plus a finite-difference derivative
+(~30 `eigh`), **not** the full B_c bisection (~2000 `eigh`), a ~65× saving per
+point:
 
 | M | s-slope probe (N=80, ~30 eigh) | full B_c point (~2000 eigh) |
 |---:|---:|---:|
@@ -720,18 +818,21 @@ saving and it is what separates item 3 from the excluded row:
 | 4 | 135 s | 9600 s |
 | 5 | 264 s | 18750 s |
 
-So the single measurement most likely to overturn the project's null costs
-**minutes**, while the exhaustive version costs **days**. Scope to the former.
+A ~40-point μ-scan at M=4 costs ~40 × 135 s ≈ 90 min; summed across M=1→4 the
+full pre-registered item 3b protocol is on the order of **two hours**, not the
+"minutes" the single-point version claimed — the honest cost of doing 3b
+correctly instead of the version that would have quietly relied on smoothness.
+It remains a ~20–100× saving over the excluded full B_c sweep at every M.
 
-Items 0–3 total well under a day of compute. **Item 4 is optional**; items 0–1
-alone are worth doing even if the track is otherwise abandoned, since item 0 is
-free and item 1 is the reusable infrastructure.
+Items 0–3b total a few hours of compute, not days. **Item 4 is optional**;
+items 0–1 alone are worth doing even if the track is otherwise abandoned,
+since item 0 is free and item 1 is the reusable infrastructure.
 
 ---
 
 ## 8. Recommendation
 
-**Conditional yes — at the bounded scope of §7 items 0–3, and explicitly not
+**Conditional yes — at the bounded scope of §7 items 0–3b, and explicitly not
 beyond it.**
 
 **Why yes:**
@@ -742,8 +843,14 @@ beyond it.**
   (§3), and saying so costs nothing.
 - There is one sharp, falsifiable, project-specific question — **does the
   EM-feedback null survive more channels?** (§6.1) — that no other track can
-  ask, and it happens to be answerable in **minutes**, not days (§7 item 3),
-  because the loop gain does not require the expensive B_c bisection.
+  ask, and it is answerable in **hours, not days** (§7 item 3b), because the
+  loop gain does not require the expensive B_c bisection. (An earlier draft of
+  this recommendation said "minutes" — that number came from a single-point
+  read of s that turned out to be conflating truncation convergence with
+  genuine occupancy growth, §6.1a–b; done correctly, with a pre-registered
+  μ-window and exclusion rule rather than a hand-picked point, item 3b costs
+  ~2 hours, not minutes. Still a 20–100× saving over the excluded full sweep,
+  just not the number originally claimed.)
 - The tractable range (M ≤ 4–6 for phase diagrams) is enough to exhibit the
   lobe structure and inter-subband hybridization the literature describes.
 
@@ -765,13 +872,18 @@ beyond it.**
 the §3.5 caveat. If Track 4 is deprioritised for any reason, §3.5 should still
 be recorded against R6/R8, alongside the existing fixed-Δ idealisation note.
 
-**Suggested decision rule:** do §7 items 0–1 (free + minutes). Then run item 3
-at M = 1, 2, 3. If s grows roughly ∝ M, the multi-subband question is
+**Suggested decision rule:** do §7 items 0–1 (free + minutes). Then commit
+item 3b's pre-registered protocol (window, exclusion radius δ, median
+statistic — §7) **before computing a single s(μ;M) value**, and run it at
+M = 1,2,3,4. If median-s rises with M, the multi-subband question is
 *load-bearing* for this project's headline and items 2 and 4 are justified. If
-s is flat in M, the null is more robust than a single-channel model could
-show — which is a **publishable strengthening** of the existing result, obtained
-for minutes of compute, and Track 4 can then be closed honestly rather than
-abandoned silently.
+median-s is flat/bounded across M, the null is more robust than a
+single-channel model could show — which is a **publishable strengthening** of
+the existing result, obtained for a couple of hours of compute, and Track 4
+can then be closed honestly rather than abandoned silently. Do not shortcut
+this with a 3-point read at hand-picked μ (item 3a is not a substitute for
+3b) — §6.1b exists because that shortcut is indistinguishable, after the
+fact, from having quietly assumed the answer.
 
 ---
 
@@ -802,5 +914,12 @@ abandoned silently.
   (`r9_disorder_methods.md`); R9 Track 3 full run 77.1 min (ibid.); R7's N = 120
   cap and ~5× throttling (`ISEF R7 data folder/R7_SUMMARY.md`); R9 Track 1's
   s ≈ 0.825 plateau and g ≈ 8.67×10⁴ detachment (`README.md`, R9 Track 1).
-- **Not measured, explicitly a hypothesis**: the s ∝ M scaling in §6.1. That is
-  the proposed experiment, not a result.
+- **Not measured, explicitly a hypothesis**: the s ∝ M scaling in §6.1, and its
+  functional form is unconstrained beyond a weak monotonicity argument from a
+  current sum rule (§6.1) — that is the proposed experiment, not a result. The
+  smoothness of s(M) itself is **not assumed**: §6.1a–b give three independent
+  reasons (R9-T1's own measured peaking/plateau behavior of s, Lim et al.'s
+  gap-closing mechanism concentrating near lobe crossings, and a van Hove
+  density-of-states sampling risk at each subband threshold) to expect s(μ;M)
+  to be structured rather than smooth, which is why §7 item 3b specifies a
+  pre-registered window/exclusion/median protocol instead of point evaluation.

@@ -233,10 +233,18 @@ quantum computing:
   77-min run into ~35 h, M=5 into ~6.7 days, before R7's ~5× throttling.
   **Recommendation: conditional yes at a bounded scope** — the one question no
   other track can ask (does the EM-feedback null survive more channels? the loop
-  gain s plausibly grows ∝ M, which would drag R9-T1's g≈8.67×10⁴ instability
-  *below* the production g=2.9×10⁴) is answerable in **minutes**, because the
-  loop-gain slope needs ~30 `eigh`, not the full B_c bisection's ~2000. The full
-  self-consistent sweep is explicitly excluded as out of reach.
+  gain s plausibly grows with occupancy, which would drag R9-T1's g≈8.67×10⁴
+  instability *below* the production g=2.9×10⁴) is answerable in **hours, not
+  days**, because the loop-gain slope needs ~30 `eigh` per point, not the full
+  B_c bisection's ~2000. **A post-hoc catch during scoping (own subsection,
+  §6.1a–b):** this project's own R9-T1 measurement shows s is peaked, not
+  smooth, near gap closings, and multi-subband adds a van Hove density-of-states
+  singularity at every subband threshold — so a naive 3-point read of s vs M at
+  a fixed μ would risk sampling an artifact rather than the real occupancy
+  trend. The probe is scoped instead as a pre-registered μ-window / exclusion /
+  median-statistic protocol (committed before any s value is computed), costing
+  ~2 hours rather than minutes. The full self-consistent sweep is explicitly
+  excluded as out of reach.
 
 ## Requirements
 
