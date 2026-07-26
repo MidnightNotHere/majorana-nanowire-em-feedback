@@ -197,10 +197,15 @@ quickfull smoke test showed the real cost running higher still** once
 convergence-failure retries are accounted for. The delivered Task 4.3 run
 therefore narrows the W grid to **one representative weak point (W=1Δ) plus
 the full realistic band** (W_weak's other three points are already covered
-cheaply by Tasks 4.1/4.2) and uses **n_real=20** (Task 1's stated floor, not
-its ceiling) rather than 30–50. This is a deliberate, reported scope
-reduction driven by measured compute cost, in the same spirit as R7's
-thermal-throttle compute ceiling — not a silent narrowing.
+cheaply by Tasks 4.1/4.2). The first pass used `n_real=20` (Task 1's stated
+floor); a **post-hoc review found this run's near-total convergence
+failure was a search-window bug, not genuine physics** (see §4.3 below) —
+after fixing it, `n_real` was raised to **30** (still short of Tasks
+4.1/4.2's 50, an explicitly stated, compute-driven limitation, since the
+corrected solver's per-task cost did not drop after the fix). This is a
+deliberate, reported scope reduction driven by measured compute cost, in
+the same spirit as R7's thermal-throttle compute ceiling — not a silent
+narrowing.
 
 ---
 
@@ -263,9 +268,10 @@ Full run: N=80, μ=1.2, g=G_R7=2.9×10⁴ (the same subcritical feedback used
 throughout R4–R7–R9-Track-2), B fixed at `sqrt(mu²+Δ²) - 0.05` — a point on
 the **clean-trivial** side, just below the clean boundary (`ring_boundary_
 Bc_pfaffian(N=80,mu=1.2) ≈ 1.560Δ`). n_real=50 for Tasks 4.1/4.2 (both
-converged — see below); n_real=20 for Task 4.3 (compute-bound, see the
-scope reduction above). Every number below carries its realization count
-and spread; raw distributions are in `r9_disorder_data.json`.
+converged — see below); n_real=30 for Task 4.3 (compute-bound, corrected
+after a post-hoc review — see the scope reduction above and §4.3 below).
+Every number below carries its realization count and spread; raw
+distributions are in `r9_disorder_data.json`.
 
 ### 4.1 Boundary smearing — **smooth, and real: disorder measurably erodes the boundary**
 
@@ -341,72 +347,152 @@ for occasional, not universal, disorder-induced sub-gap structure that
 could mimic R4's finite-size sub-gap artifact on a subset of realizations,
 even though the ensemble mean stays flat.
 
-### 4.3 The R4/R5/R7 inductive-feedback null at realistic W — **does NOT survive; the solver mostly fails to converge**
+### 4.3 The R4/R5/R7 inductive-feedback null at realistic W
+
+**⚠ SUPERSEDED FINDING, CORRECTED BELOW.** The first version of this
+section reported that the self-consistent solver "mostly fails to
+converge" at realistic W (n_real=1-4 out of 20 attempted at every
+realistic point) and read this as itself the headline finding. A **post-hoc
+review caught that this was wrong**: the reported n=1-4 samples were not a
+genuine ensemble average, and — more importantly — the near-total
+convergence collapse was traced to a **bug in this track's own code**, not
+a physical instability. The original (superseded) table and reasoning are
+preserved verbatim in `r9_disorder_data.json`'s
+`task4_3_null_result_SUPERSEDED` key, per this project's standard of
+recording what changed and why (cf. the `pfaffian_trim_lo` fix, the
+Anderson seed-count correction). The root-cause investigation and the
+corrected result follow.
+
+#### Root-cause investigation (Task 1 of the post-hoc review)
+
+`_disordered_Bc_selfconsistent`'s coarse B-scan searched in a window
+centered on the fixed **clean** analytic value `ana = sqrt(mu²+Δ²)`,
+inherited unchanged from the clean R5 solver — correct there *only* because
+the clean rigid boundary coincides with `ana` exactly. The disordered
+version never re-examined that assumption. A direct diagnostic reproduced
+the EXACT 20 seeds `null_result_vs_W` uses (`base_seed=2028`) and, for each
+one, computed the wide, Task-4.1-trusted rigid (non-self-consistent)
+boundary — the same one that reliably found a boundary in 100/100
+realizations across every W tested — and checked whether it fell inside
+the old solver's widest-ever search half-width (±0.20, from `window=0.05`
+doubled twice):
+
+| W (Δ) | rigid boundary INSIDE ±0.20 | mean displacement from `ana` | max displacement |
+|---:|---:|---:|---:|
+| 1 | 20/20 | +0.010 | +0.063 |
+| 10 | 2/20 | +0.445 | +1.218 |
+| 15 | 3/20 | +0.607 | +1.098 |
+| 25 | 3/20 | +0.952 | +2.870 |
+| 46 | 5/20 | +0.999 | +2.803 |
+
+This is decisive: at realistic W, disorder itself (a finding **already
+established independently by Task 4.1**) displaces the rigid boundary by an
+amount that dwarfs the solver's search window — 15-18 of 20 boundaries per
+W point fall completely outside where the solver was ever looking. The
+solver wasn't finding "no self-consistent fixed point exists" — it was
+looking in the wrong place. This is **Option A** (a fixable search bug),
+not Option B (an intrinsic self-consistency-loop instability): the
+self-consistency question (does a fixed point exist near *this
+realization's actual* boundary?) was never actually being asked at
+realistic W.
+
+#### The fix
+
+`_disordered_Bc_selfconsistent` now centers its search on the
+**per-realization rigid boundary** (`_disordered_ring_boundary_Bc`, the
+same cheap, 100%-reliable detector Task 4.1 already depends on) instead of
+the fixed clean `ana`. At W=0 (`eps` all zero) the function fast-paths to
+the exact analytic `ana` rather than the rigid detector's `tol=1e-4`
+bisection value — this is what keeps the mandatory W=0 gate **bit-identical
+to machine precision** (`selfconsistent_absdiff = 0.0`, re-verified after
+the fix), matching `add_onsite_disorder`'s own eps=0 exact-no-op
+convention, rather than merely close to it. `_max_widenings` was also
+bumped from 2 to 3 (still below the clean solver's 4) after a small
+post-fix sample showed a residual few-percent-scale rate of genuinely
+larger self-consistent corrections benefiting from one more widening.
+
+A small post-fix sample (n=6 per W, same seeds, before committing to the
+full corrected re-run) confirmed the fix works and surfaced a second,
+smaller, genuine effect: success rate rose from ~5-20% to **33-100%** across
+W=1-46Δ, and among successes the shifts are large and sign-varying (e.g.
++14% to +144% at W=46Δ) — a **real, much stronger non-null signal** than
+the original (buggy) run's small n=1-4 samples suggested. A **residual,
+genuine `ScfConvergenceError` rate remains** even with correct centering
+(the self-consistency root find itself sometimes fails at a specific probed
+B) — this is reported honestly as a real, smaller, secondary effect, not
+eliminated by the fix.
+
+#### Corrected result
 
 Ensemble self-consistent boundary shift vs the clean self-consistent
 baseline (`ring_boundary_Bc_pfaffian_selfconsistent(N=80,μ=1.2,g=G_R7) =
-1.559951Δ`), N=80, g=G_R7, n_real=20 attempted per W (5 at W=0, deterministic):
+1.559951Δ`), N=80, g=G_R7, **n_real=30** attempted per W (5 at W=0,
+deterministic) — raised from the original n_real=20 given the corrected
+solver's success rate now supports a real ensemble, though still short of
+Tasks 4.1/4.2's n=50 (a stated, compute-driven limitation: the corrected
+solver's per-task cost did **not** drop after the fix, since successful
+solves cost more than the fast failures they replaced — re-benchmarked at
+87.1s/task serial, 28.7s/task parallel with 5 workers, essentially
+unchanged from the original benchmark). **Re-run wall time: 4023s (67.1
+min)** for the full corrected sweep (6 W points + the convergence check),
+close to the fresh pre-run estimate.
 
-| W (Δ) | mean shift | std | n converged | n failed (of 20) |
+| W (Δ) | mean shift | std | SEM | n converged (of 30 attempted) |
 |---:|---:|---:|---:|---:|
-| 0.0 | +0.0000 % | 0.0000 | 5/5 | 0 |
-| 1.0 | +0.1549 % | 0.7684 | 12/20 | 8 |
-| **10 (realistic)** | **+12.335 %** | — (n=1) | **1/20** | **19** |
-| **15 (realistic)** | **−9.405 %** | — (n=1) | **1/20** | **19** |
-| **25 (realistic)** | **−6.839 %** | — (n=1) | **1/20** | **19** |
-| **46 (realistic)** | **−7.303 %** | 1.890 | **4/20** | **16** |
+| 0.0 | +0.0000 % | 0.000 | 0.000 | 5/5 |
+| 1.0 | +0.208 % | 1.091 | 0.265 | 17/30 |
+| **10 (realistic)** | **+29.398 %** | 18.075 | 3.769 | **23/30** |
+| **15 (realistic)** | **+44.549 %** | 25.050 | 5.747 | **19/30** |
+| **25 (realistic)** | **+50.335 %** | 52.777 | 12.800 | **17/30** |
+| **46 (realistic)** | **+56.514 %** | 69.164 | 15.093 | **21/30** |
 
-(A genuine bug was caught and fixed while producing this table: the
-disordered solver has *two* distinct failure modes — an explicit
-`ScfConvergenceError` when the per-B root search fails, and a *silent*
-`nan` return when the coarse B-scan never brackets a sign flip at all even
-after widening. The first version of `_scshift_worker` only flagged the
-first mode as `convergence_failed`, undercounting the true failure rate by
-roughly 15-18x at realistic W (it reported 1-2 failures where the correct
-count, from checking `np.isfinite(bc)` directly, is 16-19). The `mean`/`std`
-statistics above were unaffected by this bug — `summarize_numeric` already
-excluded non-finite values correctly — but the *failure-rate* bookkeeping
-was wrong until fixed; see `_scshift_worker`'s docstring.)
+**Convergence-in-realization-count** (W=10, schedule 10→30): mean
+25.26→27.69→30.46→31.30→**29.40**, SEM 2.58→4.73→4.64→4.09→3.77; stabilized
+(|Δmean| < spread) from n=15 onward — the corrected ensemble **is**
+demonstrably converged at n=30, unlike the original (which could not even
+report a defined mean before n=20).
 
-**Convergence-in-realization-count could not be demonstrated at realistic
-W** — at W=10 the schedule (5→10→15→20) gives `nan, nan, nan, 12.335`: zero
-successes in the first 15 draws, one lucky success at the 20th. This is
-itself diagnostic, not a shortcoming of the convergence-check machinery:
-**the underlying quantity is not converging because the solver mostly
-cannot find a self-consistent solution at all at this disorder strength.**
+**Reading — the corrected, properly-powered non-null finding.** With the
+search-window bug fixed, realistic-W success rates are now **57-77%**
+(17-23 of 30, up from the original 5-20%), giving genuine ensemble
+averages, not single-sample artifacts. The corrected result is **smooth,
+monotonic, and unambiguously non-null**: the mean self-consistent shift is
+**positive and grows systematically with W** — from a small +0.2%
+(W=1Δ, comparable in scale to the R4-R5-R7 clean-model null of
+~0.06-0.13%) up to **+29% (W=10Δ) → +45% (W=15Δ) → +50% (W=25Δ) → +57%
+(W=46Δ)** — i.e. two to three orders of magnitude larger than the clean
+baseline throughout the literature-realistic band, with the rate of growth
+itself slowing between W=25 and W=46 (+50%→+57%, a much smaller relative
+step than the earlier ones), suggestive of the trend beginning to
+saturate rather than diverging without bound. The spread also grows
+substantially with W (std 1.1%→18%→25%→53%→69%) and a genuine minority of
+realizations show a **reversed (negative) sign** even at high W (e.g. 3 of
+17 at W=25Δ, several of 21 at W=46Δ) — so while the *ensemble mean* is a
+robust, large, positive, growing effect, any *individual* disordered
+device's shift is only loosely constrained by that mean.
 
-**Reading — the headline non-null finding of this track.** Two things are
-happening simultaneously at realistic W, and they should be reported
-separately because they carry very different statistical weight:
-
-1. **Convergence collapse (high confidence — based on the full n=20
-   attempted ensemble, not a subsample):** at W=1Δ (well below the
-   literature-realistic band) the self-consistent solver already fails on
-   8/20 realizations; by the literature-realistic band (W=10–46Δ) it fails
-   on **16–19 of 20** — an 80–95% failure rate, vs 0% at W=0. Disorder at
-   realistic strength overwhelmingly breaks the uniform-manifold
-   self-consistency solver's ability to find *any* fixed point, a
-   qualitatively new effect absent at W=0 or weak W.
-2. **Shift magnitude among survivors (low confidence — n=1-4 samples, NOT
-   a converged ensemble average):** where a self-consistent solution *is*
-   found, the shift is **±7-12%** — roughly **two orders of magnitude
-   larger** than the clean-model null (R4-R5-R7-R9-Track-2's consistently
-   reported ~0.06-0.13%). The sign is not even consistent across W
-   (+12.3% at W=10 vs −9.4% to −7.3% at W=15-46), which is expected given
-   n=1-4 samples of a quantity that (per Task 1's flagged approximation)
-   is itself only a mean-field projection of a broken-symmetry response.
-
-**Bottom line for 4.3:** the null result does **not** straightforwardly
-survive at realistic disorder — but not because the shift smoothly grows
-large; because realistic disorder mostly destroys the well-posedness of the
-self-consistent problem the null result was measured on. The convergence-
-failure-rate finding is solid; the survivor-shift-magnitude finding is
-genuinely suggestive of a much larger effect but is not itself a reliable
-ensemble average and should not be quoted as a precise number without
-substantially more compute (getting n=20 *successes* at W=25Δ would need
-~20/0.05 ≈ 400 attempted realizations at ~150s/task/worker — far beyond
-this track's compute budget; flagged as a stated limitation, not silently
-narrowed).
+**A residual, genuine self-consistency-loop failure remains** (23-43% of
+attempts across W, without a clear trend in W) — this is the smaller,
+secondary effect the root-cause investigation predicted: even correctly
+centered, the self-consistency root find (`phi_star`) itself sometimes
+fails to converge at a specific probed B under disorder. **A plausible
+(but not independently confirmed here) physical mechanism** ties this
+residual failure to the *same* large, growing mean shift: R9 Track 1
+established that this system has a genuine dynamical bifurcation (g_crit)
+where the self-consistent map's local slope crosses 1 and no attracting
+fixed point exists. Disorder plausibly concentrates current density
+unevenly across bonds (breaking the clean model's uniform-response
+guarantee — see Task 1's flagged projection approximation), which could
+push the *local* effective feedback gain at some realizations past their
+own effective g_crit even though the *nominal* g=G_R7 is unchanged and
+subcritical in the clean system — consistent with both the large, growing
+mean shift (realizations pushed closer to the bifurcation respond more
+strongly) and the residual genuine convergence failures (realizations
+pushed past it have no fixed point at all, exactly like R5's original
+g_crit finding). This connects Track 3's finding directly to R9 Track 1's
+pole characterization, but confirming it precisely would require
+per-realization local mode-gain diagnostics, which is out of scope here
+and flagged as an open question, not asserted as proven.
 
 ---
 
@@ -415,8 +501,8 @@ narrowed).
 **On-site disorder at literature-realistic strength (W ≈ 10-46Δ, per Ahn
 et al. 2021's verified σ_μ=2.5 meV Gaussian fit) meaningfully matters — this
 is the one R9 track where the project's null-result lineage does NOT
-uniformly survive**, in contrast to R9 Track 1 (the Z_r pole is bounded,
-not divergent) and Track 2 (finite temperature is negligible at 20 mK):
+survive**, in contrast to R9 Track 1 (the Z_r pole is bounded, not
+divergent) and Track 2 (finite temperature is negligible at 20 mK):
 
 - **Boundary smearing (4.1, well-converged, n=50):** smooth (not sharp, not
   erratic) but real — up to ~30% of realizations near the clean boundary
@@ -427,24 +513,37 @@ not divergent) and Track 2 (finite temperature is negligible at 20 mK):
   *spread* grows substantially — a physical mechanism for the sporadic
   (not universal) disorder-induced sub-gap structure the literature already
   associates with the contested zero-bias-peak claims.
-- **Inductive-feedback null (4.3, n=20 attempted, mostly non-converged):**
-  the self-consistent solver's convergence rate collapses from 100% (W=0)
-  to 5-20% (realistic W) — a qualitatively new disorder effect — and where
-  it does converge, the shift is ~100x the clean-model null, though this
-  magnitude rests on only 1-4 successful samples per W and is reported with
-  that explicit caveat, not as a settled ensemble average.
+- **Inductive-feedback null (4.3, n=30 attempted, corrected — see the
+  post-hoc review above):** a **genuine coding bug** (a fixed, not
+  per-realization, search center) was caught, root-caused, and fixed after
+  the first pass reported an invalid n=1-4 "ensemble." The **corrected**,
+  properly-converged (n=17-23 of 30) result shows the self-consistent
+  boundary shift is **smoothly, monotonically NON-null**: +0.2% at W=1Δ
+  growing to **+29% → +45% → +50% → +57%** across the realistic band
+  (10→46Δ) — two to three orders of magnitude above the clean-model null,
+  with a genuine (not window-driven) residual convergence-failure rate of
+  23-43% and a growing realization-to-realization spread, both reported
+  honestly rather than smoothed over.
 
 **Every number above carries its realization count and spread, per the
 task's mandatory ensemble-averaging requirement; the W=0 gate passes
-exactly (all diffs 0.0) before any W>0 result is trusted; the parallel
-infrastructure is bit-identical serial-vs-parallel for both engines; and
-the realistic W scale is grounded in a directly re-verified primary source
-(Ahn, Pan, Woods, Stanescu, Das Sarma, PRMaterials 5, 124602 (2021),
-arXiv:2109.00007), not an arbitrary choice.** The main stated limitation is
-compute: Task 4.3's survivor-shift magnitude and its own realization-count
-convergence could not be established to the same statistical standard as
-Tasks 4.1/4.2 within this track's compute budget, because the dominant cost
-turned out to be disorder-driven convergence failure itself, discovered
-only during the real end-to-end run rather than the isolated benchmark —
-a limitation flagged here explicitly, in the same spirit as R7's
-thermal-throttle disclosure, not silently narrowed.
+exactly (all diffs 0.0, re-verified after the Task 4.3 fix) before any W>0
+result is trusted; the parallel infrastructure is bit-identical
+serial-vs-parallel for both engines; and the realistic W scale is grounded
+in a directly re-verified primary source (Ahn, Pan, Woods, Stanescu, Das
+Sarma, PRMaterials 5, 124602 (2021), arXiv:2109.00007), not an arbitrary
+choice.** The main stated limitations are compute-driven, not silent:
+Task 4.3's n_real=30 (vs Tasks 4.1/4.2's n=50) and its convergence-check
+ceiling of 30 (vs their 100) were capped because the corrected solver's
+per-task cost stayed high (successful solves cost as much as the fast
+failures they replaced), and the residual genuine self-consistency-loop
+failure rate (23-43%) means even n=30 attempted yields n=17-23 converged —
+both flagged explicitly, in the same spirit as R7's thermal-throttle
+disclosure. **A concrete process lesson from this round:** a first version
+of the corrected re-run driver script lacked the `if __name__ ==
+"__main__":` guard required by Windows' `multiprocessing` spawn method;
+Python's own `_check_not_importing_main` safety check caught this cleanly
+(a `BrokenProcessPool` crash, zero residual processes, no data corruption)
+rather than a runaway process cascade, and the fix was a one-line guard —
+noted here since it is exactly the kind of infrastructure mistake this
+project's parallelization tracks (R7, R8, R9) have otherwise avoided.

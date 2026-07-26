@@ -1,0 +1,455 @@
+{
+  "validation": {
+    "invariant_max_abs_diff": 0.0,
+    "boundary_absdiff": 0.0,
+    "selfconsistent_absdiff": 0.0,
+    "subgap_absdiff": 0.0,
+    "ph_symmetry_eps_at_W5": 0.0,
+    "ALL_PASS": true
+  },
+  "task3_literature": {
+    "same_scale_W_over_Delta": 13.157894736842104,
+    "variance_matched_W_over_Delta": 45.58028440970729,
+    "broadening_band_W_over_Delta": [
+      10.526315789473685,
+      15.789473684210526
+    ],
+    "note": "Ahn et al. 2021 (arXiv:2109.00007) find realistic InAs/Al disorder is an order of magnitude ABOVE what is needed for topological MZMs -- this band (~10-46 Delta) reflects that headline finding, not an arbitrary large-W choice."
+  },
+  "benchmark": {
+    "equivalence_cheap": {
+      "match": true,
+      "n_values": 36,
+      "max_abs_diff": 0.0,
+      "max_rel_diff": 0.0
+    },
+    "equivalence_expensive": {
+      "match": true,
+      "n_values": 6,
+      "max_abs_diff": 0.0,
+      "max_rel_diff": 0.0
+    },
+    "cheap_subgap": {
+      "serial_1thread_s": 1.0576062000181992,
+      "serial_defaultBLAS_s": 1.0269090000074357,
+      "parallel_capped_s": 2.5730183999985456,
+      "n_workers": 3,
+      "n_tasks": 12,
+      "per_task_s_serial1": 0.08813385000151659,
+      "per_task_s_parallel": 0.2144181999998788
+    },
+    "expensive_scshift": {
+      "serial_1thread_s": 347.3057278000051,
+      "serial_defaultBLAS_s": 277.0125251999998,
+      "parallel_capped_s": 114.53302810000605,
+      "n_workers": 4,
+      "n_tasks": 3,
+      "per_task_s_serial1": 115.76857593333504,
+      "per_task_s_parallel": 38.17767603333535
+    }
+  },
+  "pre_run_estimate": {
+    "cheap_tasks_4_1_and_4_2": {
+      "total_tasks": 1000,
+      "per_task_s": 0.08813385000151659,
+      "n_workers": 1,
+      "est_wall_s": 88.13385000151659,
+      "est_wall_min": 1.4688975000252766
+    },
+    "expensive_task_4_3": {
+      "total_tasks": 120,
+      "per_task_s": 38.17767603333535,
+      "n_workers": 4,
+      "est_wall_s": 1145.3302810000605,
+      "est_wall_min": 19.088838016667676
+    },
+    "total_est_wall_min": 20.557735516692954
+  },
+  "task4_1_boundary_smearing": {
+    "N": 80,
+    "mu": 1.2,
+    "B": 1.5120499351813308,
+    "rows": [
+      {
+        "n_real": 50,
+        "frac_topological": 0.0,
+        "bernoulli_std": 0.0,
+        "W": 0.1,
+        "is_realistic": false
+      },
+      {
+        "n_real": 50,
+        "frac_topological": 0.0,
+        "bernoulli_std": 0.0,
+        "W": 0.5,
+        "is_realistic": false
+      },
+      {
+        "n_real": 50,
+        "frac_topological": 0.04,
+        "bernoulli_std": 0.027712812921102035,
+        "W": 1.0,
+        "is_realistic": false
+      },
+      {
+        "n_real": 50,
+        "frac_topological": 0.08,
+        "bernoulli_std": 0.03836665218650176,
+        "W": 2.0,
+        "is_realistic": false
+      },
+      {
+        "n_real": 50,
+        "frac_topological": 0.08,
+        "bernoulli_std": 0.03836665218650176,
+        "W": 10.0,
+        "is_realistic": true
+      },
+      {
+        "n_real": 50,
+        "frac_topological": 0.06,
+        "bernoulli_std": 0.03358571124749333,
+        "W": 15.0,
+        "is_realistic": true
+      },
+      {
+        "n_real": 50,
+        "frac_topological": 0.18,
+        "bernoulli_std": 0.054332310828824504,
+        "W": 25.0,
+        "is_realistic": true
+      },
+      {
+        "n_real": 50,
+        "frac_topological": 0.32,
+        "bernoulli_std": 0.06596969000988256,
+        "W": 46.0,
+        "is_realistic": true
+      },
+      {
+        "n_real": 50,
+        "frac_topological": 0.3,
+        "bernoulli_std": 0.0648074069840786,
+        "W": 60.0,
+        "is_realistic": false
+      },
+      {
+        "n_real": 50,
+        "frac_topological": 0.3,
+        "bernoulli_std": 0.0648074069840786,
+        "W": 90.0,
+        "is_realistic": false
+      }
+    ],
+    "convergence": {
+      "schedule": [
+        {
+          "n_real": 20,
+          "mean": 0.05,
+          "spread": 0.04873397172404482,
+          "stabilized_vs_prev": false
+        },
+        {
+          "n_real": 30,
+          "mean": 0.06666666666666667,
+          "spread": 0.04554200340426488,
+          "stabilized_vs_prev": true
+        },
+        {
+          "n_real": 40,
+          "mean": 0.075,
+          "spread": 0.04164582812239421,
+          "stabilized_vs_prev": true
+        },
+        {
+          "n_real": 50,
+          "mean": 0.08,
+          "spread": 0.03836665218650176,
+          "stabilized_vs_prev": true
+        },
+        {
+          "n_real": 75,
+          "mean": 0.08,
+          "spread": 0.031326240331921947,
+          "stabilized_vs_prev": true
+        },
+        {
+          "n_real": 100,
+          "mean": 0.07,
+          "spread": 0.02551470164434615,
+          "stabilized_vs_prev": true
+        }
+      ]
+    }
+  },
+  "task4_2_subgap_states": {
+    "N": 80,
+    "mu": 1.2,
+    "B": 1.5120499351813308,
+    "threshold": 0.25,
+    "rows": [
+      {
+        "W": 0.1,
+        "is_realistic": false,
+        "n_subgap_mean": 2.0,
+        "n_subgap_std": 0.0,
+        "n_subgap_n_real": 50,
+        "min_abs_E_mean": 0.08106025349295352,
+        "min_abs_E_std": 0.001578546386101489
+      },
+      {
+        "W": 0.5,
+        "is_realistic": false,
+        "n_subgap_mean": 2.2,
+        "n_subgap_std": 0.6060915267313264,
+        "n_subgap_n_real": 50,
+        "min_abs_E_mean": 0.08150672340568452,
+        "min_abs_E_std": 0.007923919419677091
+      },
+      {
+        "W": 1.0,
+        "is_realistic": false,
+        "n_subgap_mean": 2.4,
+        "n_subgap_std": 0.8081220356417687,
+        "n_subgap_n_real": 50,
+        "min_abs_E_mean": 0.08289699995401238,
+        "min_abs_E_std": 0.015933326928770274
+      },
+      {
+        "W": 2.0,
+        "is_realistic": false,
+        "n_subgap_mean": 2.64,
+        "n_subgap_std": 0.9424241429983224,
+        "n_subgap_n_real": 50,
+        "min_abs_E_mean": 0.08817666156916366,
+        "min_abs_E_std": 0.03208949099625892
+      },
+      {
+        "W": 10.0,
+        "is_realistic": true,
+        "n_subgap_mean": 2.12,
+        "n_subgap_std": 0.939821954479916,
+        "n_subgap_n_real": 50,
+        "min_abs_E_mean": 0.1239823915841014,
+        "min_abs_E_std": 0.09898763436438554
+      },
+      {
+        "W": 15.0,
+        "is_realistic": true,
+        "n_subgap_mean": 2.16,
+        "n_subgap_std": 1.3303367687797503,
+        "n_subgap_n_real": 50,
+        "min_abs_E_mean": 0.13495509133175135,
+        "min_abs_E_std": 0.14040771740595007
+      },
+      {
+        "W": 25.0,
+        "is_realistic": true,
+        "n_subgap_mean": 1.84,
+        "n_subgap_std": 1.2674898864467905,
+        "n_subgap_n_real": 50,
+        "min_abs_E_mean": 0.1647494222049416,
+        "min_abs_E_std": 0.1506571093930076
+      },
+      {
+        "W": 46.0,
+        "is_realistic": true,
+        "n_subgap_mean": 1.88,
+        "n_subgap_std": 1.3036839481771239,
+        "n_subgap_n_real": 50,
+        "min_abs_E_mean": 0.2157775364363327,
+        "min_abs_E_std": 0.25218487464516176
+      },
+      {
+        "W": 60.0,
+        "is_realistic": false,
+        "n_subgap_mean": 1.6,
+        "n_subgap_std": 1.4568627181693672,
+        "n_subgap_n_real": 50,
+        "min_abs_E_mean": 0.2520575499656118,
+        "min_abs_E_std": 0.2735087026126012
+      },
+      {
+        "W": 90.0,
+        "is_realistic": false,
+        "n_subgap_mean": 1.24,
+        "n_subgap_std": 1.1349728037737832,
+        "n_subgap_n_real": 50,
+        "min_abs_E_mean": 0.33901401016336735,
+        "min_abs_E_std": 0.48797980365421756
+      }
+    ],
+    "convergence": {
+      "schedule": [
+        {
+          "n_real": 20,
+          "mean": 2.5,
+          "spread": 0.19867985355975656,
+          "stabilized_vs_prev": false
+        },
+        {
+          "n_real": 30,
+          "mean": 2.4,
+          "spread": 0.1485562705416415,
+          "stabilized_vs_prev": true
+        },
+        {
+          "n_real": 40,
+          "mean": 2.2,
+          "spread": 0.1568929081105472,
+          "stabilized_vs_prev": false
+        },
+        {
+          "n_real": 50,
+          "mean": 2.12,
+          "spread": 0.13291089542414866,
+          "stabilized_vs_prev": true
+        },
+        {
+          "n_real": 75,
+          "mean": 2.1066666666666665,
+          "spread": 0.10666666666666666,
+          "stabilized_vs_prev": true
+        },
+        {
+          "n_real": 100,
+          "mean": 2.14,
+          "spread": 0.0953674446283924,
+          "stabilized_vs_prev": true
+        }
+      ]
+    }
+  },
+  "task4_3_null_result": {
+    "N": 80,
+    "mu": 1.2,
+    "g": 29000.0,
+    "rows": [
+      {
+        "n_real": 5,
+        "n_failed": 0,
+        "mean": 0.0,
+        "std": 0.0,
+        "sem": 0.0,
+        "distribution": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "W": 0.0,
+        "is_realistic": false,
+        "n_convergence_failed": 0
+      },
+      {
+        "n_real": 12,
+        "n_failed": 8,
+        "mean": 0.15490117366190018,
+        "std": 0.7683628582161012,
+        "sem": 0.22180725151318814,
+        "distribution": [
+          0.710143041667966,
+          1.0035123268705215,
+          -0.3913025101774774,
+          -0.44498384644020644,
+          1.1215564897747852,
+          0.5023430585110037,
+          0.48371892144028306,
+          -1.141393543335412,
+          -0.3636010626016623,
+          -0.09754196159108872,
+          -0.6611177396729314,
+          1.137480909497021
+        ],
+        "W": 1.0,
+        "is_realistic": false,
+        "n_convergence_failed": 8
+      },
+      {
+        "n_real": 1,
+        "n_failed": 19,
+        "mean": 12.334852059896308,
+        "std": 0.0,
+        "sem": NaN,
+        "distribution": [
+          12.334852059896308
+        ],
+        "W": 10.0,
+        "is_realistic": true,
+        "n_convergence_failed": 1
+      },
+      {
+        "n_real": 1,
+        "n_failed": 19,
+        "mean": -9.405345726077803,
+        "std": 0.0,
+        "sem": NaN,
+        "distribution": [
+          -9.405345726077803
+        ],
+        "W": 15.0,
+        "is_realistic": true,
+        "n_convergence_failed": 2
+      },
+      {
+        "n_real": 1,
+        "n_failed": 19,
+        "mean": -6.83861880175493,
+        "std": 0.0,
+        "sem": NaN,
+        "distribution": [
+          -6.83861880175493
+        ],
+        "W": 25.0,
+        "is_realistic": true,
+        "n_convergence_failed": 1
+      },
+      {
+        "n_real": 4,
+        "n_failed": 16,
+        "mean": -7.303292977986848,
+        "std": 1.8898806437817048,
+        "sem": 0.9449403218908524,
+        "distribution": [
+          -6.462653816223939,
+          -10.050695551382022,
+          -6.916558467815686,
+          -5.783264076525743
+        ],
+        "W": 46.0,
+        "is_realistic": true,
+        "n_convergence_failed": 1
+      }
+    ],
+    "convergence": {
+      "schedule": [
+        {
+          "n_real": 5,
+          "mean": NaN,
+          "spread": NaN,
+          "stabilized_vs_prev": false
+        },
+        {
+          "n_real": 10,
+          "mean": NaN,
+          "spread": NaN,
+          "stabilized_vs_prev": false
+        },
+        {
+          "n_real": 15,
+          "mean": NaN,
+          "spread": NaN,
+          "stabilized_vs_prev": false
+        },
+        {
+          "n_real": 20,
+          "mean": 12.334852059896308,
+          "spread": NaN,
+          "stabilized_vs_prev": false
+        }
+      ]
+    }
+  },
+  "wall_time_s": 4627.018169164658
+}

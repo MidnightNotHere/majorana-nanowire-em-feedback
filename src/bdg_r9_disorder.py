@@ -356,8 +356,9 @@ def _disordered_Bc_selfconsistent(N: int, mu: float, eps: np.ndarray,
                                   root_tol: float = 1e-10,
                                   warm_hint: bool = True,
                                   diagnostics: dict | None = None,
-                                  _max_widenings: int = 2) -> float:
-    """_max_widenings=2 (not the clean solver's 4): measured directly (the
+                                  _max_widenings: int = 3) -> float:
+    """_max_widenings=3 (bumped from a post-hoc-review value of 2, still below
+    the clean solver's 4): measured directly (the
     quickfull smoke run) that a disordered realization failing to converge
     costs MORE than one that succeeds, because each widening repeats a full
     coarse B-scan x root-search -- so a realization destined to fail (a
@@ -371,10 +372,54 @@ def _disordered_Bc_selfconsistent(N: int, mu: float, eps: np.ndarray,
     approximation this uses). Raises ScfConvergenceError (imported from R5,
     NOT redefined) if the disordered self-field cannot be solved at some
     probed B, exactly mirroring the clean function's refusal to report a
-    B_c built on a non-converged texture."""
+    B_c built on a non-converged texture.
+
+    BUG FOUND + FIXED ON POST-HOC REVIEW: the coarse B-scan below used to be
+    centered on the fixed CLEAN analytic value `ana = sqrt(mu^2+delta^2)`,
+    inherited unchanged from the clean solver -- correct there ONLY because
+    the clean rigid boundary coincides with `ana` exactly. Task 4.1
+    independently established that disorder itself displaces the RIGID
+    (non-self-consistent) boundary away from `ana` by a mean of +0.45 to
+    +1.0 (up to +2.9) across the realistic W band -- far outside this
+    solver's +-0.20 max search half-width -- so the original version was
+    searching in the wrong place, not failing to find a self-consistent
+    fixed point because none exists. A direct diagnostic (comparing this
+    solver's own widest-searched window against the wide, Task-4.1-trusted
+    rigid detector's boundary location for the SAME 20 seeds at each W)
+    confirmed this is the dominant failure mode (15-18/20 boundaries fall
+    outside the old window at W=10-46), not a genuine self-consistency-loop
+    instability. Fix: center the scan on the PER-REALIZATION rigid boundary
+    (cheap: one call to `_disordered_ring_boundary_Bc`, which found a
+    boundary in 100/100 realizations across every W tested) instead of the
+    fixed clean `ana`. At W=0 these coincide exactly, so the W=0 gate is
+    unaffected. The self-consistent correction ON TOP OF the (already
+    disorder-shifted) rigid boundary is still expected to stay small, per
+    the R4-R5-R7 null lineage -- so the search window itself did not need
+    to grow much, only its center did (a small `_max_widenings` bump 2->3
+    was made after the fix, since a post-fix sample run still showed a
+    residual few-percent-to-tens-of-percent rate of GENUINE
+    ScfConvergenceError -- the self-consistency root find failing at a
+    specific probed B even when correctly centered -- and a modest widening
+    margin catches the cases where the self-consistent correction itself,
+    not just the rigid displacement, is larger than the +-0.05 default. This
+    residual rate is real and is reported as its own (smaller, secondary)
+    finding, not eliminated by the centering fix -- see the methods note."""
     if phi_ext_bond is None:
         phi_ext_bond = np.pi * 0.1 / N
-    ana = np.sqrt(mu ** 2 + delta ** 2)
+    if eps is None or not np.any(eps):
+        # W=0 fast path: use the EXACT analytic value, not the rigid
+        # detector's tol=1e-4 bisection -- this is what keeps the mandatory
+        # W=0 gate BIT-IDENTICAL (not merely close) to the clean solver,
+        # matching add_onsite_disorder's own eps=0 exact-no-op convention.
+        ana = np.sqrt(mu ** 2 + delta ** 2)
+    else:
+        ana = _disordered_ring_boundary_Bc(N, mu, eps, delta=delta)
+        if not np.isfinite(ana):
+            raise ScfConvergenceError(
+                f"no rigid (non-self-consistent) boundary found at N={N}, mu={mu}, "
+                f"g={g:.3g} (eps realization has no Pfaffian sign flip within the "
+                f"wide +-0.6 rigid-detector window) -- cannot search for a "
+                f"self-consistent correction without a starting point.")
     mem = {"hint": None}
 
     def phi_star(B):
@@ -896,9 +941,9 @@ def subgap_states_vs_W(N: int = 80, mu: float = 1.2, n_real: int = 50,
 # TASK 4.3 — does the R4/R5/R7 inductive-feedback null survive realistic W?
 # ════════════════════════════════════════════════════════════════════════
 def null_result_vs_W(N: int = 80, mu: float = 1.2, g: float = G_R7,
-                     n_real: int = 20, Ws=None, base_seed: int = 2028,
+                     n_real: int = 30, Ws=None, base_seed: int = 2028,
                      n_workers=None,
-                     convergence_schedule=(10, 15, 20)) -> dict:
+                     convergence_schedule=(10, 15, 20, 25, 30)) -> dict:
     """Task 4.3: ensemble-averaged self-consistent boundary shift under
     disorder, at the SAME g=G_R7 (R7's validated subcritical feedback
     coupling) used throughout R4-R7-R9T2's null-result lineage. Reports the
@@ -906,17 +951,33 @@ def null_result_vs_W(N: int = 80, mu: float = 1.2, g: float = G_R7,
     a non-converged realization is a reported outcome, not silently
     dropped).
 
-    SCOPE REDUCTION (measured, reported explicitly -- not silent): benchmarked
-    at ~35.5s/task even parallelized across 5 workers (this engine solves the
-    disordered self-consistency root many times per B point x several B
-    points per Bc bisection -- the most expensive engine in this track).
-    Sweeping the full W_WEAK+W_REALISTIC grid at n_real=30 (the Task-1 upper
-    guideline) would cost ~2.7 hours. Given this is the compute-dominant
-    experiment of the whole track (as flagged in the task instructions), the
-    W grid here is narrowed to ONE representative weak point (not all four --
-    4.1/4.2 already cover the full weak grid cheaply) plus the full realistic
-    band, and n_real is set to 20 (the Task-1 stated FLOOR, not the ceiling).
-    This keeps the total run near ~1 hour instead of ~2.7."""
+    POST-HOC CORRECTION (superseding the original n_real=20 scope note): a
+    subsequent review of the FIRST --full run's r9_disorder_data.json found
+    that its Task 4.3 rows carried n_real=1-4 (out of 20 attempted) at
+    realistic W -- i.e. the reported means there were NOT valid ensemble
+    averages, contradicting this track's own mandatory-ensemble-averaging
+    rule. Root-cause investigation (see r9_disorder_methods.md) found the
+    dominant cause was a SEARCH-WINDOW BUG, not a physical self-consistency
+    instability: _disordered_Bc_selfconsistent centered its coarse B-scan on
+    the fixed clean `ana = sqrt(mu^2+delta^2)`, but Task 4.1 independently
+    showed the RIGID boundary itself is displaced from `ana` by a mean of
+    +0.45 to +1.0 (up to +2.9) at realistic W -- far outside the solver's old
+    +-0.20 search ceiling. Fixed by centering on the per-realization rigid
+    boundary instead (see _disordered_Bc_selfconsistent's docstring). This
+    raised the realistic-W success rate from ~5-20% to ~35-100% in post-fix
+    sampling; a smaller, genuine residual self-consistency-loop failure rate
+    remains and is reported honestly, not eliminated.
+
+    Given the corrected solver, per-task cost is now dominated by
+    successful (not fast-failing) solves, so it did NOT drop after the fix
+    -- see the re-run benchmark in the methods note for the honest updated
+    pre-run estimate. n_real is raised from the original 20 to 30 (up from
+    the Task-1 floor, though still short of Tasks 4.1/4.2's n=50 -- an
+    explicitly stated, compute-driven limitation, not a silent one) and the
+    convergence-check schedule is capped at 30 (vs 4.1/4.2's ceiling of 100)
+    for the same reason. The W grid remains narrowed to one representative
+    weak point (0, 1) plus the full realistic band (4.1/4.2 already cover
+    the full weak grid cheaply)."""
     if Ws is None:
         Ws = (0.0, 1.0) + tuple(W_REALISTIC)
     # _scshift_worker(N, mu, W, seed_seq, g=G_R7, delta=1.0)

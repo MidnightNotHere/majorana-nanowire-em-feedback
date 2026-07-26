@@ -180,29 +180,37 @@ quantum computing:
   (2021), arXiv:2109.00007 — σ_μ=2.5 meV Gaussian on-site fit → **W≈10–46Δ**,
   an order of magnitude above the R6-verified gap, matching that paper's own
   headline conclusion). **Finding (a genuine non-null — the one R9 track where
-  the project's null lineage does NOT uniformly survive):** at realistic W the
+  the project's null lineage does NOT survive):** at realistic W the
   ensemble-averaged topological classification **smoothly smears** (up to ~30%
   of realizations near the clean boundary misclassified at the top of the
   realistic band, saturating there, not diverging); the mean spurious sub-gap
   count does **not** grow but its realization-to-realization **spread** does
   (a physical mechanism for the *sporadic* — not universal — disorder-induced
   sub-gap structure the literature already links to contested zero-bias-peak
-  claims); and most strikingly, the R4/R5/R7 self-consistent inductive-feedback
-  solver's **convergence rate collapses from 100% (W=0) to 5–20% (realistic
-  W)** — where it does converge, the shift is ~100× the clean-model null, though
-  that magnitude rests on only 1–4 successful samples per W and is reported
-  with that explicit caveat. A real bug was caught and fixed in the
-  convergence-failure bookkeeping itself (a silent-NaN return path bypassed
-  the exception-based failure flag, undercounting the true failure rate
-  ~15–18×) — the underlying shift statistics were unaffected. Serial-vs-
-  parallel is bit-identical (both a cheap classification engine and the
-  expensive self-consistent engine); the cheap engine is dispatched **serially**
-  (measured: pool overhead exceeds its ~0.05s/task cost) while the expensive
-  engine is parallelised (~2.3–4×  speedup); the pre-run time estimate (~21 min)
-  undershot the real wall-clock (~77 min) because disorder-driven convergence
-  failure — invisible to an isolated per-task benchmark — costs *more* than a
-  successful solve, a limitation flagged explicitly rather than discovered
-  silently mid-run.
+  claims); and the R4/R5/R7 self-consistent inductive-feedback boundary shift
+  is **smoothly, monotonically non-null**: +0.2% at W=1Δ growing to **+29% →
+  +45% → +50% → +57%** across the realistic band (10→46Δ), two to three
+  orders of magnitude above the clean-model null, alongside a genuine
+  (~25–40%) residual self-consistency-loop failure rate and a growing
+  realization-to-realization spread — both reported honestly. **This
+  corrected the track's own first-pass result via a post-hoc review**: the
+  original run reported a 5–20% solver convergence rate built from n=1–4
+  "ensembles," which traced to a real bug — the disordered solver centered
+  its search on the fixed *clean* boundary rather than each realization's own
+  (already-displaced, per Task 4.1) rigid boundary, so at realistic W it was
+  searching in the wrong place, not failing because no solution existed.
+  Fixing the search center raised the realistic-W success rate to 57–77%
+  (n=17–23 of 30 attempted) and revealed the much larger, smooth, and
+  properly ensemble-averaged effect above; the original (superseded) run and
+  a full account of the root-cause investigation are preserved, not deleted,
+  in `r9_disorder_data.json` and the methods note. Serial-vs-parallel is
+  bit-identical (both engines); the cheap classification engine is dispatched
+  serially (pool overhead exceeds its ~0.05s/task cost) while the expensive
+  self-consistent engine is parallelised (~2.3–4× speedup); per-task cost did
+  **not** drop after the fix (successful solves cost as much as the fast
+  failures they replaced), so both the original and corrected pre-run
+  estimates undershot their real wall-clock — a limitation flagged explicitly
+  each time rather than discovered silently mid-run.
 - 📋 R9 (Track 4): **multi-subband extension — SCOPING ONLY, no implementation**
   (`src/r9_multisubband_scoping.md`). No simulation code was written or run; no
   file in `src/` was modified. Asks whether extending R6's single-subband 4N×4N
