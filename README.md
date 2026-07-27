@@ -179,38 +179,41 @@ quantum computing:
   primary source: Ahn, Pan, Woods, Stanescu, Das Sarma, PRMaterials 5, 124602
   (2021), arXiv:2109.00007 — σ_μ=2.5 meV Gaussian on-site fit → **W≈10–46Δ**,
   an order of magnitude above the R6-verified gap, matching that paper's own
-  headline conclusion). **Finding (a genuine non-null — the one R9 track where
-  the project's null lineage does NOT survive):** at realistic W the
-  ensemble-averaged topological classification **smoothly smears** (up to ~30%
-  of realizations near the clean boundary misclassified at the top of the
-  realistic band, saturating there, not diverging); the mean spurious sub-gap
-  count does **not** grow but its realization-to-realization **spread** does
-  (a physical mechanism for the *sporadic* — not universal — disorder-induced
-  sub-gap structure the literature already links to contested zero-bias-peak
-  claims); and the R4/R5/R7 self-consistent inductive-feedback boundary shift
-  is **smoothly, monotonically non-null**: +0.2% at W=1Δ growing to **+29% →
-  +45% → +50% → +57%** across the realistic band (10→46Δ), two to three
-  orders of magnitude above the clean-model null, alongside a genuine
-  (~25–40%) residual self-consistency-loop failure rate and a growing
-  realization-to-realization spread — both reported honestly. **This
-  corrected the track's own first-pass result via a post-hoc review**: the
-  original run reported a 5–20% solver convergence rate built from n=1–4
-  "ensembles," which traced to a real bug — the disordered solver centered
-  its search on the fixed *clean* boundary rather than each realization's own
-  (already-displaced, per Task 4.1) rigid boundary, so at realistic W it was
-  searching in the wrong place, not failing because no solution existed.
-  Fixing the search center raised the realistic-W success rate to 57–77%
-  (n=17–23 of 30 attempted) and revealed the much larger, smooth, and
-  properly ensemble-averaged effect above; the original (superseded) run and
-  a full account of the root-cause investigation are preserved, not deleted,
-  in `r9_disorder_data.json` and the methods note. Serial-vs-parallel is
-  bit-identical (both engines); the cheap classification engine is dispatched
-  serially (pool overhead exceeds its ~0.05s/task cost) while the expensive
-  self-consistent engine is parallelised (~2.3–4× speedup); per-task cost did
-  **not** drop after the fix (successful solves cost as much as the fast
-  failures they replaced), so both the original and corrected pre-run
-  estimates undershot their real wall-clock — a limitation flagged explicitly
-  each time rather than discovered silently mid-run.
+  headline conclusion). **Finding — a nuanced, W-dependent verdict, reached
+  after TWO rounds of post-hoc self-correction:** the ensemble-averaged
+  topological classification **smoothly smears** with W (up to ~30% of
+  realizations near the clean boundary misclassified at the top of the
+  realistic band, saturating there); the mean spurious sub-gap count does
+  **not** grow but its realization-to-realization **spread** does (a physical
+  mechanism for the *sporadic*, not universal, disorder-induced sub-gap
+  structure the literature already links to contested zero-bias-peak
+  claims) — both unaffected by anything below. The R4/R5/R7 self-consistent
+  inductive-feedback boundary shift is where two corrections happened: **(1)**
+  a genuine bug (the disordered solver centered its search on the fixed
+  *clean* boundary instead of each realization's own already-displaced rigid
+  boundary, so at realistic W it searched in the wrong place) was caught and
+  fixed, raising a first-pass 5–20%-success/n=1–4 "ensemble" to a properly-
+  converged N=80 result showing the shift growing smoothly from +0.2% (W=1Δ)
+  to +29%→+45%→+50%→+57% across the realistic band; **(2)** a follow-up
+  N-independence check (the same finite-size scrutiny already applied to
+  R4/R5/R7/R8-C) found that N=80 result itself substantially **inflated** the
+  bulk effect: re-run at N=120/160 (the nearest verified-clean system sizes;
+  N=60/90/100 hit a genuine or lucky-path dead-zone at this g), the W=46Δ
+  shift collapses from +56.5% to +9.6–10.8% and its significance from 3.74σ
+  to only 1.2–1.5σ from zero — **a confident non-null claim at high W does
+  NOT survive** — while the W=10Δ shift stays real and highly significant
+  (5.9–7.8σ) at every N, settling around +20–23%. The residual
+  self-consistency convergence-failure rate is *also* a finite-size effect
+  (reaches 100% success by N=160), and a direct check found **no**
+  correlation between failure and boundary-displacement magnitude (ruling
+  out a specific survivorship-bias concern). **Both superseded rounds are
+  preserved, not deleted**, in `r9_disorder_data.SUPERSEDED_task4_3.json`
+  and `r9_disorder_N_independence.json`/the methods note. Serial-vs-parallel
+  is bit-identical (all engines); per-task cost did **not** drop after either
+  fix (successful solves cost as much as the fast failures they replaced, and
+  larger N costs ~N³ more), so pre-run estimates undershot real wall-clock at
+  every stage — flagged explicitly each time rather than discovered silently
+  mid-run.
 - 📋 R9 (Track 4): **multi-subband extension — SCOPING ONLY, no implementation**
   (`src/r9_multisubband_scoping.md`). No simulation code was written or run; no
   file in `src/` was modified. Asks whether extending R6's single-subband 4N×4N

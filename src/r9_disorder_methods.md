@@ -471,6 +471,16 @@ realizations show a **reversed (negative) sign** even at high W (e.g. 3 of
 robust, large, positive, growing effect, any *individual* disordered
 device's shift is only loosely constrained by that mean.
 
+**⚠ This N=80-only picture is revised below.** Everything in this
+subsection is at a single system size, N=80 — the same finite-size
+scrutiny already applied to every other quantitative boundary-shift result
+in this project (R4, R5, R7, R8-C) had not yet been applied here. The
+**N-independence check further down found that this N=80 result
+substantially over-states the effect, especially at high W** (the growth
+with W above is itself partly a finite-size artifact concentrated at
+N=80) — read the "N-independence check" subsection below before treating
+the +29%→+57% growth trend as a settled bulk result.
+
 **A residual, genuine self-consistency-loop failure remains** (23-43% of
 attempts across W, without a clear trend in W) — this is the smaller,
 secondary effect the root-cause investigation predicted: even correctly
@@ -494,56 +504,197 @@ pole characterization, but confirming it precisely would require
 per-realization local mode-gain diagnostics, which is out of scope here
 and flagged as an open question, not asserted as proven.
 
+#### N-independence check — does the corrected shift survive finite-size scrutiny?
+
+**A second post-hoc review asked the obvious next question**: every other
+quantitative boundary-shift result in this project (R4's threshold
+overestimate, R5's Aharonov–Bohm decay, R7's L-independence, R8-C's SO
+correction) was put through explicit N-independence scrutiny and found to
+shrink toward zero in the bulk (N→∞) limit. The corrected Task 4.3 result
+above had not yet been checked this way — data JSON: `r9_disorder_N_
+independence.json`.
+
+**N-range feasibility (checked directly, not assumed).** At (μ=1.2,
+g=G_R7), N=60 is a **genuine regime-2 dead-zone** — it fails even R7's own
+5-path retried solver (`ring_Bc_selfconsistent_a`), matching R7's own
+established finding that this dead-zone is N-dependent, not monotonic in
+N. N=90 and N=100 fail the plain (unmodified) default-path solver too;
+N=100 is recoverable with R7's retry logic (not a genuine dead-zone), but
+modifying `_sc_baseline` to add retry logic was out of scope (the
+already-fixed core solver was not to be touched), so it was skipped rather
+than the pipeline being changed. N=110, 120, 130, 140, 160 all give a clean
+baseline on the first (unmodified) attempt. Given measured ~N³ cost growth
+(a single clean baseline at N=160 cost ~395s vs ~30s at N=80), the range
+was narrowed to **N ∈ {120, 160}** in addition to the existing N=80 — two
+additional points, not the suggested 2–3, an explicitly stated
+compute-driven reduction.
+
+**Result** (n_real=30 per (N,W), same base_seed=2028 seeding scheme, W=10
+and W=46 bracketing the realistic band):
+
+| N | W=10Δ shift | success (of 30) | σ from zero | W=46Δ shift | success (of 30) | σ from zero |
+|---:|---:|---:|---:|---:|---:|---:|
+| 80 | +29.40 % ± 3.77 | 23 (77%) | **7.80** | +56.51 % ± 15.09 | 21 (70%) | **3.74** |
+| 120 | +19.84 % ± 3.36 | 29 (97%) | **5.90** | +9.56 % ± 8.24 | 27 (90%) | 1.16 |
+| 160 | +22.55 % ± 3.67 | 30 (100%) | **6.15** | +10.85 % ± 7.21 | 30 (100%) | 1.50 |
+
+(A convergence-in-realization-count schedule (10→30, an independent draw)
+at the most extreme combination, N=160/W=46, confirms this specific point
+is genuinely ensemble-converged, not a fluke: mean 10.20→5.86→12.76→
+11.66→**10.85**, stabilizing from n=15 onward, consistent with the main
+sweep's own +10.85%. A first attempt at this full check was lost when the
+harness session was torn down mid-run — confirmed via zero residual
+`python.exe` processes, not a crash — and the 3 already-completed points
+were recovered verbatim from the surviving log rather than re-paying
+1100–2900s of already-sunk compute per point; only the missing N=160/W=46
+combination was actually recomputed.)
+
+**Reading — a genuinely mixed, two-part verdict, not a clean yes/no:**
+
+1. **Every reported number substantially over-stated the bulk effect at
+   N=80**, especially at high W: the W=46Δ point drops from +56.5% (N=80)
+   to +9.6% (N=120) — an **83% reduction** — then holds flat at +10.8%
+   (N=160). The W=10Δ point drops from +29.4% to +19.8% (N=120) then rises
+   slightly to +22.6% (N=160) — non-monotonic at the point-estimate level,
+   but the three values overlap within ~1 SEM of each other, consistent
+   with a real plateau around ~20-23% rather than a clean power law. **The
+   residual convergence-failure rate is itself a finite-size effect**: it
+   vanishes entirely by N=160 (100% success at both W points, up from
+   70-77% at N=80) — meaning the "genuine self-consistency-loop
+   instability" flagged as a secondary effect above is, at least in this N
+   range, a **finite-size instability**, not an intrinsic feature of the
+   bulk disordered system.
+2. **Unlike R4/R5/R7/R8-C, the shift does *not* vanish toward zero** — it
+   drops sharply from N=80 then plateaus at a smaller but still non-zero
+   value. But **the statistical CONFIDENCE in that non-zero value depends
+   strongly on W**, and this is the most important nuance the raw means
+   alone would hide: at **W=10Δ the effect stays highly significant at
+   every N tested (5.9–7.8σ from zero)** — a real, non-vanishing, robustly
+   supported disorder effect, just smaller than the (inflated) N=80 number
+   suggested. At **W=46Δ the significance collapses from 3.74σ (N=80) to
+   only 1.16–1.50σ (N=120, N=160)** — statistically consistent with a null
+   (zero) shift once the huge realization-to-realization spread (std
+   36–70%, growing with W) is properly accounted for at a converged N. **A
+   confident non-null claim at the high end of the realistic band does
+   NOT survive this scrutiny**, even though the point estimate itself
+   stays nominally positive.
+
+**Honest summary for 4.3:** the qualitative claim "disorder breaks the
+R4/R5/R7 null" **survives at W≈10Δ** (the lower end of the literature-
+realistic band) with high confidence, at a corrected magnitude of ~20-23%
+(not the inflated ~29% first reported at N=80) — a genuine, non-vanishing,
+two-orders-of-magnitude-above-clean-null effect. At **W≈46Δ (the upper
+end) the claim does not survive with confidence**: the N=80 number was
+both quantitatively inflated (56.5%→~10%) and statistically overconfident
+(3.74σ→~1.2-1.5σ), and a converged, larger-N ensemble cannot rule out a
+null shift there. This is reported plainly, not softened: the original
+corrected write-up's implicit suggestion that the effect *grows* smoothly
+with W up to +57% does **not** hold up once N-independence is checked —
+growth with W was itself partly a finite-size artifact concentrated at
+N=80.
+
+#### Survivorship-bias check — are the residual failures correlated with boundary displacement?
+
+The corrected-result write-up flagged, but did not test, a hypothesis:
+that the residual self-consistency-loop failures might preferentially
+exclude the *most*-displaced (most disorder-affected) realizations,
+biasing the reported mean toward smaller values. Tested directly at N=80,
+W=46 (the point with the largest effect and most failures) by reproducing
+the same 30 seeds and recording, for every realization, both the rigid
+(non-self-consistent) boundary displacement and whether the actual
+self-consistent solve converged:
+
+- **|displacement| among CONVERGED realizations:** mean 1.013, std 0.925 (n=21)
+- **|displacement| among FAILED realizations:** mean 0.988, std 0.836 (n=9)
+
+**These are statistically indistinguishable** (difference of 0.025 is tiny
+relative to either std of ~0.83-0.93). **The survivorship-bias hypothesis
+is not supported**: whether a given disorder realization's self-consistent
+solve converges does not appear to depend on how far that realization's
+rigid boundary has moved. The residual failures behave more like a
+roughly displacement-independent numerical fragility (consistent with the
+"local g_crit" mechanism proposed above, which need not correlate simply
+with the rigid boundary's own displacement) than a systematic exclusion of
+the most-affected realizations — so the reported means are not obviously
+biased in this particular way, though this does not rule out other,
+untested forms of bias.
+
 ---
 
 ## Bottom line
 
-**On-site disorder at literature-realistic strength (W ≈ 10-46Δ, per Ahn
-et al. 2021's verified σ_μ=2.5 meV Gaussian fit) meaningfully matters — this
-is the one R9 track where the project's null-result lineage does NOT
-survive**, in contrast to R9 Track 1 (the Z_r pole is bounded, not
-divergent) and Track 2 (finite temperature is negligible at 20 mK):
+**On-site disorder at literature-realistic strength meaningfully matters —
+but the honest verdict is a nuanced, W-dependent one, not a uniform
+"disorder breaks everything" story**, and this track went through two
+rounds of self-correction to get there:
 
 - **Boundary smearing (4.1, well-converged, n=50):** smooth (not sharp, not
   erratic) but real — up to ~30% of realizations near the clean boundary
   are misclassified at the top of the realistic band, saturating there
-  rather than growing without bound.
+  rather than growing without bound. Unaffected by either Task 4.3
+  correction below.
 - **Spurious sub-gap states (4.2, well-converged, n=50):** the ensemble
   *mean* count does not grow with W, but the realization-to-realization
   *spread* grows substantially — a physical mechanism for the sporadic
   (not universal) disorder-induced sub-gap structure the literature already
-  associates with the contested zero-bias-peak claims.
-- **Inductive-feedback null (4.3, n=30 attempted, corrected — see the
-  post-hoc review above):** a **genuine coding bug** (a fixed, not
-  per-realization, search center) was caught, root-caused, and fixed after
-  the first pass reported an invalid n=1-4 "ensemble." The **corrected**,
-  properly-converged (n=17-23 of 30) result shows the self-consistent
-  boundary shift is **smoothly, monotonically NON-null**: +0.2% at W=1Δ
-  growing to **+29% → +45% → +50% → +57%** across the realistic band
-  (10→46Δ) — two to three orders of magnitude above the clean-model null,
-  with a genuine (not window-driven) residual convergence-failure rate of
-  23-43% and a growing realization-to-realization spread, both reported
-  honestly rather than smoothed over.
+  associates with the contested zero-bias-peak claims. Unaffected by
+  either Task 4.3 correction.
+- **Inductive-feedback shift (4.3) — corrected TWICE, by two separate
+  post-hoc reviews:**
+  1. *Round 1:* a **genuine coding bug** (a fixed, not per-realization,
+     search center) was caught, root-caused, and fixed after the first pass
+     reported an invalid n=1-4 "ensemble." This produced a properly-
+     converged N=80 result showing the shift growing smoothly from +0.2%
+     (W=1Δ) to +29%→+45%→+50%→+57% across the realistic band.
+  2. *Round 2 (N-independence + survivorship check):* that N=80 result was
+     **itself substantially inflated by a finite-size effect** — re-run at
+     N=120 and N=160 (the nearest N above N=80 with a verified-clean SC
+     baseline; N=60/90/100 hit a genuine or lucky-path dead-zone at this
+     g), the shift at W=46Δ collapses from +56.5% (N=80) to +9.6-10.8%
+     (N≥120), and its statistical significance drops from 3.74σ to only
+     1.2-1.5σ from zero — **a confident non-null claim at high W does not
+     survive.** At W=10Δ, by contrast, the effect stays real and highly
+     significant (5.9-7.8σ) at every N tested, settling around +20-23%
+     (smaller than N=80's +29.4%, but genuinely non-zero, two orders of
+     magnitude above the clean-model null). The residual self-consistency
+     convergence-failure rate is *also* a finite-size effect — it reaches
+     100% success at N=160 for both W points tested — and a direct
+     survivorship-bias check (does convergence failure correlate with
+     boundary displacement?) found **no** correlation (|displacement| 1.01
+     vs 0.99 for converged vs failed, statistically indistinguishable),
+     so the reported means are not obviously biased in that particular way.
 
-**Every number above carries its realization count and spread, per the
-task's mandatory ensemble-averaging requirement; the W=0 gate passes
-exactly (all diffs 0.0, re-verified after the Task 4.3 fix) before any W>0
-result is trusted; the parallel infrastructure is bit-identical
-serial-vs-parallel for both engines; and the realistic W scale is grounded
-in a directly re-verified primary source (Ahn, Pan, Woods, Stanescu, Das
-Sarma, PRMaterials 5, 124602 (2021), arXiv:2109.00007), not an arbitrary
-choice.** The main stated limitations are compute-driven, not silent:
-Task 4.3's n_real=30 (vs Tasks 4.1/4.2's n=50) and its convergence-check
-ceiling of 30 (vs their 100) were capped because the corrected solver's
-per-task cost stayed high (successful solves cost as much as the fast
-failures they replaced), and the residual genuine self-consistency-loop
-failure rate (23-43%) means even n=30 attempted yields n=17-23 converged —
-both flagged explicitly, in the same spirit as R7's thermal-throttle
-disclosure. **A concrete process lesson from this round:** a first version
-of the corrected re-run driver script lacked the `if __name__ ==
-"__main__":` guard required by Windows' `multiprocessing` spawn method;
-Python's own `_check_not_importing_main` safety check caught this cleanly
-(a `BrokenProcessPool` crash, zero residual processes, no data corruption)
-rather than a runaway process cascade, and the fix was a one-line guard —
-noted here since it is exactly the kind of infrastructure mistake this
-project's parallelization tracks (R7, R8, R9) have otherwise avoided.
+**Honest, final headline:** disorder measurably smears the topological
+boundary (4.1) and adds sub-gap-state variance (4.2) at every realistic W
+tested — those findings are unaffected by anything above. The
+self-consistent inductive-feedback shift (4.3) is genuinely non-null and
+robustly significant **at the lower end of the realistic band (W≈10Δ,
+~20-23%)**, but a confident non-null claim **does not survive
+N-independence scrutiny at the upper end (W≈46Δ)** — there, the original
+finding was both quantitatively inflated (~5x) and statistically
+overconfident once properly converged at larger N. This is reported
+plainly because it is what a second, more careful look actually found —
+not because it is the more exciting or the more comfortable answer.
+
+**Every number above carries its realization count, spread, and (for 4.3)
+its statistical significance from zero; the W=0 gate passes exactly (all
+diffs 0.0) at every N tested; the parallel infrastructure is bit-identical
+serial-vs-parallel; the realistic W scale is grounded in a directly
+re-verified primary source (Ahn, Pan, Woods, Stanescu, Das Sarma,
+PRMaterials 5, 124602 (2021), arXiv:2109.00007).** Stated compute-driven
+limitations, not silent ones: Task 4.3's n_real=30 (vs 4.1/4.2's n=50); the
+N-independence check's N-range narrowed to {80,120,160} (not the suggested
+2-3 additional points beyond a wider range) given measured ~N³ cost growth;
+and only one (N,W) combination (160,46) got a full convergence-in-
+realization-count schedule, the others relying on N=80's own already-
+demonstrated convergence at n=30 for the same disorder-distribution family.
+**Two concrete process lessons from this track:** (1) a first version of
+the Task 4.3 re-run driver lacked the `if __name__ == "__main__":` guard
+required by Windows' `multiprocessing` spawn method — Python's own safety
+check caught this cleanly (`BrokenProcessPool`, zero residual processes, no
+data corruption) rather than a runaway process cascade; (2) the first
+N-independence run was lost mid-computation when the harness session was
+torn down (not a crash — zero residual processes) after completing 3 of 4
+(N,W) combinations; those 3 results were recovered verbatim from the
+surviving log rather than re-paying ~1100-2900s of sunk compute each, and
+only the missing combination was re-run.

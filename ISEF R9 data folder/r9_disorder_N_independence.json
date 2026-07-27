@@ -1,0 +1,135 @@
+{
+  "N_feasibility_check": {
+    "genuine_dead_zone_default_and_retry": [
+      60
+    ],
+    "fails_default_path_only_recoverable_with_retry_not_used_here": [
+      90,
+      100
+    ],
+    "clean_on_default_path": [
+      80,
+      110,
+      120,
+      130,
+      140,
+      160
+    ],
+    "N_tested_here": [
+      120,
+      160
+    ],
+    "note": "N range narrowed to {120,160} (2 additional points, not the suggested 2-3, given ~N^3 cost growth measured directly: a single clean baseline at N=160 cost ~395s vs ~30s at N=80) -- an explicitly stated compute-driven scope reduction."
+  },
+  "note_on_recovery": "The first run of this check (3 of 4 combos) was lost when the harness session was torn down mid-run (confirmed: zero residual python.exe processes, not a crash). Those 3 rows were recovered verbatim from the surviving stdout log rather than recomputed, to avoid re-paying ~1100-2900s of already-sunk compute per point; only the missing N=160,W=46 combo (plus its convergence check) was actually re-run here.",
+  "N80_reference_rows": "see r9_disorder_data.json task4_3_null_result (N=80: W=10: +29.398%, W=46: +56.514%)",
+  "rows": [
+    {
+      "N": 120,
+      "W": 10.0,
+      "mean": 19.8404,
+      "sem": 3.3613,
+      "n_real": 29,
+      "n_convergence_failed": 1,
+      "wall_s": 1124,
+      "source": "recovered_from_killed_run_log"
+    },
+    {
+      "N": 120,
+      "W": 46.0,
+      "mean": 9.5572,
+      "sem": 8.2396,
+      "n_real": 27,
+      "n_convergence_failed": 3,
+      "wall_s": 1805,
+      "source": "recovered_from_killed_run_log"
+    },
+    {
+      "N": 160,
+      "W": 10.0,
+      "mean": 22.5535,
+      "sem": 3.6663,
+      "n_real": 30,
+      "n_convergence_failed": 0,
+      "wall_s": 1306,
+      "source": "recovered_from_killed_run_log"
+    },
+    {
+      "n_real": 30,
+      "n_failed": 0,
+      "mean": 10.849119054300482,
+      "std": 39.51138388021636,
+      "sem": 7.213758743146832,
+      "distribution": [
+        -29.043511774790318,
+        33.77194529496701,
+        -21.414546035651664,
+        -10.501588680914342,
+        79.94957580557558,
+        16.065150642389643,
+        -27.978268606886225,
+        27.026812422020814,
+        -18.65848536918383,
+        52.753459048840355,
+        24.65389844320149,
+        -27.2394545339171,
+        6.724728611473771,
+        2.3425030297283294,
+        -20.491468191454683,
+        120.30022833800787,
+        -22.913321126909054,
+        10.350120264811775,
+        -22.63508830476236,
+        82.05563062214227,
+        38.38545826202312,
+        19.83044047927121,
+        -11.438738429575004,
+        -6.744272923228919,
+        -3.699425506266604,
+        -15.49308863731562,
+        -6.620283809454081,
+        87.16457158710467,
+        -1.9618971026079903,
+        -29.06751218962569
+      ],
+      "W": 46.0,
+      "N": 160,
+      "n_convergence_failed": 0,
+      "wall_s": 2891.2604808807373
+    }
+  ],
+  "N160_W46_full_convergence_check": {
+    "schedule": [
+      {
+        "n_real": 10,
+        "mean": 10.197054274636702,
+        "spread": 11.929170228959281,
+        "stabilized_vs_prev": false
+      },
+      {
+        "n_real": 15,
+        "mean": 5.864050007026588,
+        "spread": 8.494217722017021,
+        "stabilized_vs_prev": true
+      },
+      {
+        "n_real": 20,
+        "mean": 12.755915994934467,
+        "spread": 9.564623224327708,
+        "stabilized_vs_prev": true
+      },
+      {
+        "n_real": 25,
+        "mean": 11.658071271236526,
+        "spread": 7.818394369788621,
+        "stabilized_vs_prev": true
+      },
+      {
+        "n_real": 30,
+        "mean": 10.849119054300482,
+        "spread": 7.213758743146832,
+        "stabilized_vs_prev": true
+      }
+    ]
+  }
+}
