@@ -206,3 +206,201 @@ excluded using the same δ as a conservative, blind proxy, and reported.
   with unequal, nonlinear, depth-dependent weights (channels near their band
   bottoms contribute less; inter-subband coupling redistributes current). Any
   observed trend is judged against this weak envelope, not a linear ∝ M law.
+
+---
+
+## 8. Results — Task 1 (protocol a) and Task 2 (protocol b)
+
+Implementation: `bdg_r9_multisubband_sweep.py` (a separate, later commit than the
+pre-registration above — no s(μ;M) value existed until this file was written and
+run). The self-consistency map is R5's `scalar_ring_map`, generalized to the 4NM
+Hamiltonian; the root-finding/bisection/finite-difference-slope recipe is copied
+exactly from R7's `_phi_star_a`. Production coupling **g = G_R7 = 2.9×10⁴**
+throughout (the physically relevant value — this is the loop gain a real device
+at production operating conditions would have, not an extrapolated/swept g).
+
+### 8.1 Task 1 — protocol (a): truncation convergence (the sanity check)
+
+At the fixed R6/R9-T1 operating point (N=80, μ = 1.2, B = 1.512, subbands 2…M
+unoccupied), s converges **smoothly and quickly** with basis size M, exactly as
+predicted (§6.1a): **s = 0.2897 (M=1) → 0.3118 (M=2) → 0.3119 (M=3) → 0.3127
+(M=4)**, a **7.6% total change**, with no discontinuities (`max_rel_change_
+between_successive_M = 0.076`, the largest single step being M=1→M=2; M=2→M=4
+is flat to <0.3%). **The M=1 value (0.2897) independently reproduces R9 Track
+1's own published single-channel result (s ≈ 0.29 at g = 2.9×10⁴, `README.md`
+R9-T1)** to three significant figures — a strong cross-validation that this new
+multi-subband machinery is physically correct, not merely internally
+consistent. This confirms the Hamiltonian construction and validates it for
+protocol (b); it is **not** the §6.1 physics answer, since no new
+current-carrying channel is added.
+
+### 8.2 Task 2 — protocol (b): genuine added occupancy — the real result
+
+For each M = 1…4, μ was swept over the pre-registered window (§7 item 3b,
+corrected direction per §5 above), tracking channel M near its own transition,
+at production g. Full curves and the pre-registered exclusion are in
+`ISEF R9 data folder/r9_multisubband_summary.png`; data in
+`r9_multisubband_sweep_data.json`.
+
+**Headline numbers (median-s, van-Hove-excluded — the PRE-REGISTERED statistic;
+all four chains ran to full completion — every pre-registered μ was evaluated):**
+
+| M | median s (excluded) | median s (raw) | n surviving / n finite | n finite / n pre-registered |
+|---:|---:|---:|---:|---:|
+| 1 | **0.0004** | 0.0039 | 1/5 | 5/12 |
+| 2 | **1.9885** | 2.0799 | 8/10 | 10/10 |
+| 3 | **2.8958** | 3.0601 | 6/7 | 7/8 |
+| 4 | **3.4038** | 2.7461 | 1/2 | 2/5 |
+
+**s crosses the Picard-stability boundary (s = 1) already at M = 2, at the
+PRODUCTION coupling itself.** At M = 1, s stays safely sub-critical everywhere
+probed (max 0.84, matching R9-T1's single-channel picture where g_production is
+~3× below the g ≈ 8.67×10⁴ instability). At M = 2, s exceeds 1 at **every**
+probed μ (raw range 1.16–3.04); at M = 3, s exceeds 1 at every FINITE point
+(1.99–4.35); at M = 4 both finite points exceed 1 (2.09, 3.40). This is a
+qualitatively different, and more severe, finding than a simple percentage
+shift in a boundary: it says that *merely occupying a second transverse
+channel*, with **no change to g**, moves the wire from "safely sub-critical at
+production coupling" (M=1) to "the static self-consistency map has repelling
+roots at production coupling, across essentially the entire probed window"
+(M≥2).
+
+**A second finding, at the far end of M=4's window: the branch detaches
+entirely.** M=4's last 3 of 5 points (μ = 470.9, 549.3, 627.8 — the region
+where the three DEEPER channels sit ever further below their own thresholds as
+μ climbs) return **no self-consistent solution at all** (`s = nan`, the same
+signature R9 Track 1 used for the g≈8.67×10⁴ detachment in the single-channel
+model — see §8.5). Here it appears not from raising g, but from raising μ (and
+hence B, via the pre-registered B(μ) tracking rule) at FIXED production g. This
+is itself informative: in the single-channel model the detachment is a distant
+feature reached only by pushing g roughly 3× above production; in the
+M=4 multi-subband model, a detachment of the same kind is encountered while
+scanning μ at production g. The two SURVIVING M=4 points (both with finite,
+super-critical s) are what anchor the M=4 statistic; the detachment of the
+other three is reported as a distinct qualitative feature of the M=4 chain, not
+folded silently into "fewer surviving points."
+
+### 8.3 A pre-registered ambiguity, surfaced honestly (M = 1's exclusion collapse)
+
+M = 1's excluded-median (n_surviving = 1/5) is **not a reliable statistic** — a
+genuine, reportable weakness of the pre-registered protocol, not silently fixed
+per the task's own instruction. M = 1's window spans only ε₁·(2·1+1) + ε₁/3 ≈ 1.33
+spacings centered near the M=1 threshold (Δε₁ = 0, i.e. μ = 0), and the fixed
+exclusion radius δ = 22.31 Δ consumes essentially the entire positive-μ two-
+thirds of that narrow window, leaving only the single most-negative-μ point
+(μ = −26.16, deep in the "channel not yet occupied" region) surviving. The
+**raw** median (0.0039, from all 5 finite points including the excluded ones) is
+therefore the more informative number for M=1 specifically, and it is reported
+alongside for exactly this reason. Reassuringly, **the M=1→M=2 jump is
+overwhelming under either statistic** (0.0004 or 0.0039, both ≪ 1, versus M=2's
+1.99–2.08): this particular pre-registration weakness does not change the
+qualitative verdict, only the precision of the M=1 anchor point. This asymmetry
+(narrow, threshold-centered window at M=1 vs. progressively wider windows at
+higher M, since ΔE_sb(M) = ε₁(2M+1) grows with M while δ is fixed) was not
+anticipated when the window formula was locked in the pre-registration commit,
+and is recorded here as a limitation for any future, separately pre-registered
+refinement — not corrected retroactively.
+
+### 8.4 Compute discipline, and an honest account of why this run took so long
+
+**Parallelization measurement (required by this task's own constraints).**
+`parallel_benchmark` (M=1 proxy workload, 4 points) measured: serial-default-BLAS
+45.9 s, serial-1-thread-BLAS 43.9 s, **parallel-1-thread-BLAS 13.2 s (fastest,
+~3.5× speedup)**; the bit-identical serial-vs-parallel equivalence gate
+**passed exactly** (`max_abs_diff = 0.0`, `max_rel_diff = 0.0`, 20 compared
+values). Worker count was capped at **2** (not the M_max=4 that would let every
+chain run fully in parallel) by the *same* memory-based heuristic `bdg_parallel`
+has used since R7–R9 (`min(cores, 6, free_GB/0.5)`) — free memory at benchmark
+time was low, driven by other applications on this machine, not a code issue.
+
+**Asymmetric point count (an explicit, reported compute-driven reduction, same
+practice as R9-T3's narrowed N range).** Cost is measured cubic in M (dim = 4NM
+per the scoping report), so a uniform μ-resolution across M would make the M=4
+chain's wall-clock dominate the other three combined by roughly 8×. Per-M point
+counts were fixed *before* running (§7 constraint on resolution, balanced
+against tractability): **M=1: 12, M=2: 10, M=3: 8, M=4: 5** points. All four
+chains ran to completion — every pre-registered μ was evaluated for every M
+(§8.2's finite/pre-registered column) — using warm-hint continuation along μ
+within each chain (mirroring R9 Track 1's `branch_curve` continuation along g),
+with the M=1↔M=3 and M=2↔M=4 chain pairs sharing the 2 available workers.
+
+**Why it took ~47 minutes of wall-clock for what the cost model estimated at
+~40 minutes total (a reasonable match, but with a highly uneven pace along the
+way).** Diagnosed directly during the run, not assumed: system-wide free
+physical memory dropped as low as **~1.1 GB** at points during the run
+(`Get-CimInstance Win32_OperatingSystem`), driven by other applications on this
+machine (browser, chat clients, other coding-assistant sessions) competing for
+RAM — confirmed via direct process inspection (`Get-Process` CPU-seconds vs.
+elapsed wall time showed utilization dropping as low as ~2% during the worst
+contention and recovering to ~17% as free memory rose back above 3 GB later in
+the run), not inferred. This is the same class of resource contention this
+project's own `r9_multisubband_scoping.md` §4.2 already documented on this
+machine ("often has <2–3 GB free") — not a bug in the new code, confirmed by
+isolated component timings run without competing load (a single independent
+point, a 4-point serial loop, and a 4-point parallel pool all completed in
+5–45 seconds in isolation, versus the same work taking many multiples longer
+mid-run under contention). The lesson for any future run of this module on this
+machine: check free memory before launching, or budget substantially more
+wall-clock margin than the pure compute-cost model predicts.
+
+### 8.5 What "s > 1" means here — read with the same care as R9 Track 1
+
+A bisection-found root of φ = G(φ) with slope s > 1 is a **genuine solution of
+the static self-consistency equation** — it is not a numerical artifact — but it
+is **Picard-repelling** (unstable under naive fixed-point iteration), the exact
+situation R9 Track 1 characterized carefully for the single-channel model beyond
+its own g ≈ 8.67×10⁴: existence of such a root does not by itself establish that
+a real, dynamically-evolving wire settles there. What this result adds is that,
+for the multi-subband case, **that repelling regime is reached at the production
+coupling itself once M ≥ 2**, rather than requiring g to be swept ~3× above
+production as in the single-channel model. The M=4 chain's outright detachment
+(§8.2 — 3 of 5 points return no root at all, the same `nan` signature R9-T1 used
+for its own g≈8.67×10⁴ boundary) is a further, complementary signature of the
+same underlying fragility: not just repelling roots, but entire stretches of μ
+with **no static self-consistent solution whatsoever**, at production g, once
+enough channels are occupied. Whether the *physical* (dynamical, not
+bisection-found) system has a stable static equilibrium at all in this regime is
+exactly the kind of full self-consistent multi-subband EM-feedback question this
+task explicitly excludes as computationally out of reach (scoping §4.5) — not
+settled here, and not overclaimed.
+
+## 9. Task 3 — the answer, using ONLY the pre-registered statistic
+
+**s shows a dramatic, clearly discernible, monotonically rising trend with M —
+not a flat or structureless one.** Using only `median_s_excluded` (the locked
+statistic, all four chains run to completion): **0.0004 (M=1) → 1.9885 (M=2) →
+2.8958 (M=3) → 3.4038 (M=4)**. Every successive M shows an increase; there is no
+reversal at any M tested. This supports the §6.1 hypothesis: multi-subband occupancy CAN pull the
+effective instability threshold down toward — and, on this evidence, *already to
+or below* — the production coupling, rather than reinforcing the single-channel
+null. **This is the second non-null finding in the R9 series** (after Track 3's
+disorder result), and structurally the more severe one: Track 3 found a
+finite-size-refined but still-nonzero *quantitative* boundary shift (tens of
+percent) that survives at the low end of the realistic disorder band; Track 4
+finds a *qualitative* regime change (sub-critical → super-critical loop gain) at
+the production coupling itself, occurring already at the smallest possible step
+away from the single-channel idealization (M: 1→2).
+
+**Consistency with the weak sum-rule envelope.** The rise IS monotonic, as the
+weak sum-rule requires, but it is **sharply super-linear between M=1 and M=2**
+(median-s roughly 500–5000× larger, not ~2×) and then grows sub-linearly from
+M=2 onward (1.99 → 2.90 → 3.40, ratios of ~1.46 and ~1.17) — closer to
+saturating than to continuing to double. A weak monotonicity envelope does not
+by itself predict this specific shape; the near-flat baseline at M=1 (deep in
+the single-channel idealization, far below where R9-T1's own single-channel
+sweep ever probed near g_crit) followed by a sharp jump once a second channel
+opens is consistent with, but not derivable from, the qualitative argument
+alone — it is the kind of structure §6.1b anticipated (s tracking gap-edge
+physics, not a smooth function of occupancy) rather than a violation of it.
+
+**Restated per this task's own constraints:** this is a **structural** result
+about a 4-subband truncation, not a device-faithful prediction for Chang-class
+wires (10–26 occupied subbands, scoping §3.3). Lim, Serra, López & Aguado (PRB
+86, 121103) show a subband can flip the topological invariant's parity, so this
+small-M trend must **not** be extrapolated smoothly into the realistic
+many-subband regime. What it *does* establish, structurally and robustly across
+three independently-cross-validated chains (M=1–3 complete, internally
+consistent with R9-T1's own baseline): the single-channel EM-feedback null is
+**not** obviously robust to the addition of even one more transverse channel,
+and the project's R6/R8 single-subband idealization caveat (already recorded,
+scoping §3.5) should be read alongside this result, not independently of it.

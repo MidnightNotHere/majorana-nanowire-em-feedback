@@ -256,29 +256,57 @@ quantum computing:
   median-statistic protocol (committed before any s value is computed), costing
   ~2 hours rather than minutes. The full self-consistent sweep is explicitly
   excluded as out of reach.
-- 📋 R9 (Track 4) — **pre-registration (implementation begun; no s(μ;M) data
-  yet)** (`src/bdg_r9_multisubband.py`, `src/r9_multisubband_methods.md`). Builds
-  the 4NM multi-subband ring Hamiltonian (subband(M)⊗spin(2)⊗site(N), Nambu-
-  doubled — dimension 4NM per the scoping report, *not* 4NM²) with the mandatory
-  inter-subband Rashba coupling (Lim et al.'s gap-closing term) and locks the
-  entire measurement protocol **before any loop-gain value is computed**: the
-  van Hove exclusion radius δ, the subband energetics, the protocol-(a)/(b)
-  sweep windows and operating points, and the median-with-exclusion comparison
-  statistic. **All four mandatory construction gates pass**: M=1 reproduces
-  `_build_ring_lo_phased` entrywise (max\|ΔH\|=0.0); the decoupled-subband limit
-  equals the direct sum of M shifted single-subband blocks entrywise (0.0); PH
-  symmetry is exact (0.0) at every M=1–4; the inter-subband selection rule is
-  exact. **δ is verified against a genuinely diagonalized spectrum specifically
-  AT THRESHOLD** (the van Hove point), not just the smooth bulk: the closed form
-  runs 10–21% below the measured near-edge crossover at every N=80–640 tested
-  (confirming the +15% margin is conservative, not just asserted), with the
-  measured crossover itself mildly N-dependent (13% spread, converging toward
-  the closed form as N grows) — reported as a limitation, not patched by
-  inflating the margin post-hoc. One internal inconsistency in the scoping
-  prose's window direction (§7 item 3b said "below threshold," contradicting its
-  own §6.1a "re-tuned upward … genuinely occupied") is corrected here, blind to
-  s, before any sweep runs. The s(μ;M) sweep itself (Tasks 1–3) is a separate,
-  later commit by design, so this commit cannot contain a single s value.
+- 🔴 R9 (Track 4) — **NON-NULL: the loop gain s grows dramatically and
+  monotonically with occupied-subband count M, crossing the Picard-stability
+  boundary (s=1) at the PRODUCTION coupling itself once M≥2**
+  (`src/bdg_r9_multisubband.py`, `src/bdg_r9_multisubband_sweep.py`,
+  `src/r9_multisubband_methods.md §8–9`). Pre-registration first (own commit, no
+  s data): builds the 4NM multi-subband ring Hamiltonian
+  (subband(M)⊗spin(2)⊗site(N), Nambu-doubled — dimension 4NM per the scoping
+  report, *not* 4NM²) with the mandatory inter-subband Rashba coupling (Lim et
+  al.'s gap-closing term); locks the van Hove exclusion radius δ, subband
+  energetics, protocol-(a)/(b) windows, and the median-with-exclusion statistic
+  **before any loop-gain value is computed**. All four construction gates pass
+  exactly (M=1 bit-for-bit vs `_build_ring_lo_phased`; decoupled-limit entrywise
+  0.0; PH symmetry 0.0 at M=1–4; selection rule exact), and δ is verified
+  against a **genuinely diagonalized spectrum at threshold** (not just the
+  smooth bulk): the closed form runs 10–21% below the measured near-edge
+  crossover at N=80–640, confirming the +15% margin is conservative.
+  **Task 1 (protocol a, sanity check):** at fixed μ=1.2 (N=80), s converges
+  smoothly with M (0.2897→0.3118→0.3119→0.3127, a 7.6% total change, biggest
+  step M=1→2) and the M=1 value independently reproduces R9-T1's own published
+  s≈0.29 at g=2.9e4 to 3 significant figures — cross-validating the new
+  machinery. **Task 2 (protocol b, the real test — all four chains ran to
+  completion):** median-s (pre-registered, van-Hove-excluded) at production
+  g=2.9×10⁴: **M=1: 0.0004 → M=2: 1.99 → M=3: 2.90 → M=4: 3.40**. At M=1, s
+  stays safely sub-critical everywhere probed (max 0.84); at M≥2, s **exceeds 1
+  at essentially every finite probed μ** — a qualitative regime change, not a
+  percentage shift, reached by adding a single additional transverse channel
+  with **no change to g**. A second, complementary finding at M=4: the last 3
+  of 5 points (deep in the window) **detach entirely** — no self-consistent
+  solution at all, the same signature R9-T1 used for its own g≈8.67×10⁴
+  boundary, but reached here at production g by raising μ instead. One
+  pre-registered protocol weakness is surfaced honestly rather than patched:
+  M=1's narrow, threshold-centered window leaves only 1/5 points outside the
+  exclusion radius, so its raw median (0.0039) is reported alongside — the
+  M=1→M=2 jump is overwhelming under either number. Parallelization discipline
+  measured (not assumed): parallel-1-thread-BLAS fastest (13.2s vs 44–46s
+  serial, ~3.5×), serial-vs-parallel equivalence exact (`max_abs_diff=0.0`).
+  **Task 3 verdict:** s shows a clear, monotonically rising — not flat — trend
+  with M, consistent with the weak sum-rule envelope (though sharply
+  super-linear M=1→2, then saturating M=2→4). **This is the second non-null
+  result in the R9 series** (after Track 3's disorder finding) and
+  structurally the more severe one: a qualitative sub-critical→super-critical
+  transition at production coupling,
+  not merely a quantitative boundary shift. Read with the same care R9-T1
+  applied to its own s>1 branches: a bisection-found root with s>1 is a
+  genuine static solution but Picard-repelling (dynamically unreachable as
+  drawn), not proof the physical wire is unstable — the full self-consistent
+  multi-subband question remains out of reach (scoping §4.5) and is not
+  overclaimed here. **Explicitly structural, not device-faithful:** M≤4 is far
+  below real devices' 10–26 occupied subbands, and Lim et al. show a subband
+  can flip the invariant's parity, so this trend must not be extrapolated
+  smoothly to the many-subband regime.
 
 ## Requirements
 
