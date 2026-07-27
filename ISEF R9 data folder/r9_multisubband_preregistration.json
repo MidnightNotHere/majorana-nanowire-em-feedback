@@ -1,0 +1,182 @@
+{
+  "protocol_spec": {
+    "units": "dimensionless, Delta=1; multiply Delta-units by 0.25 meV for physical energies",
+    "locked_parameters": {
+      "t_norm": 66.2605584606254,
+      "alpha_norm": 8.0,
+      "a_lat_nm": 10.0,
+      "wire_W_nm": 50.0,
+      "eps_tol": 0.15,
+      "delta_margin": 0.15,
+      "offset": 0.05,
+      "g_probe": 29000.0,
+      "M_max": 4
+    },
+    "subband_epsilon1": 26.158619976065086,
+    "subband_epsilon1_meV": 6.539654994016272,
+    "subband_offsets_dEps": {
+      "M=1": [
+        0.0
+      ],
+      "M=2": [
+        0.0,
+        78.47585992819526
+      ],
+      "M=3": [
+        0.0,
+        78.47585992819526,
+        209.2689598085207
+      ],
+      "M=4": [
+        0.0,
+        78.47585992819526,
+        209.2689598085207,
+        392.3792996409763
+      ]
+    },
+    "subband_thresholds_meV": {
+      "M=1": [
+        0.0
+      ],
+      "M=2": [
+        0.0,
+        19.618964982048816
+      ],
+      "M=3": [
+        0.0,
+        19.618964982048816,
+        52.31723995213017
+      ],
+      "M=4": [
+        0.0,
+        19.618964982048816,
+        52.31723995213017,
+        98.09482491024407
+      ]
+    },
+    "subband_spacing_dEsb": {
+      "M=1": 78.47585992819526,
+      "M=2": 130.79309988032543,
+      "M=3": 183.1103398324556,
+      "M=4": 235.4275797845858
+    },
+    "van_hove_delta": 22.31264365769129,
+    "van_hove_delta_meV": 5.578160914422822,
+    "delta_over_spacing_headroom": {
+      "M=1": 0.2843249335286949,
+      "M=2": 0.17059496011721695,
+      "M=3": 0.12185354294086925,
+      "M=4": 0.0947749778428983
+    },
+    "protocol_a_operating_point": {
+      "mu": 1.2,
+      "B": 1.5120499351813308,
+      "M_range": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "protocol_b_window": {
+      "M=1": {
+        "mu_min": -26.158619976065086,
+        "mu_max": 78.47585992819526,
+        "threshold_dEps_M": 0.0,
+        "spacing_dEsb": 78.47585992819526,
+        "B_at_threshold": 0.95
+      },
+      "M=2": {
+        "mu_min": 34.878159968086784,
+        "mu_max": 209.2689598085207,
+        "threshold_dEps_M": 78.47585992819526,
+        "spacing_dEsb": 130.79309988032543,
+        "B_at_threshold": 0.95
+      },
+      "M=3": {
+        "mu_min": 148.23217986436882,
+        "mu_max": 392.3792996409763,
+        "threshold_dEps_M": 209.2689598085207,
+        "spacing_dEsb": 183.1103398324556,
+        "B_at_threshold": 0.95
+      },
+      "M=4": {
+        "mu_min": 313.90343971278105,
+        "mu_max": 627.8068794255621,
+        "threshold_dEps_M": 392.3792996409763,
+        "spacing_dEsb": 235.4275797845858,
+        "B_at_threshold": 0.95
+      }
+    },
+    "comparison_statistic": "median of s(mu) over the surviving window, excluding |mu - dEps_n| < delta for all n<=M (and any detected lobe-crossing); raw median reported alongside. g = g_probe (production)."
+  },
+  "construction_gates": {
+    "M1_bitforbit": {
+      "N": 40,
+      "n_points": 6,
+      "max_abs_dH": 0.0,
+      "max_abs_dI_bonds": 0.0,
+      "pass": true
+    },
+    "decoupled_limit": {
+      "N": 30,
+      "M": 4,
+      "max_abs_H_entrywise": 0.0,
+      "max_abs_spectrum_diff": 3.467448550509289e-12,
+      "spectrum_note": "spectrum diff is LAPACK reduction noise (~1e-12); entrywise Hamiltonian agreement is the exact gate",
+      "pass": true
+    },
+    "ph_symmetry": {
+      "M=1": 0.0,
+      "M=2": 0.0,
+      "M=3": 0.0,
+      "M=4": 0.0,
+      "worst_eps_PH": 0.0,
+      "pass": true
+    },
+    "intersubband_selection_rule": {
+      "M": 4,
+      "hermiticity_err": 0.0,
+      "diagonal_max": 0.0,
+      "even_difference_max": 0.0,
+      "pass": true
+    }
+  },
+  "van_hove_verification": {
+    "eps": 0.15,
+    "t": 66.2605584606254,
+    "delta_closed_no_margin": 19.402298832775035,
+    "delta_closed_with_margin": 22.31264365769129,
+    "per_N": [
+      {
+        "N": 80,
+        "delta_measured_at_threshold": 24.608625722289133,
+        "eigvalsh_vs_analytic_maxdiff": 1.4210854715202004e-13,
+        "ratio_closed_over_measured": 0.7884348785556726
+      },
+      {
+        "N": 160,
+        "delta_measured_at_threshold": 23.489676202862043,
+        "eigvalsh_vs_analytic_maxdiff": 1.4921397450962104e-13,
+        "ratio_closed_over_measured": 0.8259926048027435
+      },
+      {
+        "N": 320,
+        "delta_measured_at_threshold": 22.192569597161835,
+        "eigvalsh_vs_analytic_maxdiff": 1.9184653865522705e-13,
+        "ratio_closed_over_measured": 0.8742700455586881
+      },
+      {
+        "N": 640,
+        "delta_measured_at_threshold": 21.549251520913515,
+        "eigvalsh_vs_analytic_maxdiff": 2.4158453015843406e-13,
+        "ratio_closed_over_measured": 0.9003699647732606
+      }
+    ],
+    "N_independence_rel_spread": 0.13324782676676764,
+    "closed_over_measured_mean": 0.8472668734225912,
+    "closed_form_is_conservative_low": true,
+    "note": "delta measured from a genuine eigvalsh of the tight-binding chain at the band edge (van Hove point); closed form runs below measured, so the +15% margin over-excludes (safe)."
+  },
+  "all_gates_pass": true
+}

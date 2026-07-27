@@ -256,6 +256,29 @@ quantum computing:
   median-statistic protocol (committed before any s value is computed), costing
   ~2 hours rather than minutes. The full self-consistent sweep is explicitly
   excluded as out of reach.
+- 📋 R9 (Track 4) — **pre-registration (implementation begun; no s(μ;M) data
+  yet)** (`src/bdg_r9_multisubband.py`, `src/r9_multisubband_methods.md`). Builds
+  the 4NM multi-subband ring Hamiltonian (subband(M)⊗spin(2)⊗site(N), Nambu-
+  doubled — dimension 4NM per the scoping report, *not* 4NM²) with the mandatory
+  inter-subband Rashba coupling (Lim et al.'s gap-closing term) and locks the
+  entire measurement protocol **before any loop-gain value is computed**: the
+  van Hove exclusion radius δ, the subband energetics, the protocol-(a)/(b)
+  sweep windows and operating points, and the median-with-exclusion comparison
+  statistic. **All four mandatory construction gates pass**: M=1 reproduces
+  `_build_ring_lo_phased` entrywise (max\|ΔH\|=0.0); the decoupled-subband limit
+  equals the direct sum of M shifted single-subband blocks entrywise (0.0); PH
+  symmetry is exact (0.0) at every M=1–4; the inter-subband selection rule is
+  exact. **δ is verified against a genuinely diagonalized spectrum specifically
+  AT THRESHOLD** (the van Hove point), not just the smooth bulk: the closed form
+  runs 10–21% below the measured near-edge crossover at every N=80–640 tested
+  (confirming the +15% margin is conservative, not just asserted), with the
+  measured crossover itself mildly N-dependent (13% spread, converging toward
+  the closed form as N grows) — reported as a limitation, not patched by
+  inflating the margin post-hoc. One internal inconsistency in the scoping
+  prose's window direction (§7 item 3b said "below threshold," contradicting its
+  own §6.1a "re-tuned upward … genuinely occupied") is corrected here, blind to
+  s, before any sweep runs. The s(μ;M) sweep itself (Tasks 1–3) is a separate,
+  later commit by design, so this commit cannot contain a single s value.
 
 ## Requirements
 
