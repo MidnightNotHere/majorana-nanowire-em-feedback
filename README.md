@@ -324,6 +324,29 @@ quantum computing:
   non-monotonic M=3→M=4 step, itself a small-scale demonstration of that same
   non-smoothness warning — must not be extrapolated smoothly to the
   many-subband regime.
+  **Post-hoc investigation (`r9_multisubband_methods.md §10`, no re-run,
+  no protocol change):** separated "no root at all" (genuine detachment) from
+  "root found but van-Hove-excluded" per M — detachment rate is 58%(M=1) →
+  0%(M=2) → 12.5%(M=3) → 53%(M=4), itself non-monotonic, not a clean
+  increasing-with-M trend. Two distinct detachment mechanisms found via the
+  bare-gap signature: a few isolated points show a local gap dip (weakly
+  consistent with, but below the pre-registered lobe-detector's own 30%-of-
+  median threshold for, an inter-subband gap closing), while most detachment
+  — including M=1's and M=4's persistent high-μ tails — shows no gap feature
+  at all, more consistent with the self-consistency map's search range being
+  exceeded (an R9-T1-style existence boundary, reached via μ/B here instead of
+  g). M=1's n=1 survivor is now explained by two COMPOUNDING causes, not one:
+  a structural window/δ-ratio effect (δ/span = 28.4% at M=1, the highest of
+  any M) plus M=1's own high detachment rate independently removing most of
+  the window before exclusion even applies — an explicit statistical-weight
+  caveat for the M=1 point is now recorded in the methods note. The M=3→M=4
+  dip is NOT primarily a van-Hove-exclusion artifact (raw and excluded medians
+  are within 5% of each other at every M) but the verdict is still genuinely
+  mixed: consistent with the sum-rule's explicit non-guarantee across
+  different M-specific (μ,B) windows, compounded by a real coverage asymmetry
+  (M=4's high detachment rate leaves its surviving sample never reaching the
+  upper ~18% of its own window, unlike M=3's near-complete coverage) —
+  reported as an open, disclosed question, not forced to a clean answer.
 
 ## Requirements
 

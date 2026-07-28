@@ -347,6 +347,9 @@ anticipated when the window formula was locked in the pre-registration commit,
 and is recorded here as a limitation for any future, separately pre-registered
 refinement — not corrected retroactively.
 
+*(A deeper, quantitative investigation of exactly why n=1 — separating the
+window-geometry effect above from a second, independent cause — is in §10.3.)*
+
 ### 8.4 Compute discipline, and an honest account of why this run took so long
 
 **Parallelization measurement (required by this task's own constraints).**
@@ -503,3 +506,232 @@ sits above the s=1 stability boundary, regardless of the M=3-vs-M=4 ordering
 — and the project's R6/R8 single-subband idealization caveat (already
 recorded, scoping §3.5) should be read alongside this result, not
 independently of it.
+
+## 10. Post-hoc investigation: detachment structure, M=1's reliability, and
+##     the M=3→M=4 dip
+
+**Status of this section:** a post-hoc *investigation* of the already-computed,
+already-reported result in §8–9. It reads fields the statistic function
+(`preregistered_statistic`) already computes and stores in
+`r9_multisubband_sweep_data.json` (`n_raw_finite`, `n_excluded_by_vh`,
+`surviving_mask`) and the already-recorded `bare_gap` column — it does **not**
+re-run any sweep, re-derive δ, change any window, or alter any median value
+already reported in §8–9. Every number below is read directly from the
+existing data.
+
+### 10.1 Task 1 — detachment (no root at all) vs. van Hove exclusion (a root
+###      exists but is thrown out), separated per M
+
+These are two different things that §8.2's "n surviving / n finite" framing
+does not visually separate. **Detached** means `_phi_star_ms` found no sign
+change in `f(φ) = G(φ) − φ` even after the widened 3-period/121-point fallback
+scan (the same detachment signature R9 Track 1 used, identical code path) —
+no self-consistent solution exists there at all, independent of the van Hove
+rule. **Excluded by van Hove** means a root *was* found (finite s) but the
+point sits within δ of a subband threshold, so the pre-registered protocol
+throws it out. Reading `n_raw_finite`, `n_excluded_by_vh`, and
+`n_pre_registered − n_raw_finite` directly from the stored statistic:
+
+| M | n pre-registered | n finite (root found) | **n detached (no root)** | **detachment rate** | n excluded by van Hove | n surviving |
+|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 12 | 5 | **7** | **58.3%** | 4 | 1 |
+| 2 | 10 | 10 | **0** | **0%** | 2 | 8 |
+| 3 | 8 | 7 | **1** | **12.5%** | 1 | 6 |
+| 4 | 15 | 7 | **8** | **53.3%** | 2 | 5 |
+
+**The detachment rate does NOT increase monotonically with M** — it is
+58.3% (M=1) → 0% (M=2) → 12.5% (M=3) → 53.3% (M=4), the same non-monotonic
+shape already found for median-s itself (§9), not a clean "more channels ⇒
+more detachment" trend. M=2 is the cleanest chain of the four (every single
+pre-registered point returned a genuine root). This is reported as found —
+the hypothesis in the task brief that detachment rate might increase steadily
+with M is **not supported** by this M range.
+
+### 10.2 Two distinct detachment mechanisms, distinguished by the bare-gap signature
+
+`bare_gap_ms` records the non-self-consistent bulk gap (φ_self = 0) at *every*
+point, independent of whether a self-consistent root exists there — so it can
+be checked at detached points too, to ask whether each detachment coincides
+with a genuine local dip in the underlying spectrum (weakly consistent with a
+Lim-et-al.-type inter-subband gap closing) or not (more consistent with the
+self-consistency map's search range being exceeded — an "existence boundary"
+effect, the same character as R9-T1's own g-driven detachment, but reached
+here by raising μ/B at fixed g instead).
+
+Checking every detached point against its immediate neighbors' bare gap:
+
+| M | μ (detached) | bare_gap | local minimum vs. neighbors? | ≥30% of window-median gap (the pre-registered lobe-detector's own threshold)? |
+|---:|---:|---:|---:|---:|
+| 1 | 11.89 | 0.0489 | No (flat, ≈ neighbors 0.0489/0.0490) | No |
+| 1 | 30.91–78.48 (6 pts) | 0.0490 (flat) | No | No |
+| 3 | 183.11 | 0.0666 | **Yes** (neighbors 0.1136, 0.3450) | No (30%-of-median = 0.0344; 0.0666 is above it) |
+| 4 | 336.33 | 0.1199 | **Yes** (neighbors 0.7546, 0.2137) | No (30%-of-median = 0.0683; 0.1199 is above it) |
+| 4 | 426.01 | 0.2276 | **Yes** (neighbors 0.5398, 0.3642) | No (30%-of-median = 0.0683; 0.2276 is above it) |
+| 4 | 470.86 | 0.3101 | No (monotonic decline 0.3642→0.3101→0.2686) | No |
+| 4 | 538.12–627.81 (5 pts) | 0.2089→0.1385 (smooth decline) | No | No |
+
+**Two qualitatively different patterns are visible, though neither reaches the
+strength of a confirmed lobe crossing:**
+
+- **(A) "Local-dip-associated" detachment** — μ=183.11 (M=3), μ=336.33 and
+  426.01 (M=4): the bare gap dips *relative to its immediate neighbors* at
+  exactly the detached point, which is weakly suggestive of proximity to an
+  inter-subband gap-closing feature (the Lim et al. mechanism this track's
+  scoping named as mandatory to include). **This should not be overstated:**
+  the same-code, already-pre-registered `_detect_lobe_crossings` function
+  (used operationally to add extra exclusions in §8.2) requires a gap below
+  **30% of the window's median gap**, and *none* of these three points meet
+  that bar (`lobe_crossings_detected: []` for every M, already in the stored
+  data) — consistent with the honest reading that these are real local
+  minima, but modest ones, not the sharp, deep gap closing a true lobe
+  crossing would produce. "Weakly consistent with" is the right strength of
+  claim here, not "confirms."
+- **(B) "Existence-boundary" detachment** — μ=11.89 and the entire persistent
+  tail μ≥30.91 (M=1); μ=470.86 and the entire persistent tail μ≥538.12 (M=4):
+  no local gap dip at all — the bare gap is either flat (M=1) or continues a
+  smooth, already-established monotonic trend straight through the
+  detachment onset (M=4), with no distinguishing local feature. This pattern
+  is more consistent with the self-consistency map's search bracket (even
+  the widened fallback) failing to contain a root once B grows large enough
+  as μ climbs — the same *character* of detachment R9 Track 1 found by
+  raising g, here produced instead by raising μ (and hence B, via the
+  pre-registered tracking rule) at fixed production g.
+
+**Resolution caveat, stated plainly:** the existing μ-grid spacing (9.5–35 Δ
+depending on M) cannot resolve whether any of these transitions are sharp or
+gradual at finer resolution than the grid itself provides — this
+characterization is a correlational read of where detachment coincides with a
+gap feature, not a located phase boundary. Per this task's explicit
+instruction not to re-run the protocol, no additional points were computed to
+sharpen it; a genuine sharp-vs-soft characterization (mirroring R9-T1's own
+g_detach characterization) is flagged as a natural follow-up, not attempted
+here.
+
+### 10.3 Task 2 — why M=1's statistic rests on n=1, and why that specific
+###      number is expected structurally, not a code error
+
+M=1's window is `[thr − span/3, thr + span] = [−26.16, 78.48]` with
+`thr = Δε₁ = 0` and `span = 78.48`. The van Hove radius is fixed at
+`δ = 22.31` regardless of M. **δ/span is the highest of any M and shrinks
+monotonically with M** (M=1: 28.4%, M=2: 17.1%, M=3: 12.2%, M=4: 9.5%,
+computed directly from `subband_spacing(M)` — span grows with M while δ is
+fixed by construction). Because M=1's threshold sits at the absolute
+reference μ=0 and the window's lower edge is only span/3 = 26.16 below it,
+almost the entire window from μ=0 up to μ=+22.31 (most of the window's
+positive-μ two-thirds) falls inside the exclusion zone, and part of the
+negative-μ third does too — leaving only a narrow sliver, μ∈[−26.16,−22.31],
+one grid step wide, as geometrically capable of surviving exclusion *at all*,
+independent of whether a root exists there. This is exactly the
+"narrow-window-relative-to-δ" structural explanation the task brief
+anticipated, and it is confirmed quantitatively, not just plausible.
+
+**But that alone does not explain "only 1 of 12" — it compounds with §10.1's
+detachment finding.** The full 12-point classification:
+
+| μ | s | classification |
+|---:|---:|---|
+| −26.16 | 0.000435 | **SURVIVES** |
+| −16.65 | 0.000938 | excluded (van Hove) |
+| −7.13 | 0.003872 | excluded (van Hove) |
+| 2.38 | 0.354924 | excluded (van Hove) |
+| 11.89 | nan | **detached** |
+| 21.40 | 0.841974 | excluded (van Hove) |
+| 30.91–78.48 (6 pts) | nan | **detached** |
+
+Of the 12 pre-registered points: **1 survives, 4 are excluded by van Hove,
+and 7 are detached** — roughly half the window's fragility comes from the
+window-geometry effect (§10.3's δ/span argument, which alone would leave few
+survivors even if every point were finite) and the other half from M=1's
+own high detachment rate (§10.1: 58.3%, the highest of any M), which
+independently removes the window's entire high-μ half from contention before
+exclusion is even applied. Both causes are real; neither alone explains the
+n=1 result.
+
+**Raw (non-excluded) values, shown explicitly (already summarized as the
+`median_s_raw` figure in §8.2, shown here as the individual points that
+number is built from):** the 5 finite M=1 values are 0.000435, 0.000938,
+0.003872, 0.354924, 0.841974 — median (all 5) = **0.003872**, versus the
+pre-registered excluded statistic (n=1) = **0.000435**. Both numbers are
+**≪ 1** and **≪** every M≥2 value reported (M=2's lowest surviving value is
+1.159) — the qualitative M=1→M=2 jump is not sensitive to which of these two
+M=1 numbers is used, but the specific M=1 magnitude should not be read as a
+precise measurement.
+
+**Methods-note caveat (added here, as the task requires, not merely noted in
+this investigation's prose):** *the M=1 point in the pre-registered statistic
+carries much less statistical weight than the M=2/M=3/M=4 points — it rests
+on a single surviving sample out of 12 pre-registered points, for the
+structural window-geometry and detachment-rate reasons given above. Its
+near-zero value should be read as **consistent with** R9 Track 1's much more
+thoroughly characterized single-channel baseline (s≈0.29 at the R6/R9-T1
+operating point, §8.1's protocol-a cross-check), not as an independent,
+precise re-confirmation of it from this track's own protocol-b window.*
+
+### 10.4 Task 3 — is the M=3→M=4 dip real physics, a sampling artifact, or
+###      genuinely unclear?
+
+**Checking the van Hove exclusion step first, since it's the most obvious
+candidate mechanism.** Comparing raw (pre-exclusion) medians to the
+pre-registered (excluded) medians at every M shows the exclusion step moves
+each number only modestly:
+
+| M | median s (raw) | median s (excluded) | change from exclusion |
+|---:|---:|---:|---:|
+| 2 | 2.0799 | 1.9885 | −4.4% |
+| 3 | 3.0601 | 2.8958 | −5.4% |
+| 4 | 2.0579 | 2.0563 | −0.1% |
+
+**The van Hove exclusion step is therefore NOT the primary driver of the
+M=3-vs-M=4 gap** — both M=3 and M=4's raw and excluded medians are close to
+each other, and the M=3>M=4 ordering is already present in the *raw* medians,
+before any exclusion is applied at all. This rules out a simple "different
+exclusion counts explain the dip" reading.
+
+**What the raw point-count and coverage DO show:** M=3's finite (non-detached)
+points span its *entire* window continuously except for the single detached
+point at μ=183.11 — i.e. essentially full coverage from μ=148 (near threshold)
+to μ=392 (window's far edge). M=4's finite points, by contrast, are the
+*survivors of a 53.3% detachment rate* (§10.1) — they span only μ=313.90 to
+515.70, **never reaching the upper ~18% of M=4's own window** (μ=515.70 to
+627.81 is entirely detached, the persistent tail of §10.2). This is a genuine
+coverage asymmetry between the two M's samples, conceptually similar to the
+survivorship-bias check R9 Track 3 already ran on its own disorder ensemble:
+M=4's median characterizes "s where a solution exists" over a **narrower
+fraction of its nominal window** than M=3's median does, because a large part
+of M=4's window has no self-consistent solution to measure at all. Whether s
+would have continued declining, plateaued, or risen again in that unmeasured
+region is genuinely unknown — no root exists there to evaluate, so this is
+not a resolvable question with the current data, only a disclosable
+disanalogy between the two comparisons.
+
+**Consistency with the weak sum-rule argument (scoping §6.1).** That argument
+is explicitly *weak*: total current sums over occupied channels with
+*unequal, nonlinear, depth-dependent* weights, giving only an **envelope**
+expectation of increase, not a point-wise guarantee — and critically, it was
+stated for adding a channel at a **fixed** (μ, B) operating point, not for
+comparing two *different* M-specific windows centered on two different
+thresholds (M=3's window sits at μ≈148–392, M=4's at μ≈314–628 — different
+(μ, B) neighborhoods, not the same point with one more channel added). Read
+this way, the M=3→M=4 decline in the window-median statistic is **not a
+violation of a hard prediction** — the sum-rule argument does not, in its own
+stated form, forbid it.
+
+**Verdict — genuinely mixed, as the task anticipated it might be, not forced
+to a clean answer:** the M=3>M=4 ordering is not clean confirmed physics, and
+it is not a simple counting/exclusion artifact either (the exclusion step
+barely moves either number). The most defensible reading is that it reflects
+**(i)** the weak sum-rule's explicit non-guarantee of point-wise monotonicity
+across genuinely different M-specific (μ, B) windows, compounded by **(ii)**
+a real coverage asymmetry — M=4's much higher detachment rate systematically
+narrows the μ-range over which its median could even be computed, relative to
+M=3 — that is disclosed here rather than resolved. Distinguishing how much of
+the gap is attributable to (i) versus (ii) would require a matched-coverage
+resampling analysis, which is out of this investigation's scope (it would
+mean recomputing statistics over a restricted, common μ-range across M,
+arguably a new derived statistic, not a re-tune of the existing one, but still
+new analysis beyond what was asked here) — flagged as a natural next question,
+not attempted. **What is unaffected by any of this:** every individual finite
+s value at every M≥2, in both M=3 and M=4's full data, sits above the s=1
+stability boundary (§8.2, §9) — the qualitative sub-critical→super-critical
+transition at production coupling does not depend on resolving the M=3-vs-M=4
+ordering question.
