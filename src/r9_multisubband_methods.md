@@ -735,3 +735,176 @@ s value at every M≥2, in both M=3 and M=4's full data, sits above the s=1
 stability boundary (§8.2, §9) — the qualitative sub-critical→super-critical
 transition at production coupling does not depend on resolving the M=3-vs-M=4
 ordering question.
+
+## 11. Second post-hoc investigation: why is the detachment rate U-shaped
+##     (M=1, M=4 high; M=2, M=3 low), not monotonically increasing?
+
+**Status of this section:** a further post-hoc investigation of §10.1's
+detachment-rate finding (58.3% / 0% / 12.5% / 53.3% for M=1–4). Reads only
+already-computed fields (`mu`, `B`, `phi_star`, `bare_gap`, all already stored
+per point in `r9_multisubband_sweep_data.json`) plus the pre-registered window
+geometry (`protocol_b_window`, `subband_offsets`, `subband_spacing` —
+unchanged, not re-derived). No sweep was re-run, no window/δ/statistic was
+altered, and no number already reported in §8–10 is changed by anything
+below.
+
+### 11.1 Where, within each window, do M=1's and M=4's detached points fall?
+
+Expressing each point's μ as a fraction of its own window,
+`frac = (μ − μ_min) / (μ_max − μ_min)` (0 = window start, 1 = window end):
+
+**M=1** (window [−26.16, 78.48]): finite at frac = 0, 0.09, 0.18, 0.27, 0.45;
+**one isolated detachment at frac = 0.36** (μ=11.89, between two finite
+points); then **detached continuously from frac = 0.55 through frac = 1.00**
+(μ = 30.91 … 78.48, six consecutive points, the window's entire remaining
+upper half) — a **persistent tail that runs all the way to the window's
+high-μ edge and never recovers**.
+
+**M=4** (window [313.90, 627.81], post-densification): finite at frac = 0,
+0.14, 0.21, 0.29, 0.43, 0.57, 0.64; **three isolated detachments scattered
+through the interior** (frac = 0.07, 0.36, 0.50 — μ = 336.33, 426.01, 470.86,
+each with a finite point immediately before *and* after it); then **detached
+continuously from frac = 0.71 through frac = 1.00** (μ = 538.12 … 627.81, five
+consecutive points) — the same **persistent-tail-to-the-edge** shape as M=1.
+
+**Direct comparison:** both M=1 and M=4 show the *same qualitative shape* — a
+mix of scattered isolated single-point failures (each recovered by the very
+next point) plus a **persistent tail that begins at some onset point and runs
+uninterrupted to the window's high-μ edge, never recovering**. This shared
+shape is not coincidental-looking (a "point of no return" that never reverses
+across 5–6 consecutive points, twice, independently) and does look like a real
+common phenomenon. **But the onset location, normalized by each channel's own
+threshold and spacing, is NOT the same between the two:**
+
+| M | last finite point, (μ−thr)/span | first point of the *persistent* tail, (μ−thr)/span |
+|---:|---:|---:|
+| 1 | 0.273 | **0.394** |
+| 4 | 0.524 | **0.619** |
+| 2 (reference) | 1.000 (window end) | — no persistent tail at all |
+| 3 (reference) | 1.000 (window end) | — no persistent tail at all (only 1 isolated point) |
+
+M=1's persistent tail begins at only 39% of its own channel spacing past
+threshold; M=4's begins at 62% — genuinely different fractions, not a shared
+numerical constant. M=2 and M=3, by contrast, track their principal branch
+successfully all the way to **100%** of their own window (their own full
+`thr + span` upper bound) without ever hitting this kind of persistent
+failure. **So M=1 and M=4 share a qualitative failure shape (persistent,
+non-recovering tail to the window edge) that M=2/M=3 simply never exhibit at
+all — but the specific onset location is not quantitatively identical between
+M=1 and M=4**, which is evidence against (though does not fully rule out) a
+single shared numerical trigger value.
+
+### 11.2 Ruling out the two most obvious numerical explanations, with direct evidence
+
+**Hypothesis: "large B exceeds some numerical range."** Checking the actual
+`B` values recorded at every point: M=1's detached points span B ≈ 12–78;
+M=4's span B ≈ 34–235. But **M=2 reaches B up to 130.75 and M=3 reaches B up
+to 183.06 — both larger than M=1's entire range and comparable to most of
+M=4's — with M=2 showing ZERO detachment and M=3 only one isolated point.**
+Large B by itself is **not sufficient** to trigger detachment (M=2/M=3 are a
+direct counterexample at even larger B), and is therefore **ruled out** as
+the explanation, not merely unsupported.
+
+**Hypothesis: "the fixed-width search bracket (from `_find_fixed_points_ms`
+/ `_phi_star_ms`, ±1.5 or ±3 periods = ±0.118 / ±0.236 in phase units) can't
+reach the true root once B/μ has pushed it far away" — the mechanism this
+task named by analogy to R9 Track 3's search-centered-on-the-wrong-value bug.**
+Checking `phi_star` (the self-consistent phase actually found) at the last
+finite point immediately *before* each onset: M=1's φ* = 0.021 at μ=21.40
+(only **8.9%** of the ±3-period search width used); M=4's φ* = −0.011 at
+μ=515.70 (only **4.7%** of that width). **In both cases φ* is small and
+comfortably inside the search range right up until the very next point, where
+it vanishes entirely** (no gradual approach to the search boundary is
+visible anywhere in the data). If the search window were too narrow for a
+root that had drifted far away, φ* would be expected to trend toward the edge
+of the search range before failing — it does not. **This specific
+window-construction/search-range hypothesis is therefore also directly
+contradicted by the data, not merely unconfirmed.**
+
+**Checking against the established R4/R5/R7 "razor-thin dead-zone at a
+gap-closing" precedent, too.** R4's own methods note documents a genuine,
+previously-validated phenomenon: "exactly at the gap-closing the principal
+self-phase branch detaches ... the sawtooth self-consistency map jumps across
+the identity line without crossing it" (`r4_pfaffian_boundary_methods.md`,
+Solver section and Finding 1) — a real, physical (not numerical) dead-zone,
+but one specifically tied to the spectral gap closing. Checking `bare_gap` at
+every point in both persistent tails: **M=1's tail sits at bare_gap ≈ 0.049,
+completely flat**; **M=4's tail declines smoothly from 0.209 to 0.139 with no
+discontinuity or minimum** — **no spectral gap closure accompanies either
+persistent tail.** This means the M=1/M=4 phenomenon is **not simply the same
+mechanism as R4/R5/R7's own precedent**, which requires an actual gap closing
+— it is evidently a distinct way for the principal-branch fixed point to stop
+existing, one this track's own code has not previously characterized.
+
+### 11.3 Task 2 — are M=2/M=3 the unremarkable baseline?
+
+Yes, and this reframes the question correctly, as the task anticipated. R4's
+own established result is that the self-consistency map is **attracting at
+the generic transition field for every N tried**, with genuine detachment
+confined to a narrow window specifically at a gap-closing — i.e., **low/zero
+detachment away from a gap-closing is the documented, expected default**, not
+something that itself needs explaining. M=2 (0/10 detached) and M=3 (1/8,
+a single isolated point) are fully consistent with that established baseline.
+**The real, correctly-framed question is not "why is the rate U-shaped" but
+"why do M=1 and M=4 specifically deviate from the otherwise-expected clean
+baseline that M=2 and M=3 both confirm."**
+
+### 11.4 Task 3 — verdict
+
+Evaluating the three options directly:
+
+- **(a) A shared numerical/structural cause, unrelated to physics** — the
+  *specific* mechanism this task named (window-construction/search-range
+  fragility, by analogy to R9 Track 3's search-centering bug) is **directly
+  ruled out** by §11.2: φ* stays small and well inside the search range at
+  every point immediately preceding a detachment onset, with no trend toward
+  the boundary. A large-B explanation is also ruled out by direct
+  counterexample (M=2/M=3 reach comparable or larger B with no such failure).
+  **(a), in the specific form proposed, is not supported by the evidence.**
+- **(b) Two different, independently-explicable causes — one for M=1, one
+  for M=4 (genuine physics for M=4, a distinct small-window edge effect for
+  M=1)** — partially supported: M=1's situation *does* have a documented,
+  M=1-unique structural feature (§10.3: μ<0 there means the single channel is
+  literally unoccupied, and δ/span=28.4% is the highest of any M) that has no
+  exact analogue at M=4. But the *persistent-tail* shape itself (§11.1) is
+  shared in form between M=1 and M=4 in a way that looks like more than
+  coincidence, and neither M=1's nor M=4's tail is explained by a confirmed
+  mechanism (§11.2 rules out the two most obvious ones for both).
+- **(c) Genuinely inconclusive given the available sample sizes** — **this is
+  the best-supported reading, with real content, not a shrug:** the two most
+  obvious candidate explanations (large-B, search-range) are **actively
+  ruled out**, not merely unconfirmed, which is itself a genuine finding. What
+  remains is a real, shared, non-coincidental-looking *shape* (a
+  never-recovering tail to the window's high-μ edge, occurring only for M=1
+  and M=4) whose underlying cause is not identified by the data or code paths
+  available here, and whose onset location is quantitatively different
+  between the two (39% vs 62% of the channel's own spacing past threshold —
+  §11.1), arguing against (though not fully excluding) a single shared
+  numerical constant as the trigger.
+
+**Conclusion: (c), with two specific hypotheses actively excluded rather than
+merely unresolved.** The detachment-RATE finding should be reported as an
+**open, disclosed phenomenon distinct from and additional to** the
+gap-dip-associated detachments already characterized in §10.2 — not
+attributed to a search-window bug (ruled out), not attributed to the
+established R4/R5/R7 gap-closing dead-zone (ruled out via the flat/smooth
+bare_gap), and not confidently attributed to M-dependent physics either
+(no confirmed mechanism, and the two onset fractions differ). **What additional
+data would resolve this:** a denser μ-scan specifically bracketing each
+persistent-tail onset (e.g. at M=1 between μ=21.40 and μ=30.91, and at M=4
+between μ=515.70 and μ=538.12) would show whether the transition is sharp or
+gradual and whether it coincides with any other computable quantity (e.g. a
+higher-harmonic feature in the current-phase relation not captured by
+`bare_gap`, which only reports the minimum |eigenvalue|, not the shape of
+I(φ) itself) — flagged as a natural, scoped follow-up, not attempted here per
+this task's explicit instruction not to re-run the protocol.
+
+**Unaffected by any of this:** the pre-registered s-vs-M result (§8–9) is
+built entirely from the points that DID converge, and does not depend on
+explaining why the others did not — **the s-crosses-1-at-M≥2 finding remains
+this track's real headline, unchanged.** Because this section's conclusion is
+diagnosis, not remediation, no fix is proposed or applied here; whether it is
+worth a future, separately-scoped investigation (with new instrumentation to
+distinguish a true sign-non-change from a discontinuity-rejected sawtooth
+jump, per §11.2's precedent check) is a decision for a future task, not this
+one.
