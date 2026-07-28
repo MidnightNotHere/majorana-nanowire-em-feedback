@@ -256,9 +256,10 @@ quantum computing:
   median-statistic protocol (committed before any s value is computed), costing
   ~2 hours rather than minutes. The full self-consistent sweep is explicitly
   excluded as out of reach.
-- 🔴 R9 (Track 4) — **NON-NULL: the loop gain s grows dramatically and
-  monotonically with occupied-subband count M, crossing the Picard-stability
-  boundary (s=1) at the PRODUCTION coupling itself once M≥2**
+- 🔴 R9 (Track 4) — **NON-NULL: the loop gain s grows dramatically with
+  occupied-subband count M, crossing the Picard-stability boundary (s=1) at the
+  PRODUCTION coupling itself once M≥2 — though the trend is NOT strictly
+  monotonic once M=4 is properly resolved (see below)**
   (`src/bdg_r9_multisubband.py`, `src/bdg_r9_multisubband_sweep.py`,
   `src/r9_multisubband_methods.md §8–9`). Pre-registration first (own commit, no
   s data): builds the 4NM multi-subband ring Hamiltonian
@@ -278,35 +279,51 @@ quantum computing:
   s≈0.29 at g=2.9e4 to 3 significant figures — cross-validating the new
   machinery. **Task 2 (protocol b, the real test — all four chains ran to
   completion):** median-s (pre-registered, van-Hove-excluded) at production
-  g=2.9×10⁴: **M=1: 0.0004 → M=2: 1.99 → M=3: 2.90 → M=4: 3.40**. At M=1, s
+  g=2.9×10⁴: **M=1: 0.0004 → M=2: 1.99 → M=3: 2.90 → M=4: 2.06**. At M=1, s
   stays safely sub-critical everywhere probed (max 0.84); at M≥2, s **exceeds 1
-  at essentially every finite probed μ** — a qualitative regime change, not a
-  percentage shift, reached by adding a single additional transverse channel
-  with **no change to g**. A second, complementary finding at M=4: the last 3
-  of 5 points (deep in the window) **detach entirely** — no self-consistent
-  solution at all, the same signature R9-T1 used for its own g≈8.67×10⁴
-  boundary, but reached here at production g by raising μ instead. One
-  pre-registered protocol weakness is surfaced honestly rather than patched:
-  M=1's narrow, threshold-centered window leaves only 1/5 points outside the
-  exclusion radius, so its raw median (0.0039) is reported alongside — the
-  M=1→M=2 jump is overwhelming under either number. Parallelization discipline
-  measured (not assumed): parallel-1-thread-BLAS fastest (13.2s vs 44–46s
-  serial, ~3.5×), serial-vs-parallel equivalence exact (`max_abs_diff=0.0`).
-  **Task 3 verdict:** s shows a clear, monotonically rising — not flat — trend
-  with M, consistent with the weak sum-rule envelope (though sharply
-  super-linear M=1→2, then saturating M=2→4). **This is the second non-null
-  result in the R9 series** (after Track 3's disorder finding) and
-  structurally the more severe one: a qualitative sub-critical→super-critical
-  transition at production coupling,
-  not merely a quantitative boundary shift. Read with the same care R9-T1
-  applied to its own s>1 branches: a bisection-found root with s>1 is a
-  genuine static solution but Picard-repelling (dynamically unreachable as
-  drawn), not proof the physical wire is unstable — the full self-consistent
-  multi-subband question remains out of reach (scoping §4.5) and is not
-  overclaimed here. **Explicitly structural, not device-faithful:** M≤4 is far
-  below real devices' 10–26 occupied subbands, and Lim et al. show a subband
-  can flip the invariant's parity, so this trend must not be extrapolated
-  smoothly to the many-subband regime.
+  at every single finite probed μ, individually** — a qualitative regime
+  change, not a percentage shift, reached by adding a single additional
+  transverse channel with **no change to g**. M=4's number was revised DOWN
+  from an initial sparse estimate of 3.40 (1 surviving point of 2, out of 5
+  pre-registered) after densifying that chain to 15 points within the
+  *identical* pre-registered window: the fuller data shows the same
+  rise-then-decline shape already visible in M=2/M=3 (peaking ~3.4 near
+  threshold, declining to ~1.55 before detaching), and 5 of 7 finite points
+  survive exclusion — a much better-supported number, reported instead of the
+  original one, not alongside it. A second, complementary finding at M=4: 8 of
+  15 densified points **detach entirely** — no self-consistent solution at all
+  — including a persistent detached region for every μ≥538, placing a leading-
+  edge detachment boundary at μ_detach(M=4)≈516–538, the multi-subband
+  analogue of R9-T1's own g≈8.67×10⁴ boundary but reached here at *fixed*
+  production g by raising μ instead. One pre-registered protocol weakness is
+  surfaced honestly rather than patched: M=1's narrow, threshold-centered
+  window leaves only 1/5 points outside the exclusion radius, so its raw
+  median (0.0039) is reported alongside — the M=1→M=2 jump is overwhelming
+  under either number. Parallelization discipline measured (not assumed):
+  parallel-1-thread-BLAS fastest (13.2s vs 44–46s serial, ~3.5×),
+  serial-vs-parallel equivalence exact (`max_abs_diff=0.0`).
+  **Task 3 verdict:** s rises sharply M=1→M=2→M=3, then **declines** M=3→M=4
+  (2.90→2.06, ~29%) — a genuine deviation from the weak sum-rule's monotone-
+  increase envelope, not merely an unusual shape consistent with it (two
+  readings offered in the methods note, neither privileged: the envelope's
+  premise may not hold once inter-subband coupling is strong, or M=4's
+  surviving points may be a non-generic slice of a detachment-dominated
+  window). What is NOT in doubt: **every finite point at every M≥2, individually,
+  sits above s=1** — the qualitative sub-critical→super-critical transition at
+  production coupling is robust even though the specific M=3-vs-M=4 magnitude
+  ordering is not. **This is the second non-null result in the R9 series**
+  (after Track 3's disorder finding) and structurally the more severe one: a
+  qualitative regime change, not merely a quantitative boundary shift. Read
+  with the same care R9-T1 applied to its own s>1 branches: a bisection-found
+  root with s>1 is a genuine static solution but Picard-repelling (dynamically
+  unreachable as drawn), not proof the physical wire is unstable — the full
+  self-consistent multi-subband question remains out of reach (scoping §4.5)
+  and is not overclaimed here. **Explicitly structural, not device-faithful:**
+  M≤4 is far below real devices' 10–26 occupied subbands, and Lim et al. show a
+  subband can flip the invariant's parity, so this trend — including its
+  non-monotonic M=3→M=4 step, itself a small-scale demonstration of that same
+  non-smoothness warning — must not be extrapolated smoothly to the
+  many-subband regime.
 
 ## Requirements
 

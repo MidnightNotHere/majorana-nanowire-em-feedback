@@ -243,42 +243,88 @@ at production g. Full curves and the pre-registered exclusion are in
 `r9_multisubband_sweep_data.json`.
 
 **Headline numbers (median-s, van-Hove-excluded — the PRE-REGISTERED statistic;
-all four chains ran to full completion — every pre-registered μ was evaluated):**
+all four chains ran to full completion — every pre-registered μ was evaluated).
+M=4 was subsequently DENSIFIED from 5→15 points within the identical
+pre-registered window (§8.2b) — the table below is the final, post-densification
+state:**
 
 | M | median s (excluded) | median s (raw) | n surviving / n finite | n finite / n pre-registered |
 |---:|---:|---:|---:|---:|
 | 1 | **0.0004** | 0.0039 | 1/5 | 5/12 |
 | 2 | **1.9885** | 2.0799 | 8/10 | 10/10 |
 | 3 | **2.8958** | 3.0601 | 6/7 | 7/8 |
-| 4 | **3.4038** | 2.7461 | 1/2 | 2/5 |
+| 4 | **2.0563** | 2.0579 | 5/7 | 7/15 |
 
 **s crosses the Picard-stability boundary (s = 1) already at M = 2, at the
 PRODUCTION coupling itself.** At M = 1, s stays safely sub-critical everywhere
 probed (max 0.84, matching R9-T1's single-channel picture where g_production is
 ~3× below the g ≈ 8.67×10⁴ instability). At M = 2, s exceeds 1 at **every**
 probed μ (raw range 1.16–3.04); at M = 3, s exceeds 1 at every FINITE point
-(1.99–4.35); at M = 4 both finite points exceed 1 (2.09, 3.40). This is a
-qualitatively different, and more severe, finding than a simple percentage
-shift in a boundary: it says that *merely occupying a second transverse
-channel*, with **no change to g**, moves the wire from "safely sub-critical at
-production coupling" (M=1) to "the static self-consistency map has repelling
-roots at production coupling, across essentially the entire probed window"
-(M≥2).
+(1.99–4.35); at M = 4, s exceeds 1 at every one of the 7 finite points (surviving
+range 1.55–3.40, full finite range 1.55–3.47). This is a qualitatively
+different, and more severe, finding than a simple percentage shift in a
+boundary: it says that *merely occupying a second transverse channel*, with
+**no change to g**, moves the wire from "safely sub-critical at production
+coupling" (M=1) to "the static self-consistency map has repelling roots at
+production coupling, across essentially the entire probed window" (M≥2).
 
-**A second finding, at the far end of M=4's window: the branch detaches
-entirely.** M=4's last 3 of 5 points (μ = 470.9, 549.3, 627.8 — the region
-where the three DEEPER channels sit ever further below their own thresholds as
-μ climbs) return **no self-consistent solution at all** (`s = nan`, the same
-signature R9 Track 1 used for the g≈8.67×10⁴ detachment in the single-channel
-model — see §8.5). Here it appears not from raising g, but from raising μ (and
-hence B, via the pre-registered B(μ) tracking rule) at FIXED production g. This
-is itself informative: in the single-channel model the detachment is a distant
-feature reached only by pushing g roughly 3× above production; in the
-M=4 multi-subband model, a detachment of the same kind is encountered while
-scanning μ at production g. The two SURVIVING M=4 points (both with finite,
-super-critical s) are what anchor the M=4 statistic; the detachment of the
-other three is reported as a distinct qualitative feature of the M=4 chain, not
-folded silently into "fewer surviving points."
+**A second finding, now much better resolved after densification: the M=4
+branch detaches over an extended region, not just a few scattered points.**
+Of M=4's 15 pre-registered points, **8 return no self-consistent solution at
+all** (`s = nan`, the same signature R9 Track 1 used for the g≈8.67×10⁴
+detachment in the single-channel model — see §8.5): two isolated detachments
+inside the otherwise-finite low-μ region (μ = 336.3, 426.0), and then a
+**persistent detached region for every μ ≥ 538.1** (the last 5 of 15 points,
+μ = 538.1–627.8, all `nan`) following the last finite point at μ = 515.7. This
+places a leading-edge detachment boundary at **μ_detach(M=4) ≈ 515.7–538.1**
+(Δ-units) — the multi-subband analogue of R9-T1's own g_detach, but located
+here along the μ-axis at *fixed* production g rather than along the g-axis.
+Here the detachment appears not from raising g, but from raising μ (and hence
+B, via the pre-registered B(μ) tracking rule) at FIXED production g. This is
+itself informative: in the single-channel model the detachment is a distant
+feature reached only by pushing g roughly 3× above production; in the M=4
+multi-subband model, a detachment of the same kind is encountered while simply
+scanning μ at production g, with no change to g at all.
+
+### 8.2b M=4 densification (5→15 points) and an honest downward revision
+
+The originally-reported M=4 statistic (median-s = 3.4038) was built from only
+**2 finite points out of 5** pre-registered — the thinnest sample of any M,
+and, in hindsight, an unrepresentative one: both surviving points happened to
+sit in the higher-s part of M=4's window. Because the window bounds, field
+rule, exclusion radius, and statistic definition are all pre-registered and
+depend only on M (not on the point *count* — `protocol_b_window(M, n_mu, ...)`
+returns the identical `[thr − span/3, thr + span]` interval regardless of
+`n_mu`), the M=4 chain was **re-run at higher density (n_mu: 5 → 15) within
+the exact same window** to get a more representative sample. This is a
+resolution/density check, not a re-tune: nothing about the protocol's
+substance (window bounds, exclusion rule, or statistic) changed — the same
+kind of density-robustness check R9 Track 1 already applied to its own
+detachment-g measurement (`resolution_robustness`).
+
+**Result: the M=4 median-s revises DOWN from 3.4038 to 2.0563.** With 15
+points, 7 are finite (vs. the original 2), and 5 survive van Hove exclusion.
+The fuller window reveals the same **rise-then-decline shape already visible
+in M=2 and M=3's curves** (§8.2's figure, panel B): s rises steeply just
+above the M=4 threshold (peaking near s≈3.4 at μ=313.9, the same point the
+n=5 sample happened to catch), then **declines monotonically across the
+finite region** down to s≈1.55 at μ=515.7 (the last point before the
+persistent detachment onset), before the branch detaches entirely. The
+original n=5 sample, by chance, sampled disproportionately from the high-s
+peak and one deep-detachment point, and (after the 1-of-2 exclusion) reported
+only the single peak value as its median — an artifact of sparse sampling
+landing near a genuine local extremum, not a wrong calculation. This is
+recorded here as a concrete, worked example of exactly the sampling risk
+§6.1b's van Hove hazard warned about in the abstract — except manifesting as
+*point-count* sparsity relative to a within-window peak, a distinct failure
+mode from the threshold-proximity sampling risk the exclusion radius targets,
+and one the original protocol's fixed per-M point counts did not anticipate.
+**The qualitative verdict is unchanged by the revision — every M=4 finite
+point, before or after densification, has s > 1 — but the specific median
+value is now on much firmer footing (5 surviving points spanning a full
+decline, not 1 surviving point at a local peak), and honesty requires
+reporting the revision rather than keeping the original, less-supported
+number.**
 
 ### 8.3 A pre-registered ambiguity, surfaced honestly (M = 1's exclusion collapse)
 
@@ -322,7 +368,10 @@ against tractability): **M=1: 12, M=2: 10, M=3: 8, M=4: 5** points. All four
 chains ran to completion — every pre-registered μ was evaluated for every M
 (§8.2's finite/pre-registered column) — using warm-hint continuation along μ
 within each chain (mirroring R9 Track 1's `branch_curve` continuation along g),
-with the M=1↔M=3 and M=2↔M=4 chain pairs sharing the 2 available workers.
+with the M=1↔M=3 and M=2↔M=4 chain pairs sharing the 2 available workers. M=4
+was subsequently densified to 15 points in a follow-up run (§8.2b), within the
+identical pre-registered window — the point-count column in §8.2's table
+reflects this final state (15 pre-registered for M=4, not the original 5).
 
 **Why it took ~47 minutes of wall-clock for what the cost model estimated at
 ~40 minutes total (a reasonable match, but with a highly uneven pace along the
@@ -343,6 +392,18 @@ mid-run under contention). The lesson for any future run of this module on this
 machine: check free memory before launching, or budget substantially more
 wall-clock margin than the pure compute-cost model predicts.
 
+**The M=4 densification run (§8.2b) took this to an extreme: ~3.7 hours
+(13372 s) for 15 points**, under free memory that oscillated between ~1.1 and
+~2.6 GB throughout (`Get-CimInstance` checks during the run), with individual
+points ranging from 293 s (first point, best case) to a single point (the 8th)
+taking 3784 s in isolation — almost certainly a widened-fallback grid scan
+triggered by that point being a genuine detachment, made far slower than its
+already-expensive worst case by concurrent memory pressure. Progress was
+confirmed genuine, not hung, by checking `Get-Process` CPU-seconds twice per
+interval and observing it climb monotonically throughout (from ~3500 s to
+~9700 s across two checks 25 minutes apart) — the diagnostic habit this
+project's memory record now recommends for this machine.
+
 ### 8.5 What "s > 1" means here — read with the same care as R9 Track 1
 
 A bisection-found root of φ = G(φ) with slope s > 1 is a **genuine solution of
@@ -354,8 +415,9 @@ a real, dynamically-evolving wire settles there. What this result adds is that,
 for the multi-subband case, **that repelling regime is reached at the production
 coupling itself once M ≥ 2**, rather than requiring g to be swept ~3× above
 production as in the single-channel model. The M=4 chain's outright detachment
-(§8.2 — 3 of 5 points return no root at all, the same `nan` signature R9-T1 used
-for its own g≈8.67×10⁴ boundary) is a further, complementary signature of the
+(§8.2 — 8 of 15 densified points return no root at all, the same `nan`
+signature R9-T1 used for its own g≈8.67×10⁴ boundary, with a persistent
+detached region for μ ≥ 538.1) is a further, complementary signature of the
 same underlying fragility: not just repelling roots, but entire stretches of μ
 with **no static self-consistent solution whatsoever**, at production g, once
 enough channels are occupied. Whether the *physical* (dynamical, not
@@ -366,41 +428,78 @@ settled here, and not overclaimed.
 
 ## 9. Task 3 — the answer, using ONLY the pre-registered statistic
 
-**s shows a dramatic, clearly discernible, monotonically rising trend with M —
-not a flat or structureless one.** Using only `median_s_excluded` (the locked
-statistic, all four chains run to completion): **0.0004 (M=1) → 1.9885 (M=2) →
-2.8958 (M=3) → 3.4038 (M=4)**. Every successive M shows an increase; there is no
-reversal at any M tested. This supports the §6.1 hypothesis: multi-subband occupancy CAN pull the
-effective instability threshold down toward — and, on this evidence, *already to
-or below* — the production coupling, rather than reinforcing the single-channel
-null. **This is the second non-null finding in the R9 series** (after Track 3's
-disorder result), and structurally the more severe one: Track 3 found a
-finite-size-refined but still-nonzero *quantitative* boundary shift (tens of
-percent) that survives at the low end of the realistic disorder band; Track 4
-finds a *qualitative* regime change (sub-critical → super-critical loop gain) at
-the production coupling itself, occurring already at the smallest possible step
-away from the single-channel idealization (M: 1→2).
+**s shows a dramatic, clearly discernible trend with M — not a flat or
+structureless one — but it is NOT strictly monotonic once the M=4 chain is
+properly resolved.** Using only `median_s_excluded` (the locked statistic, all
+four chains run to completion, M=4 at its final post-densification value):
+**0.0004 (M=1) → 1.9885 (M=2) → 2.8958 (M=3) → 2.0563 (M=4)**. M=1→M=2 and
+M=2→M=3 both show large increases; **M=3→M=4 shows a decrease** (2.8958 →
+2.0563, a ~29% drop). This corrects an earlier draft of this report, written
+before the M=4 chain was densified from 5 to 15 points (§8.2b), which read
+M=4's median as 3.4038 — built from only 1 surviving point — and reported the
+trend as cleanly monotonic. It was not a wrong calculation given the data
+available at the time, but it was an unreliable one, and the fuller data
+changes the shape of the answer, not just its precision. **The honest
+statement is: s rises sharply and dramatically from M=1 to M=2, continues
+rising from M=2 to M=3, and then declines somewhat from M=3 to M=4 — while
+remaining, at every single M ≥ 2 value probed (finite point, individually, not
+just the median), solidly above the s=1 stability boundary.** This supports
+the §6.1 hypothesis: multi-subband occupancy CAN pull the effective
+instability threshold down toward — and, on this evidence, *already to or
+below* — the production coupling, rather than reinforcing the single-channel
+null; it does NOT support a simple "s grows monotonically and unboundedly with
+M" reading, which the M=3→M=4 dip rules out at this M range. **This is the
+second non-null finding in the R9 series** (after Track 3's disorder result),
+and structurally the more severe one: Track 3 found a finite-size-refined but
+still-nonzero *quantitative* boundary shift (tens of percent) that survives at
+the low end of the realistic disorder band; Track 4 finds a *qualitative*
+regime change (sub-critical → super-critical loop gain) at the production
+coupling itself, occurring already at the smallest possible step away from the
+single-channel idealization (M: 1→2), and persisting (though non-monotonically)
+through every M tested beyond that.
 
-**Consistency with the weak sum-rule envelope.** The rise IS monotonic, as the
-weak sum-rule requires, but it is **sharply super-linear between M=1 and M=2**
-(median-s roughly 500–5000× larger, not ~2×) and then grows sub-linearly from
-M=2 onward (1.99 → 2.90 → 3.40, ratios of ~1.46 and ~1.17) — closer to
-saturating than to continuing to double. A weak monotonicity envelope does not
-by itself predict this specific shape; the near-flat baseline at M=1 (deep in
-the single-channel idealization, far below where R9-T1's own single-channel
-sweep ever probed near g_crit) followed by a sharp jump once a second channel
-opens is consistent with, but not derivable from, the qualitative argument
-alone — it is the kind of structure §6.1b anticipated (s tracking gap-edge
-physics, not a smooth function of occupancy) rather than a violation of it.
+**Consistency with the weak sum-rule envelope.** The weak sum-rule argument
+(§Task 3 brief) predicts monotone increase in s with occupied-channel count,
+at fixed geometry, with unequal nonlinear depth-dependent weights — it is
+explicitly described as *weak*, not a hard bound. **The M=3→M=4 decline is a
+genuine, reportable deviation from that envelope**, not merely an unusual
+shape consistent with it: read strictly, "weakly monotone increasing" rules
+out a same-geometry decrease. Two readings are offered, neither privileged
+over the other by the data:
+(i) *Envelope violated* — the weak sum-rule's premise (current, and hence s,
+should not decrease as more channels are added) does not survive at M=4,
+possibly because the weighting is not merely unequal but can be net-negative
+for some inter-subband contributions once the strongly-coupled multi-lobe
+regime is reached (§6.2's "sweet spot" structure — a regime no M≤3 study in
+this track probed).
+(ii) *Envelope not actually tested* — because M=4's window is dominated by a
+detached region for μ ≥ 538 (§8.2), the SURVIVING points at M=4 are
+disproportionately drawn from the declining tail of a rise-then-fall s(μ)
+curve (§8.2b), rather than from a comparably-sampled slice of "generic
+occupancy" the way M=2/M=3's medians were. The median is doing its job
+(resisting the single peak value), but a rise-then-fall-then-detach shape
+inside one window is not what a same-geometry channel-count comparison
+implicitly assumes when the sum-rule argument was stated. Under this reading,
+the M=3→M=4 comparison is not fully apples-to-apples, and the qualitative
+"still solidly super-critical, still far above s=1" conclusion is more
+trustworthy than the specific magnitude ordering between M=3 and M=4.
+Distinguishing (i) from (ii) would require characterizing s(μ) shape
+consistency across M with matched sampling — out of scope here, and flagged
+as a natural next question rather than resolved retroactively.
 
 **Restated per this task's own constraints:** this is a **structural** result
 about a 4-subband truncation, not a device-faithful prediction for Chang-class
 wires (10–26 occupied subbands, scoping §3.3). Lim, Serra, López & Aguado (PRB
 86, 121103) show a subband can flip the topological invariant's parity, so this
-small-M trend must **not** be extrapolated smoothly into the realistic
-many-subband regime. What it *does* establish, structurally and robustly across
-three independently-cross-validated chains (M=1–3 complete, internally
-consistent with R9-T1's own baseline): the single-channel EM-feedback null is
-**not** obviously robust to the addition of even one more transverse channel,
-and the project's R6/R8 single-subband idealization caveat (already recorded,
-scoping §3.5) should be read alongside this result, not independently of it.
+small-M trend — including its non-monotonic M=3→M=4 step — must **not** be
+extrapolated smoothly into the realistic many-subband regime; the M=3→M=4 dip
+is itself a small-scale demonstration of exactly the kind of non-smooth
+behavior that caveat warns about, observed directly rather than only assumed.
+What it *does* establish, structurally and robustly across all four completed
+chains (M=1–4, internally consistent with R9-T1's own single-channel
+baseline): the single-channel EM-feedback null is **not** robust to the
+addition of even one more transverse channel — every M ≥ 2 finite point probed
+sits above the s=1 stability boundary, regardless of the M=3-vs-M=4 ordering
+— and the project's R6/R8 single-subband idealization caveat (already
+recorded, scoping §3.5) should be read alongside this result, not
+independently of it.
