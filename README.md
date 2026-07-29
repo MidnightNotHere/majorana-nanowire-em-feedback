@@ -347,6 +347,24 @@ quantum computing:
   (M=4's high detachment rate leaves its surviving sample never reaching the
   upper ~18% of its own window, unlike M=3's near-complete coverage) —
   reported as an open, disclosed question, not forced to a clean answer.
+  **A third follow-up (`bdg_r9_multisubband_bracket_scan.py`,
+  `r9_multisubband_methods.md §12`) resolved the detachment MECHANISM
+  directly:** an instrumented, ~9×-denser bracketing scan across both
+  onsets (M=1: μ 21.40→34.0; M=4: μ 515.70→545.0) shows that **every single
+  detached point finds a genuine sign change in the self-consistency map
+  and bisects it — none return "no crossing at all."** Every one is rejected
+  because the converged crossing's |f(φ*)| lands above the pre-existing
+  1e-4 acceptance threshold — the same "sawtooth jumps across the identity
+  line without crossing it" mechanism already established as genuine
+  (non-numerical-bug) physics in R4/R5/R7, just located on the φ-sweep axis
+  rather than the μ-axis `bare_gap` had checked (§11.2's ruling-out is
+  corrected on this one point; its other two rulings-out stand). M=1's
+  transition shows real intermediate structure, including one isolated
+  accepted-but-wildly-unstable root (s=−580) sandwiched between rejected
+  points; M=4's transition, at the resolution tested, is a single sharp
+  step. The mechanism is now shared and identified (not a bug); why it
+  becomes decisive at these specific M/μ locations and not in M=2/M=3's
+  windows remains open.
 
 ## Requirements
 

@@ -908,3 +908,160 @@ worth a future, separately-scoped investigation (with new instrumentation to
 distinguish a true sign-non-change from a discontinuity-rejected sawtooth
 jump, per §11.2's precedent check) is a decision for a future task, not this
 one.
+
+## 12. The follow-up §11.4 flagged: an instrumented, dense bracketing scan
+##     resolves the sign-change question
+
+**Status of this section:** the follow-up investigation §11.4 explicitly
+named as needed. New code (`bdg_r9_multisubband_bracket_scan.py`) and new
+data (`ISEF R9 data folder/r9_multisubband_bracket_scan.json`) — **not** a
+re-run of the pre-registered protocol. It re-implements the exact same
+physics (`scalar_ring_map_ms`, `protocol_b_field`, identical tol=1e-9 and
+eps=1e-6) and the identical |f(φ)|<1e-4 discontinuity-rejection rule already
+in `_find_fixed_points_ms`/`_phi_star_ms`, adding only (a) diagnostics —
+counting sign changes found, how many were accepted vs. rejected by the
+discontinuity rule, and the rejected |f(φ*)| values — and (b) a ~9× denser
+μ-grid across the two brackets identified in §11.1:
+
+- **M=1**: μ ∈ [21.40, 34.0], 13 points, step ≈ 1.05 (original step 9.51)
+- **M=4**: μ ∈ [515.70, 545.0], 13 points, step ≈ 2.44 (original step 22.42)
+
+Both brackets are seeded with the exact `phi_star` value already recorded at
+their lower endpoint in the original sweep (§8.2's data), for continuity, not
+re-derived.
+
+### 12.1 The central question resolved: option (ii), not option (i)
+
+§11.4 could not distinguish, from the coarse original data alone, whether
+detachment meant (i) no sign change of f(φ)=G(φ)−φ exists anywhere nearby, or
+(ii) a sign change *is* found and bisected, but rejected because the
+converged |f(φ*)| ≥ 1e-4 — the same "sawtooth jumps across the identity line
+without crossing it" mechanism already established, at a gap-closing, in
+R4/R5/R7 (`r4_pfaffian_boundary_methods.md`). **The dense scan resolves this
+decisively for both M: it is (ii), essentially without exception.**
+
+**M=1** (13 points; full table in the data file):
+
+| μ | s | sign changes | accepted | rejected | rejected \|f\| |
+|---:|---:|---:|---:|---:|---|
+| 21.40 | 0.8420 | 1 | 1 | 0 | — |
+| 22.45 | nan | 2 | 0 | 2 | 0.0297, 0.0026 |
+| 23.50 | nan | 2 | 0 | 2 | 0.0026, 0.0026 |
+| **24.55** | **−580.06** | **1** | **1** | **0** | — |
+| 25.60 | nan | 2 | 0 | 2 | 0.0013, 0.0326 |
+| 26.65–34.0 (8 pts) | nan | 2 (every point) | 0 (every point) | 2 (every point) | 0.0008–0.0351, fluctuating |
+
+**Every single detached point found a genuine sign change and bisected it —
+none returned "no crossing at all."** Every rejection is because the
+converged crossing's |f(φ*)| lands between ~8×10⁻⁴ and ~3.5×10⁻², well above
+the 1e-4 acceptance bar but not enormous either — consistent with a real,
+narrow discontinuity in the map, not scan failure.
+
+**A genuinely unexpected feature: an isolated ACCEPTED root reappears at
+μ=24.55**, sandwiched between rejected-discontinuity points on both sides,
+with an enormous Picard-instability slope (s = −580, vs. the well-behaved
+s = 0.84 at μ=21.40 four points earlier). A single sign change was found and
+this time its |f(φ*)| < 1e-4, so it was accepted — but the finite-difference
+slope there is two orders of magnitude beyond anything else measured in this
+entire track. This is the signature of a map that becomes nearly tangent to
+the identity line near a fold — consistent with (though not a formal proof
+of) the fixed point undergoing something like a fold/border-collision-type
+event as it is absorbed into the discontinuity, rather than smoothly fading
+out. **M=1's transition zone is genuinely structured, not a single clean
+step** — it fluctuates between "two rejected crossings" and, once, "one
+accepted, wildly unstable crossing" before settling into persistent
+rejection from μ≈25.6 onward.
+
+**M=4** (13 points; full table in the data file):
+
+| μ | s | sign changes | accepted | rejected | rejected \|f\| |
+|---:|---:|---:|---:|---:|---|
+| 515.70 | 1.5530 | 3 | 1 | 2 | 0.0334, 0.0142 |
+| 518.14 | 1.4768 | 3 | 1 | 2 | 0.0353, 0.0123 |
+| 520.58 | 1.3978 | 3 | 1 | 2 | 0.0121, 0.0042 |
+| **523.03** | **nan** | **2** | **0** | **2** | **0.0076, 0.0076** |
+| 525.47–545.0 (9 pts) | nan | 2 (every point) | 0 (every point) | 2 (every point) | ≈0.0042 and ≈0.0355, stable |
+
+**Even more striking here: at every one of the three FINITE points, the map
+already carries 2 rejected discontinuity crossings alongside the 1 accepted
+genuine root** — the discontinuity structure is present well before the
+transition, coexisting with a perfectly good, declining-but-healthy s. At
+μ=523.03 the accepted root simply **stops being found — the count drops from
+3 sign changes (1 good + 2 rejected) to exactly 2 (both rejected)** — and
+this exact 2-rejected pattern, with nearly identical |f| values (~0.0042 and
+~0.0355, essentially unchanging), persists for **every single one of the
+remaining 9 points tested**, all the way to μ=545. **At the ~2.44-unit
+resolution tested, M=4's transition is a single, sharp, one-grid-step
+event** — the accepted root is present at 520.58 and gone at 523.03, with no
+intermediate structure of the kind M=1 showed. Whether finer sampling between
+520.58 and 523.03 would reveal similar fine structure to M=1's is untested
+and not claimed either way.
+
+### 12.2 A necessary correction to §11.2's "no gap-closing" framing
+
+§11.2 checked `bare_gap_ms` — the bulk gap at the fixed external flux
+(φ = φ_ext), **a single point on the φ axis** — as a function of μ, and found
+it flat/smoothly varying through both persistent tails, concluding the
+detachment was "not simply the same mechanism as R4/R5/R7's own precedent,
+which requires an actual gap closing." **This section's finding shows that
+conclusion was checking the wrong axis, and needs a precise correction, not a
+contradiction:** the actual discontinuity this section found lives in
+f(φ) = G(φ) − φ **as a function of φ, at fixed (μ, B)** — the axis
+`bare_gap_ms` never varies over. A discontinuity in G(φ) — plausibly a level
+crossing in the occupied BdG spectrum as φ sweeps through the small bisection
+range, which would flip the current I(φ) discontinuously without necessarily
+closing the *bulk* gap at any single φ — is entirely invisible to a
+single-φ-point gap check. **§11.2's other two rulings-out are unaffected and
+remain valid on their own terms:** the large-B hypothesis was ruled out by a
+direct counterexample (M=2/M=3 reaching larger B with no failure) that has
+nothing to do with which axis is checked, and the search-range-too-narrow
+hypothesis was ruled out by φ* staying small right up to the transition,
+which this section's finding reinforces rather than undermines (a search
+that finds and rejects a nearby crossing is, if anything, stronger evidence
+that range was never the limiter than φ* merely staying small was on its
+own). Only the "not the same mechanism as R4/R5/R7" reading needs revision:
+**it now looks like it very plausibly IS the same class of mechanism — a
+genuine map discontinuity, not a numerical search artifact — just located on
+an axis (φ, not μ) that §11.2's diagnostic could not see.**
+
+### 12.3 Updated verdict on the a/b/c question from §11.4
+
+This section changes the balance of §11.4's answer, though not into a clean
+single option:
+
+- **Further evidence against (a) in the "numerical/structural bug" sense** —
+  the mechanism is not a search-window construction problem (reinforced,
+  §12.2) and is not scan-failure-to-find-a-crossing (directly contradicted:
+  every detached point DOES find a crossing). If anything, this section shows
+  the underlying phenomenon is a **genuine feature of this self-consistency
+  map's structure** (matching R4/R5/R7's own established, non-bug "sawtooth"
+  precedent), present at BOTH M=1 and M=4 in the same diagnostic form (a
+  found-and-rejected crossing) — which is itself now a **shared, identified,
+  non-coincidental mechanism**, just not a bug.
+- **A qualified version of (b):** the *mechanism* (discontinuity rejection)
+  is shared and generic — not M-specific — but **where and when it wins out
+  over the genuine accepted root is tied to the underlying multi-subband
+  physics** at each M (the two onset fractions, 39% vs 62% of each channel's
+  own spacing, remain different — §11.1 — and this section adds that M=4's
+  transition is a clean single step while M=1's shows real intermediate
+  structure, a further M-dependent difference in *character*, not just
+  location).
+- **An element of (c) remains, honestly:** *why* the map develops this
+  discontinuity specifically in this location for M=1 and M=4 but
+  (apparently) not within M=2's or M=3's windows is still not explained by
+  anything computed here — that would require characterizing the current-phase
+  relation I(φ) directly (not just its zero-crossings) as a function of the
+  occupied spectrum, which is a substantially larger undertaking than a
+  bracketing scan and is not attempted.
+
+**Conclusion: the detachment mechanism itself is now identified with
+confidence — a genuine, non-bug discontinuity in the self-consistency map
+along the φ axis, of the same class R4/R5/R7 already established as physical
+rather than numerical — shared in kind between M=1 and M=4. What remains open
+is why this discontinuity becomes decisive at these specific locations and
+not in M=2's or M=3's windows, which is a question about the multi-subband
+current-phase relation's structure, not about search-range or window
+construction.** This refines, rather than reverses, §11's diagnosis-only
+conclusion — no fix is proposed here either, and the pre-registered
+s-crosses-1-at-M≥2 headline (§8–9) remains entirely unaffected, built as it
+is from the points that converged.
