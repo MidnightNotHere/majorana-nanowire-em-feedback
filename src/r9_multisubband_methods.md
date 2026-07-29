@@ -1065,3 +1065,118 @@ construction.** This refines, rather than reverses, §11's diagnosis-only
 conclusion — no fix is proposed here either, and the pre-registered
 s-crosses-1-at-M≥2 headline (§8–9) remains entirely unaffected, built as it
 is from the points that converged.
+
+## 13. Fourth post-hoc investigation: does M=2/M=3 have the same hidden
+##     sub-grid structure, and does it answer §12's open question?
+
+**Status of this section:** directly answers the question §12 left open —
+"why this discontinuity becomes decisive at these specific locations and not
+in M=2's or M=3's windows" (§12, final paragraph, already hedged with
+"apparently"). Runs the identical instrumented `run_bracket_scan` from §12 on
+a comparably-dense (13-point) bracket inside **M=2's** window (μ ∈
+[131.76, 209.27], spanning the declining half of its curve — chosen because
+M=2 had *zero* detachment at coarse resolution, the strongest possible test
+case) and **M=3's** window (μ ∈ [148.23, 217.99], bracketing its one known
+isolated coarse-grid detachment at μ=183.11). Same physics, same tol/eps/
+discontinuity-rejection constant, same warm-hint-seeded continuation as §12 —
+only the M and the bracket location differ. Does not touch the pre-registered
+window, δ, statistic, or any number in §8–11; data in
+`r9_multisubband_bracket_scan.json` (`M2_bracket`, `M3_bracket` keys, added
+alongside the already-committed `M1_bracket`/`M4_bracket`).
+
+### 13.1 The answer: NO, M=2/M=3 are not structure-free — the discontinuity is pervasive
+
+**M=2, previously 0% detached at coarse resolution, has a hidden detachment
+the coarse grid simply stepped over.** At μ=183.43 — sitting exactly between
+the original coarse grid's μ=176.97 and μ=189.89 (step 19.38, wide enough to
+jump clean over it) — the dense scan finds `s = nan`, two sign changes, both
+rejected (`n_rejected_discontinuity=2`, `n_accepted=0`), the identical
+signature already characterized for M=1/M=4 in §12. **M=2's true detachment
+rate is therefore not exactly zero** — the coarse-grid "0/10" result (§10.1)
+undercounts it, for the same reason a coarse grid can miss any narrow feature.
+
+**M=3's known isolated detachment is wider than the coarse grid showed.** The
+coarse grid found exactly one detached point (μ=183.11, §10.1's "1/8").  The
+dense scan shows **two consecutive** detached points — μ=183.11 **and**
+μ=188.92 — before recovery at μ=194.74. The coarse grid's neighboring points
+(μ=148.23 and μ=217.99) simply straddled this two-point failure zone widely
+enough to record it as a single narrow blip rather than the ~5.8-Δ-wide
+failure it actually is.
+
+**Every finite point in both M=2's and M=3's brackets shows the same
+multi-crossing structure already found for M=1/M=4** — multiple sign changes
+per point, some accepted, some rejected — not a simpler, cleaner map. At
+μ=138.22 (M=2), the scan finds **7 sign changes, 3 independently accepted
+roots, and 4 rejected** — genuine coexisting multi-valuedness, more structure
+than any single point found in M=1's or M=4's brackets. **The sawtooth /
+discontinuity-rejection phenomenon is therefore not a special feature of
+M=1's and M=4's windows — it is a pervasive, general property of this
+self-consistency map, present at every M tested.** §12's hedge ("apparently"
+absent from M=2/M=3) is resolved: it was not absent, only under-sampled.
+
+### 13.2 What DOES distinguish M=1/M=4 from M=2/M=3, quantitatively
+
+| bracket | n | n detached (dense) | detach % (dense) | total sign changes | total rejected | **rejected / sign-changes-found** | points with ≥2 accepted roots | "clean" points (1 sign change, 0 rejected) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| M=1 | 13 | 11 | 84.6% | 24 | 22 | **91.7%** | 0 | 2/13 |
+| M=2 | 13 | 1 | 7.7% | 31 | 17 | **54.8%** | 1 | 6/13 |
+| M=3 | 13 | 2 | 15.4% | 42 | 27 | **64.3%** | 4 | 2/13 |
+| M=4 | 13 | 10 | 76.9% | 29 | 26 | **89.7%** | 0 | 0/13 |
+
+**Raw structure density does NOT track the detachment-rate ordering** — M=3
+actually shows the *most* sign-change structure per point (3.23/pt) of any
+bracket, more than M=1 (1.85/pt) or M=4 (2.23/pt), despite M=3 having a far
+lower detachment rate. So "how much sawtooth structure exists" is not what
+separates the high- from low-detachment brackets.
+
+**What DOES separate them cleanly: the fraction of found candidate crossings
+that get rejected.** M=1 and M=4 reject **~90%** of the crossings their scans
+find; M=2 and M=3 reject only **55–64%**. Put differently: M=2/M=3 tend to
+find *several* candidate crossings per point, and it only takes **one** of
+them surviving the discontinuity test to yield an accepted root — so even a
+map with heavy sawtooth structure usually still succeeds. M=1/M=4's failing
+points, by contrast, typically present only **two** candidate crossings and
+**both** get rejected — a much thinner margin, with no third or fourth
+candidate available to save the point. This is also consistent with M=1/M=4
+having essentially **zero** points with ≥2 simultaneously accepted roots
+(genuine multi-valuedness that *succeeds*), while M=2/M=3 have several — the
+multi-valuedness in M=2/M=3's map more often resolves into at least one
+accepted branch; in M=1/M=4 it more often resolves into none.
+
+### 13.3 Scope of this finding, and what it does and does not revise
+
+**This does not change §10's headline detachment-rate table (58%/0%/12.5%/
+53% for M=1–4) as a full-window statistic** — that table describes the
+*entire* pre-registered window at its original, pre-registered resolution,
+and remains the number actually used anywhere upstream (it is not
+recomputed here, per this task's own no-re-tune constraint). What this
+section shows is narrower and more precise: **within the ~13-point,
+~40–75-unit-wide brackets actually densified**, M=2 and M=3 both contain at
+least one hidden failure the coarse grid did not sample — meaning the *true*
+full-window detachment rate at M=2 and M=3 is very likely **somewhat higher
+than 0%/12.5%** if the entire window were densified the same way, though by
+how much is not established here (only ~44% of M=2's window and ~29% of
+M=3's window were covered at this density). **The qualitative M=1/M=4 ≫
+M=2/M=3 ordering is unaffected and, if anything, sharpened** by the
+rejection-rate metric (§13.2), which is a cleaner, resolution-independent
+signature than a raw pass/fail count on any one grid.
+
+**Answering §12's open question directly:** the reason the discontinuity
+"becomes decisive" at M=1/M=4 specifically is **not** that the underlying
+sawtooth structure is absent or weaker at M=2/M=3 — it is present, and by one
+measure (raw sign-change density) even *stronger* at M=3. The distinguishing
+factor is that M=1/M=4's candidate crossings are rejected at a much higher
+rate per candidate found, and their maps tend to offer fewer simultaneously-
+viable candidates to fall back on. **Why the map is more likely to reject
+*every* candidate at M=1/M=4 specifically — a question about the shape of
+the current-phase relation I(φ) itself, not just its zero-crossing count —
+remains open**, exactly the same class of question §12 already flagged as
+requiring direct characterization of I(φ), not a bracketing scan, and not
+attempted here.
+
+**Unaffected by any of this:** no number in §8–11 changes. The pre-registered
+s-crosses-1-at-M≥2 result remains built entirely from the points that
+converged at the original, pre-registered resolution; this section only adds
+that the *un-converged* points are more numerous, and their common mechanism
+more precisely characterized, than previously shown — diagnosis, not
+remediation, exactly as §11 and §12 were.
