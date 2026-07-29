@@ -326,9 +326,11 @@ quantum computing:
   many-subband regime.
   **Post-hoc investigation (`r9_multisubband_methods.md §10`, no re-run,
   no protocol change):** separated "no root at all" (genuine detachment) from
-  "root found but van-Hove-excluded" per M — detachment rate is 58%(M=1) →
-  0%(M=2) → 12.5%(M=3) → 53%(M=4), itself non-monotonic, not a clean
-  increasing-with-M trend. Two distinct detachment mechanisms found via the
+  "root found but van-Hove-excluded" per M — detachment rate at coarse
+  (pre-registered-grid) resolution is 58%(M=1) → 0%(M=2) → 12.5%(M=3) →
+  53%(M=4), itself non-monotonic, not a clean increasing-with-M trend. **The
+  M=2 and M=3 figures here were later found to be undercounts — see the
+  correction below.** Two distinct detachment mechanisms found via the
   bare-gap signature: a few isolated points show a local gap dip (weakly
   consistent with, but below the pre-registered lobe-detector's own 30%-of-
   median threshold for, an inter-subband gap closing), while most detachment
@@ -362,9 +364,31 @@ quantum computing:
   transition shows real intermediate structure, including one isolated
   accepted-but-wildly-unstable root (s=−580) sandwiched between rejected
   points; M=4's transition, at the resolution tested, is a single sharp
-  step. The mechanism is now shared and identified (not a bug); why it
-  becomes decisive at these specific M/μ locations and not in M=2/M=3's
-  windows remains open.
+  step. **This s=−580 outlier has NO relationship to the pre-registered M=1
+  statistic** — it only exists in this diagnostic dense scan (not among the
+  12 pre-registered μ values), so it contributes nothing to M=1's reported
+  median; the actual surviving point behind that number remains μ=−26.16,
+  s=0.000435, small and well-behaved.
+  **A fourth follow-up (`r9_multisubband_methods.md §13`) answered the
+  remaining open question — is the sawtooth mechanism unique to M=1/M=4?
+  No.** The identical bracket scan run on M=2 (previously 0% detached) and
+  M=3 found the same multi-crossing structure everywhere — M=3's densest
+  point shows 7 sign changes and 3 simultaneously-accepted roots, *more*
+  structure than any M=1 or M=4 point — and **both windows have hidden
+  detachments the coarse grid stepped clean over**: M=2 at μ=183.43 (in the
+  exact gap between its coarse grid's neighbors), and M=3's known "isolated"
+  failure at μ=183.11 turns out to be two consecutive points (183.11 and
+  188.92). **Corrected detachment rates, same methodology, dense-bracket
+  resolution: M=2 0%→7.7%, M=3 12.5%→15.4%** (propagated back to the
+  original §10.1 table with a visible correction box, project convention —
+  not silently overwritten). The real signature distinguishing M=1/M=4 from
+  M=2/M=3 turns out not to be *how much* sawtooth structure exists (M=3 has
+  the most) but the **rejection rate per candidate crossing found**: M=1/M=4
+  reject ~90% of what they find; M=2/M=3 reject only 55–65%, and usually have
+  a 2nd or 3rd candidate to fall back on when one is rejected. Why M=1/M=4's
+  map specifically rejects more of its candidates — a question about the
+  shape of the current-phase relation itself — remains open. None of this
+  changes any pre-registered number in §8–9; diagnosis only throughout.
 
 ## Requirements
 
