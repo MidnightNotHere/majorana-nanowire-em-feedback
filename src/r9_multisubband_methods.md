@@ -547,6 +547,51 @@ pre-registered point returned a genuine root). This is reported as found —
 the hypothesis in the task brief that detachment rate might increase steadily
 with M is **not supported** by this M range.
 
+> **⚠ M=2 AND M=3 ROWS PARTIALLY SUPERSEDED — CORRECTED BELOW.** The table
+> above, and the "M=2 is the cleanest chain" / "every single pre-registered
+> point returned a genuine root" claims just made, are accurate descriptions
+> of what the **original 10-point (M=2) and 8-point (M=3) pre-registered
+> grids** showed — those grids and their reported counts are preserved
+> exactly as originally computed, per this project's standard practice (cf.
+> the `pfaffian_trim_lo` fix, the R9-T3 Anderson seed-count correction, the
+> R9-T3 search-window-bug correction). A **later, denser bracket scan
+> (§13, commits e9437e3/41166d9) found both rows understate the true
+> detachment behavior** — not by re-deriving the pre-registered statistic,
+> but by sampling at ~9× the original density within a sub-region of each
+> window:
+>
+> - **M=2 is corrected from 0% to a confirmed-nonzero rate.** A genuine
+>   detachment exists at μ=183.43 — the original 10-point grid's neighbors
+>   (μ=176.97, μ=189.89, step 19.38) straddled it and never sampled it. This
+>   was not a borderline or ambiguous case: `n_sign_changes=2`,
+>   `n_accepted=0`, `n_rejected_discontinuity=2`, the identical signature as
+>   every other confirmed detachment in this track. **Corrected count/rate,
+>   using the same methodology (n detached / n evaluated) applied to the
+>   13-point dense bracket that covers this region (μ ∈ [131.76, 209.27],
+>   §13.1):  1 detached / 13 evaluated = 7.7%** — up from the original
+>   0/10 = 0%. The literal 10-point-grid count (0/10) is not itself wrong as
+>   a description of *those 10 points*; it is now known to be an
+>   **undercount of the window's true detachment rate**, which is confirmed
+>   > 0% but not precisely established over the *full* window (only ~44% of
+>   M=2's window was re-scanned at this density — §13.3).
+> - **M=3's count (1/8 = 12.5%) correctly identified that a detachment
+>   exists at μ=183.11 — it did not miss it — but understated its extent.**
+>   The dense bracket (μ ∈ [148.23, 217.99], §13.1) shows the failure is not
+>   an isolated single point but a **contiguous ~5.8-Δ-wide region spanning
+>   two consecutive fine-grid points, μ=183.11 AND μ=188.92**, before
+>   recovery at μ=194.74. **Corrected count/rate at the same 13-point dense
+>   resolution: 2 detached / 13 evaluated = 15.4%** — up from 12.5%.
+>
+> **Neither correction changes M=1's or M=4's rows, the pre-registered
+> s-vs-M statistic (§8–9), or the qualitative M=1/M=4 ≫ M=2/M=3 ordering**
+> — if anything §13.2's rejection-rate analysis (a resolution-independent
+> metric) sharpens that ordering further. Full investigation, arithmetic,
+> and the additional finding that the underlying sawtooth structure is
+> *pervasive* across all four M (not just M=1/M=4) are in **§13**; do not
+> cite the 0%/12.5% figures above as the corrected values — use §13's
+> 7.7%/15.4% dense-bracket figures instead, with the same "only part of the
+> window was re-scanned" caveat §13.3 already states.
+
 ### 10.2 Two distinct detachment mechanisms, distinguished by the bare-gap signature
 
 `bare_gap_ms` records the non-self-consistent bulk gap (φ_self = 0) at *every*
@@ -740,7 +785,10 @@ ordering question.
 ##     (M=1, M=4 high; M=2, M=3 low), not monotonically increasing?
 
 **Status of this section:** a further post-hoc investigation of §10.1's
-detachment-rate finding (58.3% / 0% / 12.5% / 53.3% for M=1–4). Reads only
+detachment-rate finding (58.3% / 0% / 12.5% / 53.3% for M=1–4 — **the M=2
+and M=3 figures here are the original, coarse-grid values; §10.1's
+correction box and §13 give the denser-resolution values, 7.7%/15.4%, used
+from §13 onward**). Reads only
 already-computed fields (`mu`, `B`, `phi_star`, `bare_gap`, all already stored
 per point in `r9_multisubband_sweep_data.json`) plus the pre-registered window
 geometry (`protocol_b_window`, `subband_offsets`, `subband_spacing` —
@@ -780,8 +828,17 @@ threshold and spacing, is NOT the same between the two:**
 |---:|---:|---:|
 | 1 | 0.273 | **0.394** |
 | 4 | 0.524 | **0.619** |
-| 2 (reference) | 1.000 (window end) | — no persistent tail at all |
-| 3 (reference) | 1.000 (window end) | — no persistent tail at all (only 1 isolated point) |
+| 2 (reference) | 1.000 (window end) | — no persistent tail at all[^m2m3-correction] |
+| 3 (reference) | 1.000 (window end) | — no persistent tail at all (only 1 isolated point)[^m2m3-correction] |
+
+[^m2m3-correction]: **Corrected by §13 (commits e9437e3/41166d9), see §10.1's
+    correction box.** M=2 is now known to have one confirmed isolated
+    detachment (μ=183.43) the original grid missed; M=3's "1 isolated point"
+    is now known to be 2 consecutive fine-grid points (μ=183.11, 188.92).
+    Neither correction changes the claim made here: neither shows a
+    *persistent* (never-recovering, to-the-window-edge) tail — both remain
+    isolated/localized failures, qualitatively distinct from M=1's and M=4's
+    tails, which is the actual comparison this table makes.
 
 M=1's persistent tail begins at only 39% of its own channel spacing past
 threshold; M=4's begins at 62% — genuinely different fractions, not a shared
@@ -800,10 +857,14 @@ single shared numerical trigger value.
 `B` values recorded at every point: M=1's detached points span B ≈ 12–78;
 M=4's span B ≈ 34–235. But **M=2 reaches B up to 130.75 and M=3 reaches B up
 to 183.06 — both larger than M=1's entire range and comparable to most of
-M=4's — with M=2 showing ZERO detachment and M=3 only one isolated point.**
+M=4's — with M=2 and M=3 both detaching only rarely (near-zero rate at this
+coarse resolution; §13 later finds one confirmed hidden case in each — see
+§10.1's correction box), not systematically at their highest-B points.**
 Large B by itself is **not sufficient** to trigger detachment (M=2/M=3 are a
-direct counterexample at even larger B), and is therefore **ruled out** as
-the explanation, not merely unsupported.
+direct counterexample at even larger B, and their now-known isolated failures
+sit at specific μ, not uniformly at the highest-B points, which if anything
+reinforces rather than weakens this ruling-out), and is therefore **ruled
+out** as the explanation, not merely unsupported.
 
 **Hypothesis: "the fixed-width search bracket (from `_find_fixed_points_ms`
 / `_phi_star_ms`, ±1.5 or ±3 periods = ±0.118 / ±0.236 in phase units) can't
@@ -838,16 +899,24 @@ existing, one this track's own code has not previously characterized.
 
 ### 11.3 Task 2 — are M=2/M=3 the unremarkable baseline?
 
-Yes, and this reframes the question correctly, as the task anticipated. R4's
-own established result is that the self-consistency map is **attracting at
-the generic transition field for every N tried**, with genuine detachment
-confined to a narrow window specifically at a gap-closing — i.e., **low/zero
-detachment away from a gap-closing is the documented, expected default**, not
-something that itself needs explaining. M=2 (0/10 detached) and M=3 (1/8,
-a single isolated point) are fully consistent with that established baseline.
-**The real, correctly-framed question is not "why is the rate U-shaped" but
-"why do M=1 and M=4 specifically deviate from the otherwise-expected clean
-baseline that M=2 and M=3 both confirm."**
+Yes — **low**, not necessarily zero, and this reframes the question
+correctly, as the task anticipated. R4's own established result is that the
+self-consistency map is **attracting at the generic transition field for
+every N tried**, with genuine detachment confined to a narrow window
+specifically at a gap-closing — i.e., **low detachment away from a
+gap-closing is the documented, expected default**, not something that itself
+needs explaining. M=2 (0/10 detached at coarse resolution — §10.1's
+correction box: since found to be nonzero, 1/13 = 7.7% at dense resolution
+within the scanned bracket) and M=3 (1/8, later found to be 2 consecutive
+points, 2/13 = 15.4% at dense resolution — same correction box) are still
+fully consistent with a *low*-detachment baseline, just not a literally
+*zero* one at M=2. **The real, correctly-framed question is not "why is the
+rate U-shaped" but "why do M=1 and M=4 specifically deviate — far more
+severely, not just non-zero-ly — from the low baseline that M=2 and M=3 both
+confirm."** §13.2 makes this quantitative: even after correction, M=1/M=4
+reject ~90% of the candidate crossings they find, versus M=2/M=3's 55–65% —
+a real, large, resolution-independent gap that the M=2/M=3 correction does
+not close.
 
 ### 11.4 Task 3 — verdict
 
@@ -971,6 +1040,25 @@ out. **M=1's transition zone is genuinely structured, not a single clean
 step** — it fluctuates between "two rejected crossings" and, once, "one
 accepted, wildly unstable crossing" before settling into persistent
 rejection from μ≈25.6 onward.
+
+**Resolved: this outlier has NO relationship to the pre-registered M=1
+headline statistic.** μ=24.55 exists ONLY in this section's diagnostic
+13-point bracket scan (μ ∈ [21.40, 34.0], step ≈ 1.05) — it is **not** one
+of the 12 pre-registered μ values the original protocol-(b) sweep actually
+evaluated (§8.2, §10.3's table: −26.16, −16.65, −7.13, 2.38, 11.89, 21.40,
+30.91, 40.43, 49.94, 59.45, 68.96, 78.48). It was never a candidate for
+"surviving" or "excluded" status and contributes nothing to
+`median_s_excluded` or `median_s_raw`. (For completeness: numerically,
+|24.55 − 0| = 24.55 > δ = 22.31, so *if* it had been part of the
+pre-registered grid it would have sat outside the van Hove exclusion radius
+— but this is moot, since it was never evaluated as part of that grid.)
+**The actual single surviving point behind M=1's pre-registered statistic
+remains μ=−26.16, s=0.000435** (§10.3) — a small, well-behaved value,
+consistent with (not contradicted by) R9-T1's single-channel baseline. The
+s=−580.06 outlier is a genuine, separately-reported finding about the local
+structure of the self-consistency map near the detachment onset (relevant to
+§12's mechanism question), and should be read as exactly that — not as a
+property of, or a threat to, the pre-registered M=1 median.
 
 **M=4** (13 points; full table in the data file):
 
