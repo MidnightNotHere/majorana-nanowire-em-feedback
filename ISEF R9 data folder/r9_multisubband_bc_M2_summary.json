@@ -1,0 +1,141 @@
+{
+  "gates": {
+    "pfaffian_M1": {
+      "gate": "pfaffian_sign_ms_M1",
+      "max_diff": 0.0,
+      "pass": true
+    },
+    "uniform_reduction_M2": {
+      "N": 40,
+      "M": 2,
+      "std_over_mean": 1.9237795010192074e-13,
+      "uniform_to_high_precision": true
+    },
+    "Bc_M1": {
+      "gate": "Bc_selfconsistent_ms_M1",
+      "Bc_ref": 1.559950630982112,
+      "Bc_ms": 1.559950630982112,
+      "diff": 0.0,
+      "pass": true
+    }
+  },
+  "path_independence_N80": {
+    "N": 80,
+    "mu": 131.762,
+    "B": 53.2455,
+    "g": 29000.0,
+    "M": 2,
+    "root_bisection": -0.005847804069083441,
+    "root_slope": 3.044437947382576,
+    "root_exists": true,
+    "root_picard_stable": false,
+    "n_seeds_step_criterion": 5,
+    "n_seeds_fixed_point": 3,
+    "n_seeds": 5,
+    "seed_spread": 7.05038258677626e-11,
+    "seed_independent": true,
+    "picard_converged": false,
+    "picard_n_iter": 200,
+    "picard_fp_residual": 0.02517986438128124,
+    "note": "zero/random/at_root seeds (3 of 5) land on the SAME genuine root (spread 7e-11); far_neg/far_pos seeds (2 of 5) stall at non-root points (fp_residual ~0.01-0.02) rather than finding a different genuine root."
+  },
+  "by_N": {
+    "60": {
+      "N": 60,
+      "mu": 131.762,
+      "M": 2,
+      "g": 29000.0,
+      "outcome": "genuine_dead_zone",
+      "Bc": NaN,
+      "diagnostics": {
+        "attempt_0_error": "no self-consistent fixed point found at N=60, mu=131.762, M=2, B=50.245500, g=2.9e+04",
+        "attempt_1_error": "no self-consistent fixed point found at N=60, mu=131.762, M=2, B=49.915500, g=2.9e+04",
+        "attempt_2_error": "no self-consistent fixed point found at N=60, mu=131.762, M=2, B=50.545500, g=2.9e+04",
+        "attempt_3_error": "no self-consistent fixed point found at N=60, mu=131.762, M=2, B=50.082643, g=2.9e+04",
+        "attempt_4_error": "no self-consistent fixed point found at N=60, mu=131.762, M=2, B=51.490500, g=2.9e+04",
+        "attempts_tried": 5,
+        "n_errors": 5,
+        "n_no_flip": 0,
+        "all_errors": [
+          "no self-consistent fixed point found at N=60, mu=131.762, M=2, B=50.245500, g=2.9e+04",
+          "no self-consistent fixed point found at N=60, mu=131.762, M=2, B=49.915500, g=2.9e+04",
+          "no self-consistent fixed point found at N=60, mu=131.762, M=2, B=50.545500, g=2.9e+04",
+          "no self-consistent fixed point found at N=60, mu=131.762, M=2, B=50.082643, g=2.9e+04",
+          "no self-consistent fixed point found at N=60, mu=131.762, M=2, B=51.490500, g=2.9e+04"
+        ]
+      },
+      "elapsed_s": 406.1271893978119
+    },
+    "80": {
+      "N": 80,
+      "mu": 131.762,
+      "M": 2,
+      "g": 29000.0,
+      "ana_center": 53.2455,
+      "ana_channel2_naive": 53.29552254882201,
+      "outcome": "found",
+      "Bc": 51.20442002820968,
+      "diagnostics": {
+        "attempt_0_error": "no self-consistent fixed point found at N=80, mu=131.762, M=2, B=50.545500, g=2.9e+04",
+        "attempt_1_error": "no self-consistent fixed point found at N=80, mu=131.762, M=2, B=50.581500, g=2.9e+04",
+        "attempt_2_error": "no self-consistent fixed point found at N=80, mu=131.762, M=2, B=50.545500, g=2.9e+04",
+        "attempt_3_error": "no self-consistent fixed point found at N=80, mu=131.762, M=2, B=50.478000, g=2.9e+04",
+        "phi_star_at_Bc": 0.011713458664570117,
+        "coarse_signs": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0,
+          -1.0,
+          1.0,
+          1.0,
+          1.0,
+          -1.0,
+          -1.0,
+          -1.0,
+          -1.0,
+          -1.0,
+          -1.0,
+          -1.0,
+          -1.0,
+          -1.0
+        ],
+        "n_flips_coarse": 4,
+        "ana_center_used": 53.2455,
+        "final_window": 2.34,
+        "attempt_index": 4,
+        "attempts_tried": 5
+      },
+      "elapsed_s": 5711.302606105804,
+      "Bc_clean_same_lobe": 51.626534938812256,
+      "shift_abs": -0.42211491060257345,
+      "shift_rel": -0.008176316909567218
+    },
+    "120": {
+      "N": 120,
+      "mu": 131.762,
+      "M": 2,
+      "g": 29000.0,
+      "outcome": "genuine_dead_zone",
+      "Bc": NaN,
+      "diagnostics": {
+        "attempt_0_error": "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.245500, g=2.9e+04",
+        "attempt_1_error": "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.581500, g=2.9e+04",
+        "attempt_2_error": "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.545500, g=2.9e+04",
+        "attempt_3_error": "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.082643, g=2.9e+04",
+        "attempt_4_error": "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=51.709875, g=2.9e+04",
+        "attempts_tried": 5,
+        "n_errors": 5,
+        "n_no_flip": 0,
+        "all_errors": [
+          "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.245500, g=2.9e+04",
+          "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.581500, g=2.9e+04",
+          "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.545500, g=2.9e+04",
+          "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.082643, g=2.9e+04",
+          "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=51.709875, g=2.9e+04"
+        ]
+      },
+      "elapsed_s": 4257.123269319534
+    }
+  }
+}

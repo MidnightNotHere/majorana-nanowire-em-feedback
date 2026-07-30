@@ -389,6 +389,39 @@ quantum computing:
   map specifically rejects more of its candidates — a question about the
   shape of the current-phase relation itself — remains open. None of this
   changes any pre-registered number in §8–9; diagnosis only throughout.
+  **Beyond the proxy (`bdg_r9_multisubband_bc.py`, `r9_multisubband_methods.md
+  §14`): does the FULL self-consistent boundary calculation — not just the
+  loop-gain slope — actually shift at M=2?** Ports R5/R7's exact
+  Pfaffian-bisection algorithm (`ring_boundary_Bc_pfaffian_selfconsistent`)
+  and R9-T1's Anderson-mixing seed-independence test onto the M-subband
+  Hamiltonian, gated bit-for-bit at M=1 against both R4's Pfaffian sign and
+  R5's own boundary result (`diff=0.0` on both), plus a fresh check that the
+  uniform-manifold reduction Track 4's own proxy relies on still holds
+  exactly at M=2 (confirmed to 1.9×10⁻¹³). At one representative point
+  (μ=131.762, the s(μ;M=2) peak, N=80): the proxy's root is confirmed
+  genuine and seed-independent via Anderson mixing (matching R9-T1's own
+  method) but Picard-repelling, exactly as the proxy said. The full boundary
+  bisection **does locate a genuine Bc=51.2044** — a **−0.82% shift** versus
+  the clean same-lobe boundary, **~13× R4/R5/R7's own single-channel shift**
+  at the identical production coupling — inside a genuine 4-lobe Pfaffian
+  oscillation confirmed present in the CLEAN Hamiltonian too (the
+  literature's predicted multi-subband phase structure, not a
+  self-consistency artifact). **But this shift is NOT N-independent, and not
+  in the way the single-channel case was:** N=60 and N=120 (the mandatory
+  N-check) both return **`genuine_dead_zone`** — no self-consistent solution
+  found by ANY of 5 independently-jittered search paths, robustly, across the
+  same B-range where N=80 succeeded — the OPPOSITE of R4/R5/R7's own
+  N-dependence (there, dead-zones shrink and vanish as N grows; here N=80's
+  solution is bracketed by dead-zones on both sides, fail→succeed→fail, not
+  a converging trend). **Verdict: outcome (c), genuinely more complicated
+  than a clean confirm or null** — the −0.82% number cannot be reported as a
+  continuum-limit physical quantity, but the underlying finding is not
+  weaker for it: the very *existence* of a static self-consistent boundary
+  at M=2 is itself fragile to finite-size variation, a qualitatively more
+  severe failure of the static picture than any percentage shift would be,
+  and one the cheap proxy alone could never have shown (it only ever asks
+  about a root at one fixed B, never whether a *boundary* exists at all).
+  This deepens, rather than merely restates, the proxy's own s>1 warning.
 
 ## Requirements
 

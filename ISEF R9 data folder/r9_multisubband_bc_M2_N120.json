@@ -1,0 +1,26 @@
+{
+  "N": 120,
+  "mu": 131.762,
+  "M": 2,
+  "g": 29000.0,
+  "outcome": "genuine_dead_zone",
+  "Bc": NaN,
+  "diagnostics": {
+    "attempt_0_error": "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.245500, g=2.9e+04",
+    "attempt_1_error": "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.581500, g=2.9e+04",
+    "attempt_2_error": "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.545500, g=2.9e+04",
+    "attempt_3_error": "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.082643, g=2.9e+04",
+    "attempt_4_error": "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=51.709875, g=2.9e+04",
+    "attempts_tried": 5,
+    "n_errors": 5,
+    "n_no_flip": 0,
+    "all_errors": [
+      "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.245500, g=2.9e+04",
+      "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.581500, g=2.9e+04",
+      "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.545500, g=2.9e+04",
+      "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=50.082643, g=2.9e+04",
+      "no self-consistent fixed point found at N=120, mu=131.762, M=2, B=51.709875, g=2.9e+04"
+    ]
+  },
+  "elapsed_s": 4257.123269319534
+}

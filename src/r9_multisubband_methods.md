@@ -1268,3 +1268,222 @@ converged at the original, pre-registered resolution; this section only adds
 that the *un-converged* points are more numerous, and their common mechanism
 more precisely characterized, than previously shown — diagnosis, not
 remediation, exactly as §11 and §12 were.
+
+## 14. Beyond the proxy: does the FULL self-consistent boundary actually
+##     shift at M=2?
+
+**Status of this section:** everything in §8–13 was measured with the CHEAP
+loop-gain-slope proxy (s = dG/dφ, ~30 `eigh` calls per point) — never the
+full self-consistent BOUNDARY-SHIFT calculation (Pfaffian-sign bisection with
+the self-consistent self-phase substituted at every probed B) that was R5's
+own actual headline method, and R7/R9-T1's, throughout the rest of this
+project. This section closes that gap with a new, additive module
+(`bdg_r9_multisubband_bc.py`) that ports the exact R5/R7 algorithm onto the
+already-validated M-subband Hamiltonian, at **one representative point**
+(mu=131.762, the near-peak of the pre-registered s(μ;M=2) curve, s=3.0444 —
+`MU_M2_PEAK`/`B_M2_PEAK` in the module), not a grid — the scoping report's
+own established boundary on what is tractable here. No R1–R9 code path or
+pre-registered Track 4 result is modified.
+
+### 14.1 New machinery, validated bit-for-bit before any M=2 output is trusted
+
+Three new pieces, each gated against its exact R1–R9 counterpart:
+
+1. **`_ring_pfaffian_sign_ms`** — the M-subband ring Pfaffian invariant,
+   generalizing R4's `_ring_pfaffian_sign` (same Majorana-basis Omega
+   transform, same rescale-by-max|H| trick, now on the `2NM`-dimensional
+   electron block instead of `2N`). **Gate: matches `_ring_pfaffian_sign`
+   bit-for-bit at M=1 across 6 random (μ, B, φ_bonds) points — `max_diff =
+   0.0`.**
+2. **`ring_boundary_Bc_pfaffian_selfconsistent_ms`** — the M-subband port of
+   R5's `ring_boundary_Bc_pfaffian_selfconsistent` (coarse-scan → bisect the
+   first Pfaffian sign flip, self-consistent φ*(B) from `_phi_star_ms` at
+   every probed B, raises `ScfConvergenceError` — R5's own class, reused
+   unchanged — if no fixed point exists at some B), plus
+   **`..._ms_robust`**, R7's own jittered-retry wrapper
+   (`ring_Bc_selfconsistent_a`'s exact 5-attempt schedule) so a single
+   unlucky bisection path landing on a narrow dead-zone is not mistaken for
+   a genuine one. **Gate: matches `ring_boundary_Bc_pfaffian_selfconsistent`
+   bit-for-bit at M=1, N=80, μ=1.2 — `Bc_ref = Bc_ms = 1.559950630982112`,
+   `diff = 0.0`.**
+3. **The uniform-manifold reduction, separately checked at M=2** — R5 proved
+   a uniform input texture produces a uniform output current *exactly* at
+   M=1 (Bloch-state argument); Track 4's scalar map (`scalar_ring_map_ms`,
+   used throughout §8–13) assumed without re-checking that this still holds
+   at M>1. **Confirmed directly: `std(I_bonds)/|mean(I_bonds)| = 1.9×10⁻¹³`
+   at M=2** (`validate_uniform_reduction_ms`), the same order of precision
+   R5 reported at M=1 — the reduction is not an unexamined assumption.
+
+**All three gates pass exactly.** The M-subband boundary machinery is
+trustworthy before any M=2 number below is used.
+
+### 14.2 Is the proxy's root genuinely attracting? (Task 1.3 — R9-T1's method, ported)
+
+Before searching for a boundary, the loop-gain proxy's own claim — a genuine
+root exists at (μ=131.762, B=53.2455, M=2) with s=3.0444, Picard-repelling —
+is checked the way R9 Track 1 checked R5's own s>1 branches: Anderson-mixing
+seed-independence (`path_independence_check_ms`, `anderson_scalar_ms`, exact
+ports of `anderson_selfconsistent_ring_texture`/
+`task2_convergence_above_gcrit`'s algorithm and seed-independence criterion,
+reduced to the scalar map already validated for this purpose in §8–13).
+
+**The root is confirmed genuine, not a numerical mirage.** Root-finding gives
+φ*=−0.005848, slope=3.0444 — **exactly matching the pre-registered s value**
+(an independent cross-check the two methods agree). Anderson mixing from 5
+seeds: **zero, random, and starting-at-the-root all converge (4, 4, and 1
+iterations) to the SAME point, spread 7×10⁻¹¹** — genuinely seed-independent
+by the identical bar R9-T1 used (`n_fp≥2 and seed_spread<1e-6`). Plain Picard
+iteration does **not** converge in 200 iterations (`fp_residual` stays at
+0.025) — consistent with s>1. **A genuine nuance not present in R9-T1's own
+report:** two FAR seeds (±0.02, roughly a quarter-period away) also satisfy
+the loose `‖dA‖/‖A‖` step criterion but *stall* at points with large
+residual (`fp_residual` 0.013–0.021) rather than reaching the genuine root —
+Anderson mixing's basin of attraction for this root is local, not global.
+**Reading, matching R9-T1's own established interpretation exactly:** this
+root is a real, reproducible solution of the static self-consistency
+equation (not a numerical artifact) — but its Picard-instability means it is
+**not dynamically attracting** under the actual (non-accelerated) iteration
+dynamics a real relaxing system would follow. Anderson's numerical success
+confirms the root is real; it does not make it physically stable.
+
+### 14.3 The boundary bisection at N=80: a genuine shift, ~13× the single-channel one
+
+`ring_boundary_Bc_pfaffian_selfconsistent_ms_robust` at N=80: **4 of 5
+jittered retry paths hit a genuine `ScfConvergenceError`** (no fixed point
+at B≈50.5, a real dead-zone, not a bug — matching the discontinuity-rejection
+mechanism already characterized in §12); **the 5th (widest, densest) path
+succeeds: Bc = 51.2044** (5711 s ≈ 95 min).
+
+**The Pfaffian sign oscillates 4 times within a ~4.7-unit B window** (signs
+−1,−1,+1,+1,−1,+1,+1,+1,−1,−1,… across the successful scan) — a genuine
+**multi-lobe** structure, not noise: **the identical oscillation is present
+in the CLEAN (φ_self=0, non-self-consistent) Hamiltonian at the same μ**,
+checked directly. This is not a self-consistency artifact — it is the
+literature's own predicted multi-subband phase diagram (Potter–Lee,
+Lutchyn–Stanescu–Das Sarma: multiple lobes / a *sequence* of topological
+transitions once more than one channel contributes, scoping §2.1–2.2),
+appearing here for the first time in this project's own numerics.
+
+**Comparing the self-consistent Bc against the clean boundary for the SAME
+lobe** (bisected precisely: Bc_clean = 51.6265): **shift = −0.4221,
+relative shift = −0.818%.** For scale: R4/R5/R7's own single-channel shift
+at the identical production coupling and N is **−0.0640%** (§10, R4
+Finding 2) — **this M=2 shift is ~12.8× larger.** At face value, this is a
+striking, qualitatively-consistent-with-the-headline result: multi-subband
+occupancy does not just push s above 1, it produces an order-of-magnitude
+larger genuine boundary shift than the single-channel null.
+
+**But per this project's own standing discipline, a shift measured at one N
+is not yet a result — R4/R5/R7's own single-channel shift looked real at
+N=80 too, before fixed-L mesh refinement showed it vanishes as a
+discretisation artifact (§10, "FINDING 2"). The N-independence check below
+is what actually decides whether this number means anything.**
+
+### 14.4 The N-independence check: NOT a clean persist-or-decay story
+
+Two more points, same (μ, M, g), fixed-a (matching R5's own less rigorous
+but standard first check):
+
+| N | dim (4NM) | outcome | Bc | relative shift | wall-clock |
+|---:|---:|---|---:|---:|---:|
+| 60 | 480 | **genuine_dead_zone** (5/5 jittered paths fail, B≈49.9–51.5) | — | — | 406 s |
+| 80 | 640 | **found** | 51.2044 | **−0.818%** | 5711 s |
+| 120 | 960 | **genuine_dead_zone** (5/5 jittered paths fail, B≈50.1–51.7) | — | — | 4257 s |
+
+**This is the OPPOSITE pattern from R4/R5/R7's own single-channel N-scan.**
+There, dead-zones *shrink* as N grows (N=40: ~7.5×10⁻⁴ genuine width; N=80:
+~3×10⁻⁵, razor-thin; N≥80: clean) — larger N gives a *more* robust static
+boundary. Here, **N=80's genuine solution is bracketed on both sides by
+robust dead-zones at N=60 and N=120** — the failing B-ranges at N=60
+(49.9–51.5) and N=120 (50.1–51.7) both directly cover the exact B=51.20
+where N=80 found its root. This is not "the shift is real but shrinking (or
+growing) smoothly with N" — it is **non-monotonic**: fail → succeed → fail.
+
+**Every failure is independently, robustly confirmed** — at each of N=60
+and N=120, all 5 jittered coarse-grid paths (different window widths and
+point densities, R7's own retry schedule) hit `ScfConvergenceError`, not
+just one unlucky path. This rules out the N=80 success itself being the
+lucky/unlucky one; if anything, the *pattern* (2 robust failures bracketing
+1 success) argues the N=80 result is the outlier, not the failures.
+
+### 14.5 Task 2 verdict: outcome (c) — genuinely more complicated than (a) or (b)
+
+Evaluating the three outcomes the task posed directly:
+
+- **Not (a), cleanly:** a genuine, dynamically-confirmed (§14.2) shift *was*
+  measured at N=80 — but it is **not N-independent**, so it cannot be
+  reported as "the boundary shift at M=2 is −0.82%" the way R4/R5/R7 report
+  their (also N-checked, and ultimately null) single-channel numbers. The
+  headline shift magnitude is **not trustworthy as a continuum-limit
+  physical quantity** — it is one point in an evidently non-monotonic
+  N-dependence that has not converged over the range tested.
+- **Not (b), cleanly, either:** N=60 and N=120 both show robust
+  `genuine_dead_zone` outcomes — "no well-defined static self-field
+  description exists" *is* the correct characterization at those two N — but
+  N=80 is a clear, gate-validated, seed-independence-confirmed counterexample
+  within the same N range. The system does not uniformly lack a static
+  description either.
+- **(c) is the evidence-based verdict.** The self-consistent boundary's very
+  *existence* at this (μ, M=2) point is fragile against finite-size
+  variation, in a way qualitatively different from — and more severe than —
+  anything the single-channel case ever showed. Three N values give three
+  different qualitative outcomes for the SAME physical question, not a
+  converging trend.
+
+**What this plausibly reflects, stated as a hypothesis, not a proven
+mechanism:** §10–13 already established that this general (μ,B) region has
+dense, genuine sawtooth/discontinuity structure in the self-consistency map
+(many rejected candidate crossings per point, at every M tested, most
+severely near M=1/M=4 but present everywhere including M=2 — §13.1). A
+region with several near-miss candidate crossings (§12's "found-and-rejected"
+signature) is exactly the kind of region where whether ANY specific
+crossing survives the `|f(φ*)|<1e-4` acceptance bar can plausibly be
+sensitive to the discretisation (N changes the exact spectrum, hence the
+exact current-phase relation I(φ), hence exactly where and whether a
+near-miss becomes a hit) — turning "does a boundary exist here" into an
+N-sensitive question in a way it is not for the single-channel case (where,
+away from a genuine gap-closing, R4 showed the map is comfortably attracting
+"at the generic transition field for every N tried"). This is a plausible
+account of *why* N=80 might differ qualitatively from N=60/120, not a
+demonstrated mechanism — distinguishing it from a coincidence would need
+denser N-sampling (e.g. every N from 60–120) or direct I(φ) characterization
+near each failing B, both out of scope here.
+
+### 14.6 Task 3 — what this means for the paper's multi-subband conclusion
+
+**The full calculation does not cleanly confirm "the boundary shifts by
+~13× the single-channel amount at M=2"** — that specific number is real at
+one N and not established as a continuum-limit fact; it must not be quoted
+as a headline percentage in the paper.
+
+**But the full calculation does not weaken the multi-subband caveat either —
+if anything it sharpens it, in a different and arguably more severe
+direction than a percentage shift would.** The correct, defensible
+paper-facing statement is: *at the production coupling, at a representative
+M=2 operating point where the cheap loop-gain proxy already signals Picard
+instability (s>1), the FULL self-consistent calculation shows the very
+existence of a static, self-consistent topological boundary description is
+fragile against finite-size variation — a qualitatively different and more
+severe failure mode of the static picture than anything the single-channel
+null result (R1–R9) ever exhibited, where a well-defined static boundary was
+always at least locatable away from genuine (narrow, N-shrinking)
+gap-closing dead-zones.* This is consistent with, and deepens rather than
+merely restates, the loop-gain proxy's own s>1 warning — the proxy said
+"Picard-unstable"; the full calculation adds "and whether a static
+description exists here at all is itself unstable to how finely the wire is
+discretised," which the cheap proxy alone could not have shown (the proxy
+never asks whether a *boundary* — as opposed to a root at one fixed B —
+exists).
+
+**Restated per this section's own scope limit, alongside the existing §7/§9
+structural caveats:** this is one (μ, B, N-range) point, not a systematic
+study — the scoping report's own tractability ceiling (a single-point probe
+being ~65× cheaper than a full B_c sweep, §7) was accepted deliberately, and
+the N-dependence found here means even that single point required THREE N
+values (not one) to characterize honestly. A genuinely conclusive account
+would need either denser N-sampling to see whether N=80's success is
+isolated or the first of a recurring pattern, or the full (μ,B) grid the
+original scoping report already established as intractable (34.7+ h/config
+at M=3, and this section's own N=120 point alone cost 71 min for a single
+B-region search that found nothing) — both explicitly out of reach here, and
+this section does not attempt either.
