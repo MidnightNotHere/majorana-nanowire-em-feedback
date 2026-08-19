@@ -1,0 +1,62 @@
+{
+  "gates": {
+    "ph_M=5": 0.0,
+    "decoupled_M=5": {
+      "N": 30,
+      "M": 5,
+      "max_abs_H_entrywise": 0.0,
+      "max_abs_spectrum_diff": 3.865352482534945e-12,
+      "spectrum_note": "spectrum diff is LAPACK reduction noise (~1e-12); entrywise Hamiltonian agreement is the exact gate",
+      "pass": true
+    },
+    "selection_rule_M=5": {
+      "M": 5,
+      "hermiticity_err": 0.0,
+      "diagonal_max": 0.0,
+      "even_difference_max": 0.0,
+      "pass": true
+    },
+    "ph_M=6": 0.0,
+    "decoupled_M=6": {
+      "N": 30,
+      "M": 6,
+      "max_abs_H_entrywise": 0.0,
+      "max_abs_spectrum_diff": 8.185452315956354e-12,
+      "spectrum_note": "spectrum diff is LAPACK reduction noise (~1e-12); entrywise Hamiltonian agreement is the exact gate",
+      "pass": true
+    },
+    "selection_rule_M=6": {
+      "M": 6,
+      "hermiticity_err": 0.0,
+      "diagonal_max": 0.0,
+      "even_difference_max": 0.0,
+      "pass": true
+    },
+    "worst_eps_PH": 0.0,
+    "all_pass": true
+  },
+  "prereg_extension": {
+    "e1": 26.158619976065086,
+    "van_hove_delta": 22.31264365769129,
+    "n_mu_by_M": {
+      "5": 12,
+      "6": 10
+    },
+    "windows": {
+      "M=5": {
+        "threshold_dEps_M": 627.8068794255621,
+        "spacing_dEsb": 287.74481973671595,
+        "mu_min": 531.8919395133235,
+        "mu_max": 915.551699162278,
+        "delta_over_window_width": 0.1163147455344661
+      },
+      "M=6": {
+        "threshold_dEps_M": 915.551699162278,
+        "spacing_dEsb": 340.06205968884615,
+        "mu_min": 802.197679265996,
+        "mu_max": 1255.6137588511242,
+        "delta_over_window_width": 0.0984201692983944
+      }
+    }
+  }
+}

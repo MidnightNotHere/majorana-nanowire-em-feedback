@@ -1,0 +1,9 @@
+[   0.0s] STEP 1 -- construction gates at M=5,6...
+[   1.6s]   all_pass=True  worst_eps_PH=0.000e+00
+[   1.6s] STEP 2 -- pre-registration extension (window/exclusion, blind to s)...
+[   1.6s]   M=5: window=[531.9, 915.6]  delta/width=0.116
+[   1.6s]   M=6: window=[802.2, 1255.6]  delta/width=0.098
+[   1.6s] STEP 3 -- sweep s(mu;M) at M=5,6 (n_mu={5: 12, 6: 10})...
+[chain M=5 1/12 t=1078.4s] mu=531.89 s=2.2588
+[chain M=5 2/12 t=2277.7s] mu=566.77 s=1.7549
+[chain M=6 1/10 t=3668.4s] mu=802.20 s=nan
