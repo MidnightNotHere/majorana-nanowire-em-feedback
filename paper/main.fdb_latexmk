@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex main"] 1787117300.84941 "main.aux" "main.bbl" "main" 1787118003.44226 0
-  "./mainNotes.bib" 1787117994.89125 0 d41d8cd98f00b204e9800998ecf8427e ""
+["bibtex main"] 1787132891.50679 "main.aux" "main.bbl" "main" 1787132897.48604 0
+  "./mainNotes.bib" 1787132893.05511 0 d41d8cd98f00b204e9800998ecf8427e ""
   "./references.bib" 1787116690.58998 10678 9ed555d6c335123a53568cd92dced938 ""
   "C:/Users/drohi/AppData/Local/Programs/MiKTeX/bibtex/bst/revtex/apsrev4-2.bst" 1685674058 69609 e9dea59f0e753ccda3ddc8f5806d846d ""
-  "main.aux" 1787117996.8013 14620 467715c0d150f502a1702c9115323265 "pdflatex"
+  "main.aux" 1787132894.83085 16158 44b12af8553acd63e64d3f8a4feb8ba6 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1787117993.65763 "main.tex" "main.pdf" "main" 1787118003.45265 0
+["pdflatex"] 1787132892.15072 "main.tex" "main.pdf" "main" 1787132897.4891 0
   "C:/Users/drohi/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1787117272.16754 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/drohi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm0900.pk" 1785380937.00841 10472 f697651b5d000dba24a41b025792a8e4 ""
   "C:/Users/drohi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1000.pk" 1785380938.75441 11548 ad32d60966605f6b56805685f211558e ""
@@ -181,9 +181,10 @@
   "figures/fig4_bounded_pole.png" 1786059682.4635 101648 cc601da9b7ee549e459a8c38fca7fbca ""
   "figures/fig5_disorder_summary.png" 1785379403.24832 84328 588f68cbfcaf00e22e654e1379841de5 ""
   "figures/fig6_multisubband_summary.png" 1786059686.20218 151571 c96d153652f436fa64eab28b00748808 ""
-  "main.aux" 1787117996.8013 14620 467715c0d150f502a1702c9115323265 "pdflatex"
-  "main.bbl" 1787117301.44832 25602 8161c87cde7777267f115d4ca2d88462 "bibtex main"
-  "main.tex" 1787117408.86514 81982 89f5ba69fc734d2da702a02e26f43d49 ""
+  "figures/fig7_multisubband_M1to6_extension.png" 1787132580.31459 174986 ebdb5b1d8f1f59c570358d4a763cb451 ""
+  "main.aux" 1787132894.83085 16158 44b12af8553acd63e64d3f8a4feb8ba6 "pdflatex"
+  "main.bbl" 1787132891.98306 25602 8161c87cde7777267f115d4ca2d88462 "bibtex main"
+  "main.tex" 1787132877.60711 88331 e521b6a71e07cc65476838f347a2322a ""
   (generated)
   "main.aux"
   "main.log"

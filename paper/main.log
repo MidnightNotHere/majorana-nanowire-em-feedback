@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.7.29)  18 AUG 2026 23:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.7.29)  19 AUG 2026 03:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -608,7 +608,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 [1{C:/Users/drohi/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}] [2]
 [3]
-Underfull \hbox (badness 10000) in paragraph at lines 388--403
+Underfull \hbox (badness 10000) in paragraph at lines 394--409
 []\OT1/cmr/m/n/10 On-site dis-or-der is added as $\OML/cmm/m/it/10 "[] \OMS/cms
 y/m/n/10 ^^X
  []
@@ -618,36 +618,36 @@ y/m/n/10 ^^X
 File: figures/fig2_pfaffian_vs_threshold.png Graphic file (type png)
 <use figures/fig2_pfaffian_vs_threshold.png>
 Package pdftex.def Info: figures/fig2_pfaffian_vs_threshold.png  used on input 
-line 447.
+line 453.
 (pdftex.def)             Requested size: 246.0pt x 163.99657pt.
 <figures/fig3_null_validation.png, id=37, 476.982pt x 607.068pt>
 File: figures/fig3_null_validation.png Graphic file (type png)
 <use figures/fig3_null_validation.png>
 Package pdftex.def Info: figures/fig3_null_validation.png  used on input line 5
-04.
+10.
 (pdftex.def)             Requested size: 246.0pt x 313.09277pt.
  [5 <./figures/fig2_pfaffian_vs_threshold.png>]
 
-LaTeX Warning: A float is stuck (cannot be placed) on input line 557.
+LaTeX Warning: A float is stuck (cannot be placed) on input line 563.
 
 
-LaTeX Warning: A float is stuck (cannot be placed) on input line 557.
+LaTeX Warning: A float is stuck (cannot be placed) on input line 563.
 
 
 Class revtex4-2 Warning: Deferred float stuck during \clearpage processing.
 
-<figures/fig4_bounded_pole.png, id=45, 476.982pt x 621.522pt>
+<figures/fig4_bounded_pole.png, id=44, 476.982pt x 621.522pt>
 File: figures/fig4_bounded_pole.png Graphic file (type png)
 <use figures/fig4_bounded_pole.png>
-Package pdftex.def Info: figures/fig4_bounded_pole.png  used on input line 607.
+Package pdftex.def Info: figures/fig4_bounded_pole.png  used on input line 613.
 
 (pdftex.def)             Requested size: 246.0pt x 320.54736pt.
 [6 <./figures/fig3_null_validation.png>]
 
-LaTeX Warning: A float is stuck (cannot be placed) on input line 647.
+LaTeX Warning: A float is stuck (cannot be placed) on input line 653.
 
 
-LaTeX Warning: A float is stuck (cannot be placed) on input line 647.
+LaTeX Warning: A float is stuck (cannot be placed) on input line 653.
 
 
 Class revtex4-2 Warning: Deferred float stuck during \clearpage processing.
@@ -656,35 +656,35 @@ Class revtex4-2 Warning: Deferred float stuck during \clearpage processing.
 File: figures/fig5_disorder_summary.png Graphic file (type png)
 <use figures/fig5_disorder_summary.png>
 Package pdftex.def Info: figures/fig5_disorder_summary.png  used on input line 
-675.
+681.
 (pdftex.def)             Requested size: 246.0pt x 70.72287pt.
 
-Overfull \hbox (1.2773pt too wide) in alignment at lines 700--706
+Overfull \hbox (1.2773pt too wide) in alignment at lines 706--712
  [] [] [] [] 
  []
 
-[7 <./figures/fig4_bounded_pole.png> <./figures/fig5_disorder_summary.png>]
+[7 <./figures/fig4_bounded_pole.png>]
 
-LaTeX Warning: A float is stuck (cannot be placed) on input line 724.
+LaTeX Warning: A float is stuck (cannot be placed) on input line 730.
 
 
-LaTeX Warning: A float is stuck (cannot be placed) on input line 724.
+LaTeX Warning: A float is stuck (cannot be placed) on input line 730.
 
 
 Class revtex4-2 Warning: Deferred float stuck during \clearpage processing.
 
-<figures/fig1_phase_diagram.png, id=59, 1018.2843pt x 451.2057pt>
+<figures/fig1_phase_diagram.png, id=57, 1018.2843pt x 451.2057pt>
 File: figures/fig1_phase_diagram.png Graphic file (type png)
 <use figures/fig1_phase_diagram.png>
-Package pdftex.def Info: figures/fig1_phase_diagram.png  used on input line 789
+Package pdftex.def Info: figures/fig1_phase_diagram.png  used on input line 795
 .
 (pdftex.def)             Requested size: 246.0pt x 109.00072pt.
-[8]
+[8 <./figures/fig5_disorder_summary.png>]
 
-LaTeX Warning: A float is stuck (cannot be placed) on input line 827.
+LaTeX Warning: A float is stuck (cannot be placed) on input line 833.
 
 
-LaTeX Warning: A float is stuck (cannot be placed) on input line 827.
+LaTeX Warning: A float is stuck (cannot be placed) on input line 833.
 
 
 Class revtex4-2 Warning: Deferred float stuck during \clearpage processing.
@@ -693,11 +693,18 @@ Class revtex4-2 Warning: Deferred float stuck during \clearpage processing.
 File: figures/fig6_multisubband_summary.png Graphic file (type png)
 <use figures/fig6_multisubband_summary.png>
 Package pdftex.def Info: figures/fig6_multisubband_summary.png  used on input l
-ine 830.
+ine 836.
 (pdftex.def)             Requested size: 246.0pt x 447.2754pt.
 [9 <./figures/fig1_phase_diagram.png> <./figures/fig6_multisubband_summary.png>
-] [10] [11] [12]
-Overfull \hbox (222.26831pt too wide) in alignment at lines 1265--1292
+]
+<figures/fig7_multisubband_M1to6_extension.png, id=70, 939.51pt x 260.172pt>
+File: figures/fig7_multisubband_M1to6_extension.png Graphic file (type png)
+<use figures/fig7_multisubband_M1to6_extension.png>
+Package pdftex.def Info: figures/fig7_multisubband_M1to6_extension.png  used on
+ input line 947.
+(pdftex.def)             Requested size: 433.50311pt x 120.04579pt.
+ [10] [11 <./figures/fig7_multisubband_M1to6_extension.png>] [12] [13]
+Overfull \hbox (222.26831pt too wide) in alignment at lines 1371--1398
  [] [] [] 
  []
 
@@ -705,37 +712,37 @@ Overfull \hbox (222.26831pt too wide) in alignment at lines 1265--1292
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1301--1307
+Underfull \hbox (badness 10000) in paragraph at lines 1407--1413
 []\OT1/cmr/m/n/10 Consistent with the data-availability state-ment
  []
 
-[13]
+[14]
 
-LaTeX Warning: A float is stuck (cannot be placed) on input line 1333.
+LaTeX Warning: A float is stuck (cannot be placed) on input line 1419.
 
 
-LaTeX Warning: A float is stuck (cannot be placed) on input line 1333.
+LaTeX Warning: A float is stuck (cannot be placed) on input line 1419.
 
 
 Class revtex4-2 Warning: Deferred float stuck during \clearpage processing.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1341--1348
+Underfull \hbox (badness 10000) in paragraph at lines 1447--1454
  []\OT1/cmr/m/it/10 The dis-or-der inductive-feedback shift \OT1/cmr/m/n/10 pas
 sed
  []
 
 
-Underfull \hbox (badness 1755) in paragraph at lines 1341--1348
+Underfull \hbox (badness 1755) in paragraph at lines 1447--1454
  \OT1/cmr/m/n/10 through two recorded cor-rec-tions -- a search-
  []
 
-(main.bbl
+(main.bbl [15]
 Underfull \hbox (badness 10000) in paragraph at lines 135--139
  []\OT1/cmr/m/n/9 Microsoft Quan-tum, M. Aghaee, A. Al-caraz
  []
 
-[14]
+
 Underfull \hbox (badness 1117) in paragraph at lines 317--323
  []\OT1/cmr/m/n/9 S. Ahn, H. Pan, B. Woods, T. D. Stanescu, and
  []
@@ -756,20 +763,20 @@ Underfull \hbox (badness 1472) in paragraph at lines 344--351
 245408 (2019),
  []
 
-) [15] (main.aux)
+) [16] (main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 15501 strings out of 467871
- 300820 string characters out of 5418376
- 725313 words of memory out of 5000000
- 44117 multiletter control sequences out of 15000+600000
+ 15512 strings out of 467871
+ 301277 string characters out of 5418376
+ 731801 words of memory out of 5000000
+ 44128 multiletter control sequences out of 15000+600000
  641895 words of font info for 92 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,15n,94p,924b,884s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,15n,94p,927b,884s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\drohi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm
 0900.pk> <C:\Users\drohi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
 0\tcrm1000.pk><C:/Users/drohi/AppData/Local/Programs/MiKTeX/fonts/type1/public/
@@ -802,9 +809,9 @@ grams/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt9.pfb><C:/Users/drohi/AppData/L
 ocal/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb><C:/Users/d
 rohi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.p
 fb>
-Output written on main.pdf (15 pages, 1210927 bytes).
+Output written on main.pdf (16 pages, 1373284 bytes).
 PDF statistics:
- 207 PDF objects out of 1000 (max. 8388607)
+ 212 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 43 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 48 words of extra memory for PDF output out of 10000 (max. 10000000)
 

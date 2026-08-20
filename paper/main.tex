@@ -51,11 +51,17 @@ subband overturns the null: a pre-registered loop-gain diagnostic crosses
 the Picard stability threshold at the production electromagnetic
 coupling once $M\geq2$, and a full self-consistent boundary calculation
 at $M=2$ shows that the \emph{existence} of a static topological boundary
-becomes fragile to the lattice discretization used to compute it. Because
-realistic InAs/Al devices are estimated to occupy far more than two
-subbands, this existence-fragility result -- not the single-channel null
--- should govern how electromagnetic feedback is treated in real devices.
-Code, validation scripts, and raw data are publicly available.
+becomes fragile to the lattice discretization used to compute it.
+Extending the same diagnostic to $M=5,6$ shows this trend is itself
+non-monotonic, not a simple worsening with occupancy: the loop-gain
+statistic collapses at $M=6$, but the underlying detachment rate --
+whether any static solution exists at all -- stays high and
+non-monotonic throughout, so existence, not the loop-gain magnitude,
+remains the operative diagnostic. Because realistic InAs/Al devices are
+estimated to occupy far more than two subbands, this existence-fragility
+result -- not the single-channel null -- should govern how
+electromagnetic feedback is treated in real devices. Code, validation
+scripts, and raw data are publicly available.
 \end{abstract}
 
 \maketitle
@@ -845,27 +851,115 @@ folder/}.}
 Using the pre-registered protocol of \S\ref{sec:model}D, the loop-gain
 slope $s$ at $\mu=1.2$ (fixed occupancy, a construction sanity check
 rather than the physics answer) converges smoothly with basis size $M$
-from $0.290$ ($M=1$) to $0.313$ ($M=4$), a $7.6\%$ total change with no
-discontinuity, and its $M=1$ value independently reproduces the
-single-channel result of \S\ref{subsec:impedance} to three significant
-figures -- a strong cross-check that the multi-subband machinery is
-physically correct, not merely internally consistent
-(Fig.~\ref{fig:multisubband}A). The genuine test -- re-tuning $\mu$
-upward with $M$ so that each new subband is actually occupied, at fixed
-production coupling $g=2.9\times10^4$ -- gives a qualitatively different
-result (Fig.~\ref{fig:multisubband}B,C). Using only the pre-registered,
-van-Hove-excluded median statistic, the loop gain is $0.0004$ ($M=1$),
-$1.99$ ($M=2$), $2.90$ ($M=3$), and $2.06$ ($M=4$). At $M=1$, $s$ stays
-safely sub-critical everywhere probed (maximum $0.84$); at every $M\geq2$
-tested, $s$ exceeds the Picard-stability boundary $s=1$ at \emph{every
-individual finite point probed}, not merely in the median. This is a
-qualitatively different, and more severe, kind of finding than a
-percentage change in a boundary location: merely occupying a second
-transverse channel, with no change whatsoever to the electromagnetic
-coupling $g$, moves the wire from ``safely sub-critical at production
-coupling'' to ``the static self-consistency map has Picard-repelling
-roots at production coupling, across essentially the entire window
-probed.''
+from $0.290$ ($M=1$) to $0.313$ ($M=6$), an $8.0\%$ total change with no
+discontinuity across the entire range tested (extended to $M=6$ at
+negligible extra cost, $\sim3.5$ min for both new points combined), and
+its $M=1$ value independently reproduces the single-channel result of
+\S\ref{subsec:impedance} to three significant figures -- a strong
+cross-check that the multi-subband machinery is physically correct, not
+merely internally consistent (Fig.~\ref{fig:multisubband}A). The genuine
+test -- re-tuning $\mu$ upward with $M$ so that each new subband is
+actually occupied, at fixed production coupling $g=2.9\times10^4$ --
+gives a qualitatively different result (Fig.~\ref{fig:multisubband}B,C).
+Using only the pre-registered, van-Hove-excluded median statistic, the
+loop gain is $0.0004$ ($M=1$), $1.99$ ($M=2$), $2.90$ ($M=3$), $2.06$
+($M=4$), $1.70$ ($M=5$), and $7.0\times10^{-6}$ ($M=6$)
+(Table~\ref{tab:m56extension}; Fig.~\ref{fig:multisubband56} extends
+panels B and C of Fig.~\ref{fig:multisubband} to $M=5,6$, using the
+identical closed-form window, van Hove exclusion radius, and median
+statistic, pre-registered in a separate commit before any $M=5,6$ value
+was computed -- the same discipline as the original $M\leq4$ protocol).
+At $M=1$, $s$ stays safely sub-critical everywhere a solution is found
+(maximum $0.84$); at $M=2$, $M=3$, and $M=4$, $s$ exceeds the
+Picard-stability boundary $s=1$ at \emph{every individual finite point
+probed}, not merely in the median. This is a qualitatively different,
+and more severe, kind of finding than a percentage change in a boundary
+location: merely occupying a second transverse channel, with no change
+whatsoever to the electromagnetic coupling $g$, moves the wire from
+``safely sub-critical at production coupling'' to ``the static
+self-consistency map has Picard-repelling roots at production coupling,
+across the entire window probed.''
+
+This pattern does not continue smoothly to $M=5,6$. At $M=5$,
+three-quarters of the finite points probed ($6$ of $8$) still exceed
+$s=1$; the two that do not sit at the window's far edge, well above the
+newly-occupied channel's own threshold. At $M=6$ the reversal is
+complete: \emph{none} of the six finite points probed exceeds $s=1$, and
+the median collapses four orders of magnitude below even the $M=1$
+value. Taken alone, this could be misread as the instability healing
+itself at $M=6$. Two features of the same dataset argue against that
+reading. First, the decay is not new physics specific to $M=6$: it is
+already visible at $M=5$'s window edge, and its location matches exactly
+what the physical-origin argument below predicts -- the van
+Hove-enhanced response is concentrated near the newly-crossed threshold
+and falls off deeper into the occupied channel, and because the
+pre-registered window widens linearly with $M$ ($\Delta E_{\rm
+sb}(M)=\varepsilon_1(2M+1)$, \S\ref{sec:model}D) while the enhanced
+region does not, an ever-larger fraction of each window's points sample
+this decayed, off-threshold regime as $M$ grows. The median statistic at
+$M=6$ is therefore not measuring a smaller instability so much as it is
+increasingly dominated by the part of the window where the instability
+was never expected to be largest. Second, and more fundamentally,
+$M=6$'s own dataset does not show a return to a well-behaved static
+boundary: the detachment rate (points where no self-consistent solution
+exists at all, defined precisely in \S\ref{subsec:existence}) is $58\%$,
+$0\%$, $12.5\%$, $53\%$, $33\%$, and $40\%$ of probed points at
+$M=1$--$6$ respectively -- $M=6$'s $40\%$ sits squarely inside that
+range, not a return to $M=2$'s clean $0\%$. A collapsing median loop-gain
+alongside a persistently high detachment rate is not evidence that the
+self-consistency map has become well-behaved at $M=6$; it is evidence
+that the cheap loop-gain proxy itself becomes an unreliable summary once
+detachments and off-threshold sampling dominate the window it is
+evaluated over -- reinforcing, rather than undermining,
+\S\ref{subsec:existence}'s conclusion that the proxy's verdict cannot
+substitute for a full self-consistent boundary calculation. The full
+calculation itself remains out of reach at $M=5,6$ for the same cost
+reason established at $M=2$--$3$ (\S\ref{subsec:existence}): the $M=6$
+proxy sweep already required $\sim4.1$ hours at $\sim30$ eigensolves per
+point, against an estimated $\sim2000$ eigensolves per point for the
+full boundary bisection.
+
+\begin{table}[t]
+\caption{The pre-registered loop-gain statistic and detachment rate at
+every $M$ tested, $M=1$--$6$ ($N=80$, $g_{\rm production}=2.9\times10^4$).
+$M\leq4$ reproduces the original sweep exactly; $M=5,6$ is the extension
+reported here, computed with the identical protocol. ``finite/total''
+counts the raw points where a self-consistent root was found at all
+(the complement is the detachment rate); ``finite $>1$'' is the fraction
+of those roots exceeding the Picard threshold $s=1$.}
+\label{tab:m56extension}
+\begin{ruledtabular}
+\begin{tabular}{cccccc}
+$M$ & points & finite/total & detach.\ \% & median $s$ & finite $>1$ \\
+\hline
+1 & 12 & 5/12  & 58\%   & $4\times10^{-4}$   & $0\%$   \\
+2 & 10 & 10/10 & 0\%    & $1.99$             & $100\%$ \\
+3 & 8  & 7/8   & 12.5\% & $2.90$             & $100\%$ \\
+4 & 15 & 7/15  & 53\%   & $2.06$             & $100\%$ \\
+5 & 12 & 8/12  & 33\%   & $1.70$             & $75\%$  \\
+6 & 10 & 6/10  & 40\%   & $7.0\times10^{-6}$ & $0\%$   \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig7_multisubband_M1to6_extension.png}
+\caption{The $M=5,6$ extension of the pre-registered multi-subband
+loop-gain probe (cf.\ Fig.~\ref{fig:multisubband}), using the identical
+protocol throughout. (A) Truncation convergence at fixed occupancy,
+extended through $M=6$: still smooth, no discontinuity. (B) The
+genuine-occupancy sweep $s(\mu;M)$ at production coupling, $M=1$--$6$;
+gaps in a curve are genuine detachments (no self-consistent root at that
+$\mu$), not omitted data. (C) The pre-registered median statistic (left
+axis) alongside the detachment rate (right axis) at each $M$: the $M=6$
+collapse in the median coincides with, rather than replaces, a
+persistently high detachment rate. Generated by
+\texttt{bdg\_r9\_multisubband\_plot\_M6.py} from
+\texttt{bdg\_r9\_multisubband\_sweep\_M56.py}'s output; data in
+\texttt{ISEF R9 data folder/}.}
+\label{fig:multisubband56}
+\end{figure*}
 
 Why would occupying a second subband increase the loop gain at all,
 rather than simply adding a second, independent contribution to the
@@ -927,12 +1021,18 @@ structure is present, but how often the map fails to leave behind even
 one surviving, accepted root once the structure is present. We regard
 this as a genuine, reportable, unresolved feature of the multi-subband
 self-consistency map's internal structure, not as either a bug or a
-device-faithful prediction: this is a study truncated at $M\leq4$
+device-faithful prediction: this is a study truncated at $M\leq6$
 subbands, far below the $10$--$26$ or more subbands realistic devices are
 estimated to occupy~\cite{woods2020}, and adding even one subband can
 flip the topological invariant's parity~\cite{lim2012}, so this trend --
 including its own non-monotonicity -- must not be extrapolated smoothly
-into the many-subband regime.
+into the many-subband regime. The $M=5,6$ extension above is a direct
+illustration of exactly this warning: had the study stopped at $M=4$, as
+originally scoped, a reader could reasonably have inferred a clean,
+monotonically-worsening instability with occupied-channel count; two
+further, cheaply obtained data points show instead that neither the
+loop-gain magnitude nor the detachment rate settles into a simple trend
+anywhere in the range tested.
 
 \subsection{Beyond the proxy: existence, not just magnitude, of the boundary becomes fragile at $M=2$}
 \label{subsec:existence}
@@ -1039,18 +1139,24 @@ gap of the same character, and comparable seriousness, as the fixed-$\Delta$
 idealization already carried through every field sweep in this paper.
 The two multi-subband findings compound rather than merely add: the
 loop-gain proxy shows the production coupling is already
-\emph{super}-critical once a second subband is occupied, at \emph{every}
-finite point tested; and the one full calculation performed shows that
-even the more basic question -- does a well-defined static description
-exist at all -- can fail to have a stable answer as a function of lattice
-discretization at exactly this occupancy. Neither finding is a
-device-faithful prediction (both are structural results at $M\leq4$,
-against a real device's estimated $10$--$26$ or more occupied subbands,
-and a subband can flip the topological invariant's parity~\cite{lim2012}),
-but together they mean the single-channel null result's applicability to
-a real device is not merely an open question -- it is a \emph{specifically
-and concretely troubled} one, in a way our data can characterize but not
-resolve.
+\emph{super}-critical at every finite point tested for $M=2$, $3$, and
+$4$; and the one full calculation performed shows that even the more
+basic question -- does a well-defined static description exist at all --
+can fail to have a stable answer as a function of lattice discretization
+at exactly this occupancy. Extending the proxy sweep to $M=5,6$
+(\S\ref{subsec:proxy}) complicates the magnitude axis specifically without
+resolving the existence axis: the median loop gain does not continue
+rising or even staying super-critical past $M=5$, but the detachment
+rate -- the more fundamental of the two diagnostics, since it asks
+whether a static description exists at all rather than how unstable it
+is where one does -- stays high and non-monotonic at every $M$ tested,
+including $M=6$. Neither finding is a device-faithful prediction (both
+are structural results at $M\leq6$, against a real device's estimated
+$10$--$26$ or more occupied subbands, and a subband can flip the
+topological invariant's parity~\cite{lim2012}), but together they mean the
+single-channel null result's applicability to a real device is not merely
+an open question -- it is a \emph{specifically and concretely troubled}
+one, in a way our data can characterize but not resolve.
 
 \subsection{Limitations}
 

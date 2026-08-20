@@ -7,3 +7,25 @@
 [chain M=5 1/12 t=1078.4s] mu=531.89 s=2.2588
 [chain M=5 2/12 t=2277.7s] mu=566.77 s=1.7549
 [chain M=6 1/10 t=3668.4s] mu=802.20 s=nan
+[chain M=5 3/12 t=5804.2s] mu=601.65 s=nan
+[chain M=5 4/12 t=7059.9s] mu=636.53 s=1.6643
+[chain M=5 5/12 t=7331.2s] mu=671.40 s=1.6951
+[chain M=6 2/10 t=7614.0s] mu=852.58 s=nan
+[chain M=5 6/12 t=8643.0s] mu=706.28 s=1.7414
+[chain M=6 3/10 t=8705.4s] mu=902.96 s=0.2135
+[chain M=5 7/12 t=10767.8s] mu=741.16 s=nan
+[chain M=6 4/10 t=12327.5s] mu=953.34 s=nan
+[chain M=5 8/12 t=12736.3s] mu=776.04 s=-14116.8528
+[chain M=5 9/12 t=13933.9s] mu=810.92 s=nan
+[chain M=6 5/10 t=14247.5s] mu=1003.72 s=nan
+[chain M=6 6/10 t=14379.5s] mu=1054.10 s=0.1280
+[chain M=6 7/10 t=14511.1s] mu=1104.48 s=0.0000
+[chain M=5 10/12 t=14541.9s] mu=845.80 s=nan
+[chain M=5 11/12 t=14619.0s] mu=880.67 s=0.6738
+[chain M=6 8/10 t=14643.4s] mu=1154.85 s=0.0000
+[chain M=5 12/12 t=14696.6s] mu=915.55 s=0.6738
+[chain M=6 9/10 t=14779.4s] mu=1205.23 s=0.0000
+[chain M=6 10/10 t=14916.9s] mu=1255.61 s=0.0000
+[14922.1s]   M=5: median_s_excluded=1.6951  median_s_raw=1.6797  n_surviving=7/8  lobe_crossings=[741.1608993218442, 810.9172192580177]
+[14922.1s]   M=6: median_s_excluded=0.0000  median_s_raw=0.0000  n_surviving=5/6  lobe_crossings=[1003.7159368593864]
+[14922.1s] done; wrote r9_multisubband_sweep_M5_M6.json
