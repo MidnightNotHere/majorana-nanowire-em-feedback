@@ -59,7 +59,7 @@ def _pin_blas_reset() -> None:
 
 N_WORKERS: int | None = None
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R9 data folder")
+                           "..", "results", "multisubband")
 
 
 def _out(name: str) -> str:

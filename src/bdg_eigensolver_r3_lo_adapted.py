@@ -60,10 +60,10 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 # ── All figure/data outputs are routed into this program's data folder ──
-# (repo-root/R3_data_files), resolved relative to THIS file so it works no
+# (repo-root/results/subspace_update), resolved relative to THIS file so it works no
 # matter what the current working directory is when the program is run.
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "R3_data_files")
+                           "..", "results", "subspace_update")
 
 
 def _out(name: str) -> str:

@@ -50,7 +50,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "R6_data_files")
+                           "..", "results", "lutchyn_oreg_phase_diagram")
 
 
 def _out(name: str) -> str:

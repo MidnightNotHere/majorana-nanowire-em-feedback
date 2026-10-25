@@ -108,7 +108,7 @@ F_PROBE = 1.0e9                     # Hz
 OMEGA_PROBE = 2.0 * np.pi * F_PROBE  # rad/s
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R8 data folder")
+                           "..", "results", "reactive_impedance")
 
 
 def _out(name: str) -> str:

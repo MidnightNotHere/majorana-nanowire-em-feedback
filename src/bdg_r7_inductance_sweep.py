@@ -109,7 +109,7 @@ MUS = (1.2, 1.4)      # the R4/R5-validated boundary-measurement chemical potent
 DELTA = 1.0           # pairing (units of Delta), as everywhere in R4/R5
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R7 data folder")
+                           "..", "results", "inductance_scan")
 
 
 def _out(name: str) -> str:

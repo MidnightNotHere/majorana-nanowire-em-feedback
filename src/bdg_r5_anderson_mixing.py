@@ -156,7 +156,7 @@ with contextlib.redirect_stdout(io.StringIO()):
     )
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R5 data folder")
+                           "..", "results", "self_consistency_bifurcation")
 
 
 def _out(name: str) -> str:

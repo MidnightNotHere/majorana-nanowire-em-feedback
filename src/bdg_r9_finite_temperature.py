@@ -97,7 +97,7 @@ T_BASE_CHANG_MK = 20.0         # Chang et al. 2015 dilution-fridge base temp (mK
 G_CRIT_LO = getattr(r8a, "G_CRIT_LO", 1.1e5)   # R5 g_crit band (for pole tests)
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R9 data folder")
+                           "..", "results", "finite_temperature")
 
 
 def _out(name: str) -> str:

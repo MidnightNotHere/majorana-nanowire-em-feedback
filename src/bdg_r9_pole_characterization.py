@@ -71,7 +71,8 @@ G_CRIT_R5_LO = 1.1e5
 G_CRIT_R5_HI = 1.2e5
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R8 data folder")   # keep R8/R9 outputs together
+                           "..", "results", "reactive_impedance",
+                           "pole_characterization")
 
 
 def _out(name: str) -> str:

@@ -84,10 +84,10 @@ with contextlib.redirect_stdout(io.StringIO()):
 
 
 # ── All figure outputs are routed into this program's data folder ───────
-# (repo-root/"ISEF R4 data folder"), resolved relative to THIS file so it
+# (repo-root/results/em_feedback_detector_comparison), resolved relative to THIS file so it
 # works no matter what the current working directory is when R4 is run.
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R4 data folder")
+                           "..", "results", "em_feedback_detector_comparison")
 
 
 def _out(name: str) -> str:

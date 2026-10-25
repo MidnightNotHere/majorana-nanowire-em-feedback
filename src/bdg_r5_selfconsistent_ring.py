@@ -104,7 +104,7 @@ from scipy.linalg import eigh
 
 # ── All outputs go into this program's own data folder ───────────────────
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R5 data folder")
+                           "..", "results", "self_consistency_bifurcation")
 
 
 def _out(name: str) -> str:

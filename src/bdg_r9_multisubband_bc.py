@@ -53,7 +53,7 @@ with contextlib.redirect_stdout(io.StringIO()):
 
 _OUTPUT_DIR = __import__("os").path.join(
     __import__("os").path.dirname(__import__("os").path.abspath(__file__)),
-    "..", "ISEF R9 data folder")
+    "..", "results", "multisubband")
 
 
 def _out(name: str) -> str:

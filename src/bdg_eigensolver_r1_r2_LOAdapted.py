@@ -116,10 +116,10 @@ matplotlib.rcParams.update({
 })
 
 # ── All figure/data outputs are routed into this program's data folder ──
-# (repo-root/R1_R2_data_files), resolved relative to THIS file so it works
+# (repo-root/results/baseline_bdg_pfaffian), resolved relative to THIS file so it works
 # no matter what the current working directory is when the program is run.
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "R1_R2_data_files")
+                           "..", "results", "baseline_bdg_pfaffian")
 
 
 def _out(name: str) -> str:
