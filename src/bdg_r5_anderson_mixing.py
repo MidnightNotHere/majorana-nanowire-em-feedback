@@ -1096,7 +1096,7 @@ def figure12_anderson_above_gcrit(
     ax.set_title("(d) interpretation — Anderson tests the SOLVER, "
                  "not the physical stability", fontsize=10.5)
 
-    fig.suptitle("R5 Figure 12: Anderson mixing above $g_{\\rm crit}$ — converges to "
+    fig.suptitle("Anderson mixing above $g_{\\rm crit}$ — converges to "
                  "the same repelling root; g_crit is a Picard limit, not a barrier "
                  "to the root", fontsize=13.5, fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.96))
@@ -1176,14 +1176,14 @@ def figure13_efficiency_benchmark(
     t = warm["timing_s"]
     total = sum(t.values())
     lines = [
-        "R3-SUBSPACE WARM-START (Task 1.3) — wired in & verified",
+        "SUBSPACE WARM-START — wired in & verified",
         "",
         f"  wired into Anderson loop : {warm['warm_wired_in']}",
         "  RAW rank-2 update accuracy (deep-in-phase probe, no fallback):",
         f"    max near-zero eig err : "
         f"{warm.get('probe_rank2_update_max_error', float('nan')):.1e}"
         f"  over {warm.get('probe_n_steps', 0)} steps -> update is CORRECT",
-        "  BUT R3's conservative residual safety net (resid>10*|dH|)",
+        "  BUT the subspace update's conservative residual safety net (resid>10*|dH|)",
         f"    trips on phase steps -> falls back {warm.get('probe_fallback_count', 0)}/"
         f"{warm.get('probe_n_steps', 0)} (probe) and "
         f"{warm['warm_fallback_count']}/{warm.get('warm_n_iter', 0)} (SCF)",
@@ -1208,7 +1208,7 @@ def figure13_efficiency_benchmark(
     ax.set_title("(d) warm-start: confirmed wired in; honest ~1× on the loop",
                  fontsize=10.5)
 
-    fig.suptitle("R5 Figure 13: Efficiency below $g_{\\rm crit}$ — Anderson vs simple "
+    fig.suptitle("Efficiency below $g_{\\rm crit}$ — Anderson vs simple "
                  "mixing (iteration counts), warm-start isolated",
                  fontsize=13.5, fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.96))

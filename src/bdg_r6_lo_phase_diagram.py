@@ -362,7 +362,7 @@ def figure_orv_dispersion(mu: float = 0.0, save_path: str = 'r6_figure1_orv_disp
                  ha='right', va='top', fontsize=7, style='italic',
                  bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.85))
     plt.suptitle(
-        'R6 Figure 1 -- Lutchyn-Oreg BdG spectrum vs Zeeman field '
+        'Lutchyn-Oreg BdG spectrum vs Zeeman field '
         '(mu=0, realistic InAs/Al parameters)\n'
         f'InAs m*={R6_PARAMS["m_eff"]}me, alpha_SO={R6_PARAMS["alpha_SO"]} meV*nm, '
         f'Delta={delta} meV (Chang et al. 2015)  |  '
@@ -426,7 +426,7 @@ def figure_gap_vs_Bz(df: pd.DataFrame, save_path: str = 'r6_figure2_gap_vs_Bz.pn
     ax2.legend()
     ax2.grid(True, alpha=0.3)
 
-    plt.suptitle('R6 Figure 2 -- Gap closing and genuine invariant flip coincide',
+    plt.suptitle('Gap closing and genuine invariant flip coincide',
                  fontsize=12, fontweight='bold')
     fig.text(0.5, -0.01, IDEALIZED_REGIME_CAPTION, ha='center', fontsize=8,
              wrap=True, style='italic')
@@ -475,9 +475,9 @@ def figure_phase_diagram_2d_r6(mu_vals, Bz_vals, nu_map, gap_map,
     mask = (Bz_b >= Bz_vals[0]) & (Bz_b <= Bz_vals[-1])
     ax.plot(mu_b[mask], Bz_b[mask], 'w--', linewidth=2.5,
            label='B=sqrt(mu^2+Delta^2) (analytic; genuinely re-derived, not assumed -- '
-                 'see r2_o1_pfaffian_trim_lo_correction.md)')
+                 'see docs/methods/r2_o1_pfaffian_trim_lo_correction.md)')
     ax.set_xlabel('mu (meV)'); ax.set_ylabel('B_zeeman (meV)')
-    ax.set_title('R6: genuine TRIM Pfaffian invariant (InAs/Al parameters)')
+    ax.set_title('Genuine TRIM Pfaffian invariant (InAs/Al parameters)')
     ax.legend(loc='upper right', fontsize=7)
 
     ax2 = axes[1]
@@ -486,10 +486,10 @@ def figure_phase_diagram_2d_r6(mu_vals, Bz_vals, nu_map, gap_map,
     ax2.plot(mu_b[mask], Bz_b[mask], 'w--', linewidth=2.5)
     plt.colorbar(im2, ax=ax2, label='log10(ring bulk gap / meV)')
     ax2.set_xlabel('mu (meV)'); ax2.set_ylabel('B_zeeman (meV)')
-    ax2.set_title('R6: ring bulk gap (N=60), same parameters')
+    ax2.set_title('Ring bulk gap (N=60), same parameters')
 
     plt.suptitle(
-        'R6 Figure 3 -- Lutchyn-Oreg InAs/Al phase diagram, realistic parameters '
+        'Lutchyn-Oreg InAs/Al phase diagram, realistic parameters '
         f'(m*={R6_PARAMS["m_eff"]}me, Delta={delta} meV, Chang et al. 2015)',
         fontsize=12, fontweight='bold'
     )

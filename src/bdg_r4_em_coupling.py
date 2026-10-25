@@ -108,8 +108,8 @@ _SHIFT_CAVEAT = (
     "PRELIMINARY magnitude: open-wire threshold detector (0.25 Delta) "
     "over-estimates the shift ~10x. Rigorous ring/Pfaffian Z2 estimate "
     "(same self-field) is ~0.6-0.8% at mu=1.2-1.4; sign is robust, final "
-    "magnitude pending R5 self-consistent self-field. "
-    "See r4_pfaffian_boundary_methods.md."
+    "magnitude pending the self-consistent ring self-field. "
+    "See docs/methods/r4_pfaffian_boundary_methods.md."
 )
 
 
@@ -1087,7 +1087,7 @@ def figure1_peierls_validation(fname: str = "r4_figure1_peierls_validation.png")
     ax2.set_title("PH symmetry preserved under Peierls phases")
     ax2.legend()
 
-    fig.suptitle("R4 Validation 1: Peierls Phase Implementation (uniform A field)",
+    fig.suptitle("Validation 1: Peierls Phase Implementation (uniform A field)",
                  fontsize=14, fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.96))
     fig.savefig(_out(fname), dpi=150)
@@ -1143,7 +1143,7 @@ def figure2_biot_savart(fname: str = "r4_figure2_biot_savart.png"):
     ax2.set_title("convergence with system size")
     ax2.legend()
 
-    fig.suptitle("R4 Validation 2: Biot-Savart Self-Term "
+    fig.suptitle("Validation 2: Biot-Savart Self-Term "
                  "(uniform current, analytic comparison)",
                  fontsize=14, fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.96))
@@ -1183,7 +1183,7 @@ def figure3_current_density(fname: str = "r4_figure3_current_density.png"):
         ax.set_ylabel(r"$j_x$ (A/m$^2$)")
         ax.set_title(label)
 
-    fig.suptitle("R4 Current Density from BdG Eigenstates "
+    fig.suptitle("Current Density from BdG Eigenstates "
                  "(InAs/Al, seed $\\Phi=0.1\\,\\Phi_0$)",
                  fontsize=14, fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.95))
@@ -1293,7 +1293,7 @@ def figure4_phase_shift_preview(fname: str = "r4_figure4_phase_shift_preview.png
                   fontsize=11)
     ax2.legend(loc="upper right", fontsize=11)
 
-    fig.suptitle("R4 Figure 4: Topological Phase Boundary Shift Under "
+    fig.suptitle("Topological Phase Boundary Shift Under "
                  "Inductive Feedback (PRELIMINARY -- threshold detector)",
                  fontsize=14, fontweight="bold")
     # rect leaves an explicit bottom margin (0.10) for the caveat footer below,
@@ -1506,7 +1506,7 @@ def validate_pfaffian_boundary(
         ax.set_xlabel("ring / wire size $N$ (sites)")
         ax.set_ylabel(r"extracted $B_c\,/\,\Delta$")
         ax.set_title(
-            f"R4 Figure 6: N-independence of the Pfaffian $B_c$ detector "
+            f"N-independence of the Pfaffian $B_c$ detector "
             fr"($\mu={mu}\,\Delta$)" "\n"
             f"Pfaffian spread over N = {pf_spread:.1e}$\\,\\Delta$   vs   "
             f"threshold spread = {th_spread:.2f}$\\,\\Delta$",

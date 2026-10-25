@@ -691,7 +691,7 @@ def make_figures(results: dict):
     a1.set_xlabel(r"ring size $N$  (= $L/a_{\rm lat}$, fixed $a$)")
     a1.set_ylabel(r"$|\Delta B_c/B_c|$  (%)")
     a1.set_title("(b) fixed-$a$ scan (L-axis): $|$shift$|\\sim N^{-p}$\n"
-                 "(R5's Fig-9/11 scan, extended — L and N locked)", fontsize=10.5)
+                 "(N-scan of the ring boundary shift, extended — L and N locked)", fontsize=10.5)
     a1.legend(fontsize=8); a1.grid(True, alpha=0.3, which="both")
 
     # (c) FIXED-L refinement: |shift| vs N at fixed L (a=L/N) — the disentangler
@@ -715,7 +715,7 @@ def make_figures(results: dict):
     a3 = ax[1, 1]
     a3.axis("off")
     sc = results.get("spot_checks", {})
-    lines = ["R7 verdict — does L (circuit inductance) matter?\n"]
+    lines = ["Verdict — does L (circuit inductance) matter?\n"]
     # fixed-a exponents
     for mu in ("1.2", "1.4"):
         if mu in la:
@@ -758,7 +758,7 @@ def make_figures(results: dict):
             b0.scatter(xs, ys, c=col, marker=mk, s=70, label=rg, zorder=3)
     b0.set_xlabel(r"ring size $N$"); b0.set_ylabel(r"lattice constant $a$ (nm)")
     b0.set_title(fr"(a) static-boundary regime map at $g$={G_R7:.1e}, $\mu$=1.2"
-                 "\n(dead-zone = no clean static $B_c$; Task-2.3 L-dependence)",
+                 "\n(dead-zone = no clean static $B_c$; L-dependence)",
                  fontsize=10.5)
     b0.legend(fontsize=8); b0.grid(True, alpha=0.3)
 

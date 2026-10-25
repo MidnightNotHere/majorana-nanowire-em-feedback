@@ -738,11 +738,11 @@ def make_figures(data: dict) -> list:
         axA.axvline(det["g_detach"], color="#d62728", ls="--", lw=1.3,
                     label=f"detachment g≈{det['g_detach']:.2e}\n(enh caps at {det['enh_at_detach']:.1f})")
     axA.axvspan(G_CRIT_R5_LO, G_CRIT_R5_HI, color="orange", alpha=0.18,
-                label="R5 g_crit band (1.1–1.2e5)")
+                label="g_crit band (1.1–1.2e5)")
     axA.axvline(G_R7, color="k", ls=":", lw=1.1, label=f"production g={G_R7:.1e}")
     if gcr.get("g_crit_slope_cross"):
         axA.axvline(gcr["g_crit_slope_cross"], color="purple", ls="-.", lw=1.1,
-                    label=f"R5-rule slope=1 cross ≈{gcr['g_crit_slope_cross']:.2e}")
+                    label=f"slope=1 rule cross ≈{gcr['g_crit_slope_cross']:.2e}")
     axA.set_xlabel("feedback strength  g"); axA.set_ylabel(r"enhancement $1/(1-s)$")
     axA.set_title("(A)  Enhancement caps at ~%.1f (N=80), then detaches\n"
                   "(fluxoid sawtooth) — s never reaches 1"
@@ -761,7 +761,7 @@ def make_figures(data: dict) -> list:
     axB.set_title("(B)  Cap is N-dependent: it CLIMBS as the mesh\n"
                   "refines (pole sharpens) — bound is not universal", fontsize=10)
     axB.legend(fontsize=8)
-    fig.suptitle("R9 Track 1 — the reactive-impedance 'pole' near $g_{\\rm crit}$: "
+    fig.suptitle("The reactive-impedance 'pole' near $g_{\\rm crit}$: "
                  "bounded at every lattice studied (no realized divergence)",
                  fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.95))
@@ -773,12 +773,12 @@ def make_figures(data: dict) -> list:
     kr = [r for r in data["kubo"]["rows"] if r.get("exists")]
     gk = np.array([r["g"] for r in kr])
     ax1.plot(gk, [r["gate_rel"] for r in kr], "o-", color="#1f77b4",
-             label="DC gate rel. mismatch (Track B vs A)")
+             label="DC gate rel. mismatch (finite-ω Kubo vs static)")
     ax1.plot(gk, [r["im_weight_frac_at_topo_edge"] for r in kr], "s-", color="#d62728",
              label="Im χ weight at topo edge")
     ax1.axhline(1e-3, color="0.6", ls="--", lw=0.8, label="gate pass threshold 1e-3")
     ax1.set_yscale("log"); ax1.set_xlabel("g"); ax1.set_ylabel("(dimensionless)")
-    ax1.set_title("(A) Task 2 — DC gate holds; dissipation inert as g→g_crit\n"
+    ax1.set_title("(A) DC gate holds; dissipation inert as g→g_crit\n"
                   "(pole purely reactive; no Im χ feature)", fontsize=10)
     ax1.legend(fontsize=8)
 
@@ -791,11 +791,11 @@ def make_figures(data: dict) -> list:
     ax2.plot(gc, [r["L_eff_rel_shift_pct"] for r in tc], "o-", color="#2ca02c",
              label="SO shift in L_eff (inherits pole sensitivity)")
     ax2.axhline(0, color="0.7", lw=0.8)
-    ax2.set_xlabel("g"); ax2.set_ylabel("Track C − A  shift (%)")
-    ax2.set_title("(B) Task 3 — SO shift in s ~constant (−8%);\n"
+    ax2.set_xlabel("g"); ax2.set_ylabel("(Kinetic+SO) − kinetic-only  shift (%)")
+    ax2.set_title("(B) SO shift in s ~constant (−8%);\n"
                   "L_eff effect grows near pole (geometric, not SO)", fontsize=10)
     ax2.legend(fontsize=8)
-    fig2.suptitle("R9 Track 1 — dissipative channel (T2) and SO self-consistency (T3) near the pole",
+    fig2.suptitle("Dissipative channel and SO self-consistency near the pole",
                   fontweight="bold")
     fig2.tight_layout(rect=(0, 0, 1, 0.95))
     p2 = _out("r9_figure2_kubo_trackC.png"); fig2.savefig(p2, dpi=140); plt.close(fig2)

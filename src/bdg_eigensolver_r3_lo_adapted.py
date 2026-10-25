@@ -473,7 +473,7 @@ def plot_accuracy_vs_perturbation_lo(df, save_path='r3_lo_figure1_accuracy.png')
               label=f'Fallback threshold ({PERTURBATION_THRESHOLD})')
     ax.set_xlabel('Perturbation norm |δH|_F / |H|_F')
     ax.set_ylabel('Mean absolute eigenvalue error')
-    ax.set_title(f'R3-LO: Near-Zero Mode Accuracy vs δB_z\n(N=100, μ=0, K_MODES={K_MODES})')
+    ax.set_title(f'LO model: Near-Zero Mode Accuracy vs δB_z\n(N=100, μ=0, K_MODES={K_MODES})')
     ax.legend(loc='upper left', bbox_to_anchor=(1.02, 1.0), fontsize=10, framealpha=0.9)
     plt.tight_layout(); plt.savefig(_out(save_path), dpi=300, bbox_inches='tight')
     plt.close(); print(f"Saved: {save_path}")
@@ -483,18 +483,18 @@ def plot_speedup_lo(df, save_path='r3_lo_figure2_speedup.png'):
     fig, axes = plt.subplots(1, 2, figsize=(13, 5))
     ax = axes[0]; x = np.arange(len(df)); w = 0.35
     ax.bar(x-w/2, df['time_full_ms'], w, label='Full eigh (4N×4N)', color=COLORS['Trivial'], alpha=0.85)
-    ax.bar(x+w/2, df['time_wood_ms'], w, label='Subspace update (R3-LO)', color=COLORS['Topological'], alpha=0.85)
+    ax.bar(x+w/2, df['time_wood_ms'], w, label='Subspace update (LO model)', color=COLORS['Topological'], alpha=0.85)
     for i, row in df.iterrows():
         ax.text(i+w/2, row['time_wood_ms']+0.3, f"{row['speedup']:.1f}×",
                 ha='center', fontsize=11, color=COLORS['Topological'], fontweight='bold')
     ax.set_xticks(x); ax.set_xticklabels([f'N={n}' for n in df['N']])
-    ax.set_ylabel('Solve time (ms)'); ax.set_title('R3-LO vs Full eigh (δB_z=0.02)')
+    ax.set_ylabel('Solve time (ms)'); ax.set_title('Subspace update vs full eigh (δB_z=0.02)')
     ax.legend(); ax.grid(True, alpha=0.3, axis='y')
     ax2 = axes[1]
     ax2.semilogy(df['N'], df['eval_error'], 'o-', color=COLORS['accent'], linewidth=2, markersize=8)
     ax2.set_xlabel('System size N'); ax2.set_ylabel('Mean eigenvalue error (log)')
     ax2.set_title('LO Subspace-Update Error vs N'); ax2.grid(True, alpha=0.3); ax2.set_xticks(df['N'].tolist())
-    plt.suptitle('R3-LO Performance and Accuracy Summary', fontsize=13, fontweight='bold')
+    plt.suptitle('Subspace-Update Performance and Accuracy Summary', fontsize=13, fontweight='bold')
     plt.tight_layout(); plt.savefig(_out(save_path), dpi=300, bbox_inches='tight')
     plt.close(); print(f"Saved: {save_path}")
 
@@ -513,7 +513,7 @@ def plot_sweep_tracking_lo(df, mu0=0.0, delta0=1.0,
     Bc = np.sqrt(mu0**2 + delta0**2)
     ax1.axvline(Bc, color='gray', linestyle=':', linewidth=1.5, label=f'Analytic boundary B_z={Bc:.2f}')
     ax1.set_ylabel('Min |eigenvalue| (Majorana gap)')
-    ax1.set_title(f'R3-LO Chained Subspace Update: B_z sweep at μ=0 (N=100, simulates R5)')
+    ax1.set_title(f'Chained Subspace Update (LO model): B_z sweep at μ=0 (N=100, mimics the self-consistency loop)')
     ax1.legend(loc='upper right', fontsize=9, framealpha=0.9)
     ax1.grid(True, alpha=0.3)
 

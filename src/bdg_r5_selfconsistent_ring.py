@@ -1394,7 +1394,7 @@ def figure7_scf_convergence(map_data: dict, traj_data: dict, gains: dict,
     ax.legend(fontsize=8, loc="upper right")
     ax.grid(True, alpha=0.3)
 
-    fig.suptitle("R5 Figure 7: Convergence of the self-consistent ring "
+    fig.suptitle("Convergence of the self-consistent ring "
                  "self-field — measured, not assumed",
                  fontsize=14, fontweight="bold")
     fig.tight_layout(rect=(0, 0.05, 1, 0.95))
@@ -1437,7 +1437,7 @@ def figure8_hysteresis(gramp: dict,
     ax.set_xlabel("feedback amplification $g$")
     ax.set_ylabel(r"converged / root self-phase $\phi^*$ (mrad/bond)")
     ax.set_title(
-        "R5 Figure 8: path-independence below $g_{\\rm crit}$, NO attracting "
+        "Path-independence below $g_{\\rm crit}$, NO attracting "
         "fixed point above\n"
         fr"($N$={gramp['N']}, $\mu$={gramp['mu']}, $B$={gramp['B']:.3f}, "
         fr"$\beta$={gramp['beta']}; missing markers = iteration did not "
@@ -1535,7 +1535,7 @@ def figure9_shift_robustness(robust: dict, comparison: list,
     ax.legend(fontsize=7.5, loc="lower left")
     ax.grid(True, alpha=0.3, axis="y")
 
-    fig.suptitle("R5 Figure 9: Robustness of the self-consistent ring "
+    fig.suptitle("Robustness of the self-consistent ring "
                  "boundary shift", fontsize=14, fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.93))
     fig.savefig(_out(fname), dpi=150)
