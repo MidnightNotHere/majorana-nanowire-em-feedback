@@ -1,6 +1,6 @@
 # R7 logbook summary — circuit inductance / wire length L as a third axis (B, μ, L)
 
-**Module:** `src/bdg_r7_inductance_sweep.py`  ·  **Methods:** `src/r4_pfaffian_boundary_methods.md` §4g
+**Module:** `src/bdg_r7_inductance_sweep.py`  ·  **Methods:** `docs/methods/r4_pfaffian_boundary_methods.md` §4g
 **Figures:** `r7_figure1_shift_vs_BmuL.png`, `r7_figure2_regime_and_validation.png`  ·  **Data:** `r7_results.json`, `r7_points_cache.json`
 
 ## What was asked
