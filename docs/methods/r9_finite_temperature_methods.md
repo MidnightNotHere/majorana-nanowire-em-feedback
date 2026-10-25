@@ -2,7 +2,7 @@
 
 **Module:** `src/bdg_r9_finite_temperature.py` (additive; imports R4/R5/R7/R8A/R8B
 and `bdg_parallel` **read-only**, modifies nothing in R1–R8).
-**Outputs:** `ISEF R9 data folder/` (`r9_finiteT_data.json`,
+**Outputs:** `results/finite_temperature/` (`r9_finiteT_data.json`,
 `r9_finiteT_summary.png`, `r9_full_run.log`).
 **Run:** `py -3.13 src/bdg_r9_finite_temperature.py --full`
 (`--validate` for the T→0 checks only; `--quickfull` for a tiny-grid smoke test).

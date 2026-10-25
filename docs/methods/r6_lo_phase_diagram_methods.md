@@ -2,7 +2,7 @@
 
 **Project:** ISEF 2027 — Inductive Circuit Feedback Shifts the Topological Phase Boundary in InAs/Al Majorana Nanowires
 **Module:** `src/bdg_r6_lo_phase_diagram.py`
-**Phase 1 reconnaissance:** structural audit found `build_bdg_lo()` already implements a genuine 4N×4N spin⊗Nambu Lutchyn-Oreg Hamiltonian (not a 2N→4N extension); target figure selected: Oreg–Refael–von Oppen (arXiv:1003.1145) Figure 1 (BdG spectrum vs Zeeman field, gap closing at `B=√(μ²+Δ²)`) as the primary deliverable, with a secondary (μ,B) 2D phase diagram using the corrected `pfaffian_trim_lo()` (see `src/r2_o1_pfaffian_trim_lo_correction.md`).
+**Phase 1 reconnaissance:** structural audit found `build_bdg_lo()` already implements a genuine 4N×4N spin⊗Nambu Lutchyn-Oreg Hamiltonian (not a 2N→4N extension); target figure selected: Oreg–Refael–von Oppen (arXiv:1003.1145) Figure 1 (BdG spectrum vs Zeeman field, gap closing at `B=√(μ²+Δ²)`) as the primary deliverable, with a secondary (μ,B) 2D phase diagram using the corrected `pfaffian_trim_lo()` (see `docs/methods/r2_o1_pfaffian_trim_lo_correction.md`).
 
 ## 1. Parameter provenance and the idealized-regime disclaimer (locked in before implementation)
 
@@ -68,7 +68,7 @@ the idealized regime):**
 `build_bdg_lo`, `pfaffian_trim_lo`, `check_ph_symmetry_complex` read-only
 from R1/R2, and `build_ring_lo` read-only from R4. No R1-R5 file was
 modified; `git status` after this work shows only new files
-(`bdg_r6_lo_phase_diagram.py`, this note, `R6_data_files/`).
+(`bdg_r6_lo_phase_diagram.py`, this note, `results/lutchyn_oreg_phase_diagram/`).
 
 ### 2.1 Dispersion method — a course correction during development
 
@@ -163,7 +163,7 @@ verified measured axial critical field of 0.075 T (Chang et al. 2015) —
 **idealized-regime ratio 8.3x**, exactly the tension flagged in Section 1
 and stamped on every figure via `IDEALIZED_REGIME_CAPTION`.
 
-### 2.4 Figures produced (`R6_data_files/`)
+### 2.4 Figures produced (`results/lutchyn_oreg_phase_diagram/`)
 
 - **`r6_figure1_orv_dispersion.png`** — three-panel BdG dispersion at
   mu=0 (trivial/critical/topological), qualitatively reproducing ORV

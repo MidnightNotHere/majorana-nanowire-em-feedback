@@ -2,7 +2,7 @@
 
 **Module:** `src/bdg_r9_disorder.py` (additive; imports R1/R4/R5/R7 and
 `bdg_parallel` **read-only**, modifies nothing in R1–R8 or R9 Tracks 1–2).
-**Outputs:** `ISEF R9 data folder/` (`r9_disorder_data.json`,
+**Outputs:** `results/disorder/` (`r9_disorder_data.json`,
 `r9_disorder_summary.png`).
 **Run:** `py -3.13 src/bdg_r9_disorder.py --full` (`--validate` for the W=0
 gate only, `--benchmark` for the parallel/BLAS benchmark + pre-run time

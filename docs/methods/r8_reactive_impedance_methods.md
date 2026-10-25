@@ -166,7 +166,7 @@ overstating a thin sweep.
 
 ## Track B — RESULTS (BUILT & staged: `src/bdg_r8b_kubo_impedance.py`)
 
-The scope above was executed. Outputs in `ISEF R8 data folder/`
+The scope above was executed. Outputs in `results/reactive_impedance/`
 (`R8B_KUBO_SUMMARY.md`, `R8B_FOLLOWUPS.md`, `r8b_figure_kubo_impedance.png`,
 `r8b_figure_followups.png`, `r8b_*.json`). R4/R5/R7/R8-A imported read-only.
 
@@ -279,7 +279,7 @@ effect that vanishes in the continuum, not a bulk term the kinetic-only Tracks
 A/B missed. The self-field is only rescaled ~8 %, so the (already null,
 finite-size) bulk topological boundary shift is unchanged. The overall R8
 verdict stands: `Z_r` is largely redundant with the gap + geometry. Outputs:
-`ISEF R8 data folder/R8C_SO_SUMMARY.md`, `r8c_figure_so_selfconsistent.png`,
+`results/reactive_impedance/R8C_SO_SUMMARY.md`, `r8c_figure_so_selfconsistent.png`,
 `r8c_so_data.json`.
 
 ---
@@ -294,7 +294,7 @@ pole. R9 Track 1 characterizes that feature quantitatively. Everything REUSES
 the validated modules (Track A `bdg_r8_reactive_impedance`, Track B
 `bdg_r8b_kubo_impedance`, Track C `bdg_r8c_so_selfconsistent`, and
 `bdg_parallel`) as read-only imports; nothing in R1–R8 is modified. Outputs in
-`ISEF R8 data folder/` (`R9_TRACK1_SUMMARY.md`, `r9_figure1_bounded_pole.png`,
+`results/reactive_impedance/pole_characterization/` (`R9_TRACK1_SUMMARY.md`, `r9_figure1_bounded_pole.png`,
 `r9_figure2_kubo_trackC.png`, `r9_pole_data.json`).
 
 **Headline (honest, and it revises R8's reading).** At every lattice actually

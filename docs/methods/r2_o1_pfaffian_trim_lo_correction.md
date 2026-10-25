@@ -43,8 +43,8 @@ already-reported R3/R4/R5 result.
 `pfaffian_trim_lo()` is called from exactly two places, both inside this
 same file — `_validate_lo_phase_boundary()` (an assertion that runs at
 module import) and `run_lo_phase_sweep()` (populates the ν-panel of
-`R1_R2_data_files/figure6_lo_phase_diagram.png`, a **different file** from
-R4's `ISEF R4 data folder/r4_figure6_pfaffian_vs_threshold.png` — the two
+`results/baseline_bdg_pfaffian/figure6_lo_phase_diagram.png`, a **different file** from
+R4's `results/em_feedback_detector_comparison/r4_figure6_pfaffian_vs_threshold.png` — the two
 "figure 6"s should not be confused). R3 imports the function but never
 calls it. **No R4 or R5 code calls it, directly or indirectly.** R4/R5's
 Pfaffian-based results (`ring_boundary_Bc_pfaffian`,
@@ -169,7 +169,7 @@ checked against anything real. This was tested empirically, not assumed:
   is anywhere near that regime.**
 - **Direct regeneration confirms this at the artifact level, not just in a
   side computation:** re-running `bdg_eigensolver_r1_r2_LOAdapted.py`
-  end-to-end regenerated `R1_R2_data_files/figure6_lo_phase_diagram.png`,
+  end-to-end regenerated `results/baseline_bdg_pfaffian/figure6_lo_phase_diagram.png`,
   `figure7_lo_finite_size.png`, `lo_nu_map.npy`, and
   `lo_finite_size_scaling.csv` — `git diff` against the pre-fix committed
   versions of every one of these is **empty** (byte-identical). The ν-panel
@@ -232,6 +232,6 @@ confirmed by `git status` showing only `src/bdg_eigensolver_r1_r2_LOAdapted.py`
 changed (plus this new file) after reverting two incidentally-regenerated,
 unrelated Kitaev performance-benchmark artifacts whose values are expected
 to fluctuate run-to-run with machine load and carry no scientific content
-(`R1_R2_data_files/figure3_performance.png`,
-`R1_R2_data_files/performance_baseline.csv` — reverted to their pre-run
+(`results/baseline_bdg_pfaffian/figure3_performance.png`,
+`results/baseline_bdg_pfaffian/performance_baseline.csv` — reverted to their pre-run
 committed versions). No R6 Phase 2 implementation work was started.

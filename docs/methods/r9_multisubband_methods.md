@@ -239,7 +239,7 @@ current-carrying channel is added.
 For each M = 1…4, μ was swept over the pre-registered window (§7 item 3b,
 corrected direction per §5 above), tracking channel M near its own transition,
 at production g. Full curves and the pre-registered exclusion are in
-`ISEF R9 data folder/r9_multisubband_summary.png`; data in
+`results/multisubband/r9_multisubband_summary.png`; data in
 `r9_multisubband_sweep_data.json`.
 
 **Headline numbers (median-s, van-Hove-excluded — the PRE-REGISTERED statistic;
@@ -983,7 +983,7 @@ one.
 
 **Status of this section:** the follow-up investigation §11.4 explicitly
 named as needed. New code (`bdg_r9_multisubband_bracket_scan.py`) and new
-data (`ISEF R9 data folder/r9_multisubband_bracket_scan.json`) — **not** a
+data (`results/multisubband/r9_multisubband_bracket_scan.json`) — **not** a
 re-run of the pre-registered protocol. It re-implements the exact same
 physics (`scalar_ring_map_ms`, `protocol_b_field`, identical tol=1e-9 and
 eps=1e-6) and the identical |f(φ)|<1e-4 discontinuity-rejection rule already

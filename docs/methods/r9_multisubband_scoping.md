@@ -52,7 +52,7 @@ channel**. The transverse direction does not appear in the Hamiltonian at all:
 it is integrated out by assumption, and `mu` is implicitly measured from the
 bottom of that single subband.
 
-R6's verified parameters (`R6_PARAMS`, `src/r6_lo_phase_diagram_methods.md` §2.3):
+R6's verified parameters (`R6_PARAMS`, `docs/methods/r6_lo_phase_diagram_methods.md` §2.3):
 m\* = 0.023 mₑ, g = 10.5, α_SO = 20 meV·nm, **Δ = 0.19 meV** (Chang et al.
 2015), a_lat = 10 nm, t_hop = 16.565 meV. R6 sweeps μ ∈ [−0.6, +0.6] meV and
 B_zeeman ∈ [0, 0.4] meV — i.e. **μ is confined to within ±3Δ of the assumed
@@ -986,7 +986,7 @@ fact, from having quietly assumed the answer.
 - **Repo-measured costs** used as anchors: ~144–161 s/task for the
   self-consistent engine at N = 80 and ~0.05 s/task for the cheap engine
   (`r9_disorder_methods.md`); R9 Track 3 full run 77.1 min (ibid.); R7's N = 120
-  cap and ~5× throttling (`ISEF R7 data folder/R7_SUMMARY.md`); R9 Track 1's
+  cap and ~5× throttling (`results/inductance_scan/R7_SUMMARY.md`); R9 Track 1's
   s ≈ 0.825 plateau and g ≈ 8.67×10⁴ detachment (`README.md`, R9 Track 1).
 - **Not measured, explicitly a hypothesis**: the s ∝ M scaling in §6.1, and its
   functional form is unconstrained beyond a weak monotonicity argument from a

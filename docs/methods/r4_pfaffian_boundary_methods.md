@@ -183,7 +183,7 @@ subject that shift to the same checks this detector passed — (a) N-independenc
 
 **Module:** `src/bdg_r5_selfconsistent_ring.py` (new; `bdg_r4_em_coupling.py` is
 imported read-only and unmodified — all 6 R4 validations still pass).
-**Outputs:** `ISEF R5 data folder/` (Figures 7–9, `r5_results.json`,
+**Outputs:** `results/self_consistency_bifurcation/` (Figures 7–9, `r5_results.json`,
 `r5_shift_comparison.csv`). **Headline:** the rigorous, fully self-consistent
 shift is **+0.05 %** at N=80 (μ=1.2 and 1.4) and **extrapolates to ≈ 0 in the
 bulk** — a further ~15× down from the interim ~0.6–0.8 %, and it changes sign.
@@ -434,7 +434,7 @@ the first thing to fail as g grows.
 **Module:** `src/bdg_r5_anderson_mixing.py` (imports R3/R4/R5 read-only; the
 existing Picard iteration `selfconsistent_ring_texture` and the bisection/
 Newton–Krylov root-finders are UNCHANGED and remain the baselines).
-**Outputs:** `ISEF R5 data folder/` — Figure 12 (Task 2), Figure 13 (Task 3),
+**Outputs:** `results/self_consistency_bifurcation/` — Figure 12 (Task 2), Figure 13 (Task 3),
 `r5_anderson_results.json`.
 
 **Why this was done.** Every result above `g_crit ≈ 1.1×10⁵` (§4d/§4e) rested on
@@ -598,7 +598,7 @@ reported separately so the two effects are never conflated.
 
 **Module:** `src/bdg_r7_inductance_sweep.py` (imports R4/R5 read-only; figures
 `r7_figure1_shift_vs_BmuL.png`, `r7_figure2_regime_and_validation.png`; data
-`r7_results.json`, `r7_points_cache.json` in `ISEF R7 data folder/`). R1–R6 code,
+`r7_results.json`, `r7_points_cache.json` in `results/inductance_scan/`). R1–R6 code,
 figures and results are untouched — this is additive.
 
 **Hypothesis-neutral framing.** R7 re-opens the boundary-shift question along the
