@@ -23,7 +23,7 @@ orig = json.load(open(R9 + r"\r9_multisubband_sweep_data.json"))
 ext = json.load(open(R9 + r"\r9_multisubband_sweep_M5_M6.json"))
 pa6 = json.load(open(R9 + r"\r9_multisubband_protocol_a_M6.json"))
 
-fig, axes = plt.subplots(1, 3, figsize=(13, 3.6))
+fig, axes = plt.subplots(3, 1, figsize=(4.4, 10.8))
 
 # --- Panel A: truncation convergence (fixed occupancy sanity check) ---
 ax = axes[0]

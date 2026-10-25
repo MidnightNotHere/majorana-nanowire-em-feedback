@@ -15,6 +15,18 @@
 \usepackage{bm}
 \usepackage{xcolor}
 \usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\definecolor{stablecol}{RGB}{31,97,141}
+\definecolor{unstablecol}{RGB}{176,32,32}
+\usepackage{placeins}
+\usepackage{float}
+% placeins gives \FloatBarrier, used below at each subsection boundary in
+% Results/Discussion: with this many figures and tables competing for
+% top-of-column space in revtex4-2's two-column "reprint" layout, LaTeX's
+% default float algorithm lets figures drift many pages past the text that
+% discusses them (observed up to ~8 pages). \FloatBarrier forces every
+% figure/table introduced so far to be placed before the next section
+% starts, keeping each figure visible near its own discussion.
 
 \begin{document}
 
@@ -65,6 +77,56 @@ scripts, and raw data are publicly available.
 \end{abstract}
 
 \maketitle
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[
+  every node/.style={font=\small},
+  proc/.style={draw, rounded corners, align=center, minimum width=2.15cm,
+    minimum height=0.85cm, fill=gray!8, draw=gray!55, font=\scriptsize},
+  panelttl/.style={font=\bfseries\small},
+  outcome/.style={draw, thick, rounded corners, align=center,
+    minimum width=2.4cm, minimum height=1.7cm, font=\scriptsize},
+  loopar/.style={-{Stealth[length=2.2mm]}, thick, gray!40!black},
+  bigar/.style={-{Stealth[length=4.5mm,width=3.2mm]}, line width=1.8pt, black},
+]
+
+\node[panelttl] at (-4.35,2.15) {(a) Self-consistent feedback loop};
+\def\r{1.3cm}
+\node[proc] (h1) at ($(-4.35,-0.05)+(90:\r)$)  {$H(\phi_{\rm self})$};
+\node[proc] (h2) at ($(-4.35,-0.05)+(18:\r)$)  {current\\$I(\phi)$};
+\node[proc] (h3) at ($(-4.35,-0.05)+(-54:\r)$) {self-field\\$B_{\rm self}$};
+\node[proc] (h4) at ($(-4.35,-0.05)+(-126:\r)$){phase\\$\phi_{\rm self}$};
+\draw[loopar] (h1) -- (h2);
+\draw[loopar] (h2) -- (h3);
+\draw[loopar] (h3) -- (h4);
+\draw[loopar] (h4) -- (h1);
+\node[font=\tiny] at (-4.35,-2.05) {$\phi_{\rm self}=G(\phi_{\rm ext}+\phi_{\rm self})$};
+
+\draw[gray!35, dashed] (-0.55,2.5) -- (-0.55,-2.5);
+
+\node[panelttl] at (3.55,2.15) {(b) One channel vs.\ two or more};
+\node[outcome, draw=stablecol, fill=stablecol!7] (m1) at (1.55,-0.1)
+  {\large $M=1$\\[1pt] {\scriptsize $s<1$}\\[1pt]
+   \textcolor{stablecol}{\Large\checkmark}\\[1pt]
+   \textcolor{stablecol}{\textbf{\scriptsize stable}}};
+\node[outcome, draw=unstablecol, fill=unstablecol!7] (m2) at (5.85,-0.1)
+  {\large $M\!\geq\!2$\\[1pt] {\scriptsize $s>1$}\\[1pt]
+   \textcolor{unstablecol}{\Large$\times$}\\[1pt]
+   \textcolor{unstablecol}{\textbf{\scriptsize unstable}}};
+\draw[bigar] (m1) -- (m2);
+\node[font=\tiny, align=center] at (1.55,-1.75) {boundary shift $\to0$\\as $N\to\infty$};
+\node[font=\tiny, align=center] at (5.85,-1.75) {Picard threshold\\exceeded};
+\end{tikzpicture}
+\caption{\textbf{Graphical summary.} (a) The loop closed in this paper: a
+bond-phase texture fixes $H$, whose ground-state current sources a
+Biot-Savart self-field, whose Peierls phase feeds back into $H$. (b) The
+central result: at $M=1$ the loop-gain slope stays sub-critical ($s<1$,
+validated null); once a second transverse subband is occupied
+($M\geq2$), $s$ crosses the Picard stability threshold at production
+coupling and the static topological boundary itself becomes fragile.}
+\label{fig:graphical_abstract}
+\end{figure*}
 
 \section{Introduction}
 \label{sec:intro}
@@ -279,13 +341,14 @@ been fixed and never feeding it back in.
 \draw (n6) -- (n1) node[midway, below, font=\tiny, align=center, fill=white, inner sep=1pt]
   {loop closes:\\Eq.~(1)};
 \end{tikzpicture}
-\caption{Schematic of the self-consistency loop closed in this paper (a
-conceptual diagram, not a data plot). A bond-phase texture fixes the BdG
-Hamiltonian, whose occupied eigenstates carry a ring current; that
-current sources a Biot-Savart self-field, which dresses the hopping
-bonds with an additional Peierls phase that feeds back into the
-texture the loop started from. The loop closes at the fixed-point
-condition of Eq.~(1), $\phi_{\rm self}=G(\phi_{\rm ext}+\phi_{\rm self})$.}
+\caption{\textbf{The feedback loop this paper closes: current sources
+the very field that re-enters its own Hamiltonian.} Conceptual diagram,
+not a data plot. A bond-phase texture fixes the BdG Hamiltonian, whose
+occupied eigenstates carry a ring current; that current sources a
+Biot-Savart self-field, which dresses the hopping bonds with an
+additional Peierls phase that feeds back into the texture the loop
+started from. The loop closes at the fixed-point condition of Eq.~(1),
+$\phi_{\rm self}=G(\phi_{\rm ext}+\phi_{\rm self})$.}
 \label{fig:loop}
 \end{figure}
 
@@ -336,6 +399,7 @@ described in \S\ref{subsec:bifurcation}, a root's mathematical existence from
 its dynamical attractiveness -- a distinction that turns out to matter
 throughout this paper.
 
+\FloatBarrier
 \subsection{Multi-subband extension}
 
 To go beyond a single conducting channel we extend the basis to
@@ -442,6 +506,7 @@ Superseded intermediate results (see, e.g., \S\ref{subsec:robustness} and \S\ref
 are preserved in the repository rather than overwritten, with the
 correction and its reasoning recorded alongside.
 
+\FloatBarrier
 \section{Results}
 \label{sec:results}
 
@@ -451,13 +516,16 @@ correction and its reasoning recorded alongside.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig2_pfaffian_vs_threshold.png}
-\caption{$N$-independence of the real-space Pfaffian boundary detector
+\caption{\textbf{The threshold-free Pfaffian invariant is exactly
+$N$-independent; the conventional spectral-gap threshold detector is
+not.} $N$-independence of the real-space Pfaffian boundary detector
 versus a conventional spectral-gap threshold detector, at $\mu=0$ (known
 analytic boundary $B_c=\Delta$). The Pfaffian detector's extracted $B_c$
 is exactly $N$-independent (spread $0.0$ across $N=20$--$160$); the
 threshold detector's extracted $B_c$ drifts by $0.66\,\Delta$ over the
-same range. Generated by \texttt{bdg\_r4\_em\_coupling.py}; data in
-\texttt{ISEF R4 data folder/}.}
+same range -- the concrete numerical origin of the order-of-magnitude
+boundary-shift discrepancy reported in the text. Generated by
+\texttt{bdg\_r4\_em\_coupling.py}; data in \texttt{ISEF R4 data folder/}.}
 \label{fig:threshold}
 \end{figure}
 
@@ -502,17 +570,23 @@ not-yet-self-consistent self-field) survives; the magnitude reported by
 the conventional detector does not. Every headline number quoted below
 uses the Pfaffian detector exclusively.
 
+\FloatBarrier
 \subsection{The self-consistency loop has a genuine dynamical bifurcation}
 \label{subsec:bifurcation}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig3_null_validation.png}
-\caption{Validation battery for the physically meaningful coupling
-regime ($g<g_{\rm deadzone}$, top of the unambiguous static-boundary
-regime). (a) $N$-independence of the boundary shift at $g=1\times10^4$:
-the shift vanishes as $N\to\infty$ ($\sim N^{-1.8}$ to $N^{-1.9}$). (b)
-Bisection-tolerance robustness at $g=2\times10^4$, $N=80$. Generated by
+\caption{\textbf{The single-channel boundary shift vanishes as
+$N\to\infty$: a finite-size artifact, not a genuine bulk effect.}
+Validation battery for the physically meaningful coupling regime
+($g<g_{\rm deadzone}$, top of the unambiguous static-boundary regime).
+(a) $N$-independence of the boundary shift at $g=1\times10^4$: the shift
+decays smoothly to zero as $N\to\infty$ ($\sim N^{-1.8}$ to $N^{-1.9}$),
+the signature of a boundary (Aharonov-Bohm-like) effect rather than a
+bulk one. (b) Bisection-tolerance robustness at $g=2\times10^4$, $N=80$:
+the same shift is stable across four orders of magnitude of numerical
+precision, ruling out a solver-tolerance artifact. Generated by
 \texttt{bdg\_r5\_physically\_meaningful\_shift.py}; data in
 \texttt{ISEF R5 data folder/}.}
 \label{fig:nullvalidation}
@@ -589,6 +663,7 @@ short wires ($L\lesssim0.6\,\mu$m) lose the clean static boundary
 entirely at this coupling, falling into the dead-zone regime described
 above.
 
+\FloatBarrier
 \subsection{A second observable: the feedback-renormalized reactance}
 \label{subsec:impedance}
 
@@ -611,14 +686,16 @@ region approaching the boundary.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig4_bounded_pole.png}
-\caption{The reactive-impedance enhancement $1/(1-s)$ near $g_{\rm
-crit}$. (A) On the physical principal branch the enhancement rises
-smoothly to a bounded maximum ($\sim5.7\times$ at $N=80$) before the
-static fixed point detaches via the self-consistency map's sawtooth
-structure, never reaching a literal $s=1$ divergence. (B) The bounded cap
-itself grows under mesh refinement at fixed physical length
-($\sim5.6\times$ at $N=80$ to $\sim9.8\times$ at $N=200$), so a genuine
-continuum divergence is neither established nor excluded. Generated by
+\caption{\textbf{The reactive-impedance enhancement saturates at a
+bounded maximum instead of diverging.} The enhancement $1/(1-s)$ near
+$g_{\rm crit}$. (A) On the physical principal branch the enhancement
+rises smoothly to a bounded maximum ($\sim5.7\times$ at $N=80$) before
+the static fixed point detaches via the self-consistency map's sawtooth
+structure -- a literal $s=1$ divergence is never reached. (B) The bounded
+cap itself is resolution-sensitive: it grows under mesh refinement at
+fixed physical length ($\sim5.6\times$ at $N=80$ to $\sim9.8\times$ at
+$N=200$), so a genuine continuum divergence is neither established nor
+excluded by this data. Generated by
 \texttt{bdg\_r9\_pole\_characterization.py}; data in \texttt{ISEF R8 data
 folder/}.}
 \label{fig:pole}
@@ -658,6 +735,7 @@ resolution-sensitive marker of proximity to the dynamical instability of
 \S\ref{subsec:bifurcation} -- informative qualitatively, but not a sharp
 new diagnostic.
 
+\FloatBarrier
 \subsection{Robustness of the single-channel null to temperature and disorder}
 \label{subsec:robustness}
 
@@ -679,7 +757,10 @@ operating point.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig5_disorder_summary.png}
-\caption{On-site disorder at $N=80$: (left) fraction of realizations
+\caption{\textbf{Disorder smears the topological classification smoothly
+and, at $N=80$ alone, appears to shift the self-consistent boundary --
+an appearance later shown not to survive finite-size scrutiny at high
+$W$.} On-site disorder at $N=80$: (left) fraction of realizations
 misclassified as topological near a clean-trivial point, growing smoothly
 and saturating near $30\%$ at the top of the literature-realistic range;
 (middle) mean spurious sub-gap-state count (flat with $W$) versus its
@@ -689,8 +770,9 @@ realization-to-realization spread (growing substantially with $W$);
 the text}: a subsequent check at $N=120$ and $N=160$ found the $N=80$
 values shown here substantially overstate the effect at the upper end of
 the disorder range (\S\ref{subsec:robustness}) -- see
-Table~\ref{tab:disorderNindep}. Generated by \texttt{bdg\_r9\_disorder.py};
-data in \texttt{ISEF R9 data folder/}.}
+Table~\ref{tab:disorderNindep} for the corrected, size-scanned values.
+Generated by \texttt{bdg\_r9\_disorder.py}; data in \texttt{ISEF R9 data
+folder/}.}
 \label{fig:disorder}
 \end{figure}
 
@@ -787,19 +869,24 @@ conducting channel. That assumption is a significant idealization of real
 devices, not merely a simplifying convenience, and the natural next
 question is whether the null result survives once it is relaxed.
 
+\FloatBarrier
 \subsection{The loop-gain proxy: the null does not survive a second occupied subband}
 \label{subsec:proxy}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig1_phase_diagram.png}
-\caption{Single-channel Lutchyn-Oreg $(\mu,B_{\rm zeeman})$ phase diagram
-at realistic InAs/Al parameters: genuine TRIM Pfaffian invariant (left)
-and ring bulk gap on a log scale (right), analytic boundary overlaid.
-Idealized/theoretical regime: $\Delta$ is held fixed (no field-dependent
-pair-breaking), and the plotted Zeeman range exceeds the verified axial
-critical field of a comparable epitaxial-Al shell by a factor of $\sim8$
-at $\mu=0$~\cite{chang2015}. Generated by
+\caption{\textbf{The single-channel baseline: the genuine topological
+invariant and the bulk gap agree with each other and with the analytic
+phase boundary at every point tested.} Single-channel Lutchyn-Oreg
+$(\mu,B_{\rm zeeman})$ phase diagram at realistic InAs/Al parameters:
+genuine TRIM Pfaffian invariant (left) and ring bulk gap on a log scale
+(right), analytic boundary $B_c=\sqrt{\mu^2+\Delta^2}$ overlaid as a
+white dashed curve -- the gap visibly closes exactly where the invariant
+flips sign. Idealized/theoretical regime: $\Delta$ is held fixed (no
+field-dependent pair-breaking), and the plotted Zeeman range exceeds the
+verified axial critical field of a comparable epitaxial-Al shell by a
+factor of $\sim8$ at $\mu=0$~\cite{chang2015}. Generated by
 \texttt{bdg\_r6\_lo\_phase\_diagram.py}; data in \texttt{R6\_data\_files/}.}
 \label{fig:phasediagram}
 \end{figure}
@@ -833,19 +920,54 @@ every field sweep in this paper -- not a description of it.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig6_multisubband_summary.png}
-\caption{The pre-registered multi-subband loop-gain probe. (A) Truncation
-convergence at fixed occupancy (a sanity check, not the physics answer):
-$s$ converges smoothly with basis size. (B) The genuine-occupancy sweep,
-$s(\mu;M)$ at production coupling $g=2.9\times10^4$: the stability
-boundary $s=1$ is crossed once $M\geq2$. (C) The pre-registered
-comparison statistic (median $s$ over the surviving, van-Hove-excluded
-window): a sharp $M=1\to2$ jump, then a non-monotonic $M=2\to3\to4$
-trend. \emph{This is a structural result at $M\leq4$, not a
-device-faithful prediction} -- see text. Generated by
+\includegraphics[width=0.82\columnwidth]{figures/fig6_multisubband_summary.png}
+\caption{\textbf{Occupying a second subband crosses the Picard stability
+threshold at the production electromagnetic coupling.} The pre-registered
+multi-subband loop-gain probe. (A) Truncation convergence at fixed
+occupancy (a construction sanity check, not the physics answer): $s$
+converges smoothly with basis size, with no discontinuity. (B) The
+genuine-occupancy sweep, $s(\mu;M)$ at production coupling
+$g=2.9\times10^4$: the stability boundary $s=1$ (dashed line) is crossed
+once $M\geq2$, and stays crossed across essentially the entire window
+probed at $M=2$--$4$. (C) The pre-registered comparison statistic (median
+$s$ over the surviving, van-Hove-excluded window): a sharp $M=1\to2$
+jump, then a non-monotonic $M=2\to3\to4$ trend -- rising, then declining,
+not settling into a clean law. \emph{This is a structural result at
+$M\leq4$, not a device-faithful prediction} -- see text, and see
+Fig.~\ref{fig:multisubband56} for the $M=5,6$ extension, which shows the
+non-monotonicity continuing more dramatically still. Generated by
 \texttt{bdg\_r9\_multisubband\_sweep.py}; data in \texttt{ISEF R9 data
 folder/}.}
 \label{fig:multisubband}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\columnwidth]{figures/fig7_multisubband_M1to6_extension.png}
+\caption{\textbf{The $M\geq2$ instability is not monotonic: the
+loop-gain magnitude collapses at $M=6$ while the detachment rate stays
+high -- existence, not magnitude, is the operative diagnostic.} The
+$M=5,6$ extension of the pre-registered multi-subband loop-gain probe
+(cf.\ Fig.~\ref{fig:multisubband}), using the identical protocol
+throughout -- same closed-form window, van Hove exclusion radius, and
+median statistic, pre-registered before any $M=5,6$ value was computed.
+(A) Truncation convergence at fixed occupancy, extended through $M=6$:
+still smooth, no discontinuity, confirming the machinery itself remains
+correct at higher $M$. (B) The genuine-occupancy sweep $s(\mu;M)$ at
+production coupling, $M=1$--$6$ (colored by $M$, dashed line at the
+Picard threshold $s=1$); gaps in a curve are genuine detachments (no
+self-consistent root exists at that $\mu$), not omitted data -- note the
+$M=5$ curve's excursion to $s\approx-1.4\times10^4$ near its own
+detachment, and the $M=6$ curve's smooth decay to $s\approx0$ far from
+its threshold. (C) The pre-registered median statistic (red, left axis)
+alongside the detachment rate (gray dashed, right axis) at each $M$: the
+$M=6$ collapse in the median \emph{coincides with}, rather than
+\emph{replaces}, a persistently high detachment rate -- the median
+statistic is not evidence of restored stability. Generated by
+\texttt{bdg\_r9\_multisubband\_plot\_M6.py} from
+\texttt{bdg\_r9\_multisubband\_sweep\_M56.py}'s output; data in
+\texttt{ISEF R9 data folder/}.}
+\label{fig:multisubband56}
 \end{figure}
 
 Using the pre-registered protocol of \S\ref{sec:model}D, the loop-gain
@@ -942,25 +1064,6 @@ $M$ & points & finite/total & detach.\ \% & median $s$ & finite $>1$ \\
 \end{ruledtabular}
 \end{table}
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.85\textwidth]{figures/fig7_multisubband_M1to6_extension.png}
-\caption{The $M=5,6$ extension of the pre-registered multi-subband
-loop-gain probe (cf.\ Fig.~\ref{fig:multisubband}), using the identical
-protocol throughout. (A) Truncation convergence at fixed occupancy,
-extended through $M=6$: still smooth, no discontinuity. (B) The
-genuine-occupancy sweep $s(\mu;M)$ at production coupling, $M=1$--$6$;
-gaps in a curve are genuine detachments (no self-consistent root at that
-$\mu$), not omitted data. (C) The pre-registered median statistic (left
-axis) alongside the detachment rate (right axis) at each $M$: the $M=6$
-collapse in the median coincides with, rather than replaces, a
-persistently high detachment rate. Generated by
-\texttt{bdg\_r9\_multisubband\_plot\_M6.py} from
-\texttt{bdg\_r9\_multisubband\_sweep\_M56.py}'s output; data in
-\texttt{ISEF R9 data folder/}.}
-\label{fig:multisubband56}
-\end{figure*}
-
 Why would occupying a second subband increase the loop gain at all,
 rather than simply adding a second, independent contribution to the
 current? Three considerations, taken together, offer a physically
@@ -1034,6 +1137,7 @@ further, cheaply obtained data points show instead that neither the
 loop-gain magnitude nor the detachment rate settles into a simple trend
 anywhere in the range tested.
 
+\FloatBarrier
 \subsection{Beyond the proxy: existence, not just magnitude, of the boundary becomes fragile at $M=2$}
 \label{subsec:existence}
 
@@ -1122,6 +1226,7 @@ shift, and one the cheap loop-gain proxy alone could not have revealed,
 since it only ever evaluates a root at one fixed field and never asks
 whether a bisected boundary exists.
 
+\FloatBarrier
 \section{Discussion}
 \label{sec:discussion}
 
@@ -1277,9 +1382,11 @@ devices, and we regard resolving it as the natural next step for this
 line of work.
 
 \begin{acknowledgments}
-The author thanks the open-source scientific Python ecosystem
-(\texttt{NumPy}, \texttt{SciPy}, \texttt{pfapack}, \texttt{Matplotlib})
-that this work's computational framework is built on.
+The author thanks Jagadis Prasad Nayak (NIT Rourkela) for reviewing the
+manuscript and for assistance in editing the draft, and the open-source
+scientific Python ecosystem (\texttt{NumPy}, \texttt{SciPy},
+\texttt{pfapack}, \texttt{Matplotlib}) that this work's computational
+framework is built on.
 \end{acknowledgments}
 
 \appendix
@@ -1360,7 +1467,7 @@ collapses back to the uniform solution.
 \onecolumngrid
 \begingroup
 \squeezetable
-\begin{table}[h]
+\begin{table}[H]
 \caption{Validation gates enforced before any result computed with a given
 layer was trusted. ``Bit-for-bit'' / $0.0$ entries compare two
 constructions required to be entrywise identical at the stated limit;
