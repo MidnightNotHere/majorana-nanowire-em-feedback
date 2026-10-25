@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R9 (Track 4): instrumented bracketing scan across the two
+R9 (Track 4): instrumented bracketing scan across the two
 persistent-detachment onsets found in §11 of r9_multisubband_methods.md.
 
 Section 11's investigation ruled out two specific numerical explanations for

@@ -1,5 +1,5 @@
 """
-ISEF 2027 -- Symmetry-Aware BdG Eigensolver
+Symmetry-Aware BdG Eigensolver
 Phase: R6 -- Full Lutchyn-Oreg phase diagram, realistic InAs/Al parameters
 
 Project: Inductive Circuit Feedback Shifts the Topological Phase Boundary

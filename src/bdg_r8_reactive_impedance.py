@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R8 (Track A): Static feedback-renormalized reactive impedance Z_r
+R8 (Track A): Static feedback-renormalized reactive impedance Z_r
 =============================================================================
 A SECOND observable, computed alongside the bulk gap, at every point of the
 R7 (B, mu, L) sweep: the reactive (inductive) impedance of the wire's

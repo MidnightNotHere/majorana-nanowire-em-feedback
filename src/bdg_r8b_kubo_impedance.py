@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R8-B: finite-ω Kubo current–current correlator → AC impedance Z(ω)
+R8-B: finite-ω Kubo current–current correlator → AC impedance Z(ω)
 ==============================================================================
 Phase 8B (its own phase, R8-B). New PHYSICS, not new plumbing: the wire's
 finite-frequency current–current response χ_JJ(ω) from a Kubo (Lehmann)

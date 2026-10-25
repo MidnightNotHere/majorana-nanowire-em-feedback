@@ -1,14 +1,11 @@
 'PYEOF'
 """
-ISEF 2027 — Symmetry-Aware BdG Eigensolver
+Symmetry-Aware BdG Eigensolver
 Phase: R1 (Baseline eigensolver) + R2 (Pfaffian indicator)
-Status: IN PROGRESS
 
 Project: Inductive Circuit Feedback Shifts the Topological Phase Boundary
          in InAs/Al Majorana Nanowires: A Self-Consistent Symmetry-Preserving
          Eigensolver Approach
-
-MIT PhD Advisor: [Name] (advisory role only — acknowledged, not co-author)
 
 Validated results (R1/R2 Kitaev baseline):
   - PH symmetry error: 0.00e+00 across all parameter values

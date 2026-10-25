@@ -1,5 +1,5 @@
 """
-ISEF 2027 — Inductive Circuit Feedback Shifts the Topological Phase Boundary
+Inductive Circuit Feedback Shifts the Topological Phase Boundary
               in InAs/Al Majorana Nanowires
 Phase: R5 (addendum) — Anderson mixing for the self-consistent ring self-field:
        is g_crit real physics, or an artifact of PLAIN (Picard) iteration?

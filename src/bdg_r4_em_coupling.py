@@ -1,8 +1,7 @@
 """
-ISEF 2027 — Inductive Circuit Feedback Shifts the Topological Phase Boundary
-              in InAs/Al Majorana Nanowires
+Inductive Circuit Feedback Shifts the Topological Phase Boundary
+  in InAs/Al Majorana Nanowires
 Phase: R4 — Quasi-Static Electromagnetic Coupling Layer
-Status: IN PROGRESS
 
 This module implements the quasi-static (magnetostatic / Biot-Savart)
 electromagnetic coupling between a 1D InAs/Al Majorana nanowire and the

@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R8-C: fully self-consistent spin-orbit current in the self-field
+R8-C: fully self-consistent spin-orbit current in the self-field
 ============================================================================
 Track A / R8-B source the inductive self-field from the KINETIC bond current
 only (`ring_current_density`), which is what R4/R5's self-consistency map uses.

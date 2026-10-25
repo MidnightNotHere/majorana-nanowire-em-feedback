@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R9 (Track 4): multi-subband loop-gain sweep — Tasks 1-3
+R9 (Track 4): multi-subband loop-gain sweep — Tasks 1-3
 ====================================================================
 Runs the two protocols locked, blind to s, in `bdg_r9_multisubband.py`'s
 pre-registration commit (`r9_multisubband_methods.md` documents the full

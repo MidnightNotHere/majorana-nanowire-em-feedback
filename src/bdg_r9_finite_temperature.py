@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R9 (Track 2): finite temperature in the BdG / Pfaffian / Kubo stack
+R9 (Track 2): finite temperature in the BdG / Pfaffian / Kubo stack
 ===============================================================================
 Every prior phase (R1-R8, and R9 Track 1) used ZERO-temperature BdG ground
 states (sharp Fermi sea, occupation = theta(-E)) and a T=0 Kubo formula. Real

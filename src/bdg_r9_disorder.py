@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R9 (Track 3): on-site disorder in the BdG / Pfaffian / self-
+R9 (Track 3): on-site disorder in the BdG / Pfaffian / self-
 consistent-ring stack
 ===============================================================================
 Every prior phase (R1-R8, R9 Tracks 1-2) used a perfectly translationally-

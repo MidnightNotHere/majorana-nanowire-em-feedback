@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R7: circuit inductance L as a genuine third axis (B, mu, L)
+R7: circuit inductance L as a genuine third axis (B, mu, L)
 =======================================================================
 Phase R7 extends the validated self-consistent inductive-feedback framework
 (R4 EM coupling / R5 self-consistent ring) by sweeping the wire length

@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R9 (Track 1): characterizing the reactive-impedance "pole" near g_crit
+R9 (Track 1): characterizing the reactive-impedance "pole" near g_crit
 ==================================================================================
 R8 (Track A) found that at the production coupling g = G_R7 = 2.9e4 the reactive
 impedance Z_r = iωL_geo/(1−s) is largely redundant with the bulk gap, EXCEPT for

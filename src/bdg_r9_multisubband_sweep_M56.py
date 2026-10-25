@@ -1,5 +1,5 @@
 """
-ISEF 2027 -- R9 (Track 4 extension): multi-subband loop-gain probe at M=5,6
+R9 (Track 4 extension): multi-subband loop-gain probe at M=5,6
 ============================================================================
 Extends the pre-registered protocol of `bdg_r9_multisubband.py` /
 `bdg_r9_multisubband_sweep.py` (M_MAX=4, "bounded-tractable ceiling, scoping

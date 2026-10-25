@@ -1,5 +1,5 @@
 """
-ISEF 2027 — Inductive Circuit Feedback Shifts the Topological Phase Boundary
+Inductive Circuit Feedback Shifts the Topological Phase Boundary
               in InAs/Al Majorana Nanowires
 Phase: R5 — Self-consistent ring self-field + Pfaffian Z2 boundary shift
 Status: COMPLETE (this module IS the R5 deliverable of

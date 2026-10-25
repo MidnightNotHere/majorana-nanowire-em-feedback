@@ -1,5 +1,5 @@
 """
-ISEF 2027 — Symmetry-Aware BdG Eigensolver
+Symmetry-Aware BdG Eigensolver
 Phase: R3 — PH-Symmetric Rank-2 Subspace Near-Zero Mode Update (LO MODEL)
 
 NAMING NOTE: earlier versions of this module called the update "Woodbury."

@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R9 (Track 4): multi-subband loop-gain probe
+R9 (Track 4): multi-subband loop-gain probe
 =======================================================
 Does the R1–R9 EM-feedback *null* — "inductive self-feedback does not move the
 bulk topological boundary" — survive when the wire carries more than one

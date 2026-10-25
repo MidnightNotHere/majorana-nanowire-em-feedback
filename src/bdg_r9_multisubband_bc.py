@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R9 (Track 4): the FULL self-consistent boundary calculation
+R9 (Track 4): the FULL self-consistent boundary calculation
 at M=2, not just the cheap loop-gain-slope proxy.
 
 R9 Track 4's headline result (r9_multisubband_methods.md Sec 8-9) was
