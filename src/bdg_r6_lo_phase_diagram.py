@@ -19,7 +19,7 @@ R6 Phase 1 reconnaissance found:
     directly onto build_bdg_lo with no new geometry required.
   - pfaffian_trim_lo() (R1/R2) was found to discard its own TRIM matrices
     and return a hardcoded closed form; fixed in a standalone commit before
-    this module was written (see src/r2_o1_pfaffian_trim_lo_correction.md).
+    this module was written (see docs/methods/r2_o1_pfaffian_trim_lo_correction.md).
     This module uses the corrected, genuine version throughout.
   - LO_PARAMS' Delta=0.25 meV traces to Mourik et al. 2012 (InSb, not
     InAs/Al). Corrected here to Delta=0.19 meV, the full-shell value
@@ -29,7 +29,7 @@ R6 Phase 1 reconnaissance found:
     topological transition at these parameters (~0.625 T at mu=0) exceeds
     the verified axial critical field of a comparable thin epitaxial-Al
     shell (~0.075 T, Chang et al. 2015) by ~8x. See Section 1 below and
-    src/r6_lo_phase_diagram_methods.md for the full disclaimer -- every
+    docs/methods/r6_lo_phase_diagram_methods.md for the full disclaimer -- every
     figure in this module that sweeps B_zeeman into that regime is an
     explicitly idealized/theoretical parameter regime, not a claim of
     achievable-in-one-device realism.
@@ -128,7 +128,7 @@ IDEALIZED_REGIME_CAPTION = (
     "exceeds the verified axial critical field (~0.075 T, Chang et al. 2015) "
     "of a comparable thin epitaxial-Al shell by "
     f"~{R6_PARAMS['idealized_regime_ratio']:.1f}x at mu=0. See "
-    "src/r6_lo_phase_diagram_methods.md."
+    "docs/methods/r6_lo_phase_diagram_methods.md."
 )
 
 # Short form for placing the Delta(B) caveat directly on the physics panel of

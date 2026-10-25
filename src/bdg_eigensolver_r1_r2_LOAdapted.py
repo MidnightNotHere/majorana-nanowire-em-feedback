@@ -62,7 +62,7 @@ Changes from previous version:
   [18] ADDED _validate_lo_ph_symmetry() — module-import assertion for LO.
 
 CORRECTION (2026-07-11, found during R6 reconnaissance; full writeup in
-src/r2_o1_pfaffian_trim_lo_correction.md):
+docs/methods/r2_o1_pfaffian_trim_lo_correction.md):
   pfaffian_trim_lo() originally built the 4×4 TRIM matrices its docstring
   described, then DISCARDED them and returned the closed-form
   nu = sign(mu^2 + Delta^2 - B_zeeman^2) directly — it never called
@@ -417,7 +417,7 @@ def pfaffian_trim_lo(mu: float,
     numerical Pfaffian at the two TRIM points k=0 and k=π.
 
     [CORRECTED 2026-07-11 — see the module-header correction note and
-    src/r2_o1_pfaffian_trim_lo_correction.md. A previous version of this
+    docs/methods/r2_o1_pfaffian_trim_lo_correction.md. A previous version of this
     function built these same TRIM matrices but discarded them and
     returned the closed-form nu = sign(mu^2+delta^2-B_zeeman^2) directly,
     without ever calling pf.pfaffian() — this version genuinely does.]
@@ -560,7 +560,7 @@ def _validate_lo_phase_boundary(n_points: int = 20) -> None:
     trivially recovered the expected sign, independent of whether the LO
     Hamiltonian's actual topology matched. It now exercises a real
     TRIM-point Pfaffian and genuinely confirms the boundary in this regime
-    — see src/r2_o1_pfaffian_trim_lo_correction.md.
+    — see docs/methods/r2_o1_pfaffian_trim_lo_correction.md.
     """
 
     rng = np.random.default_rng(7)
@@ -1173,7 +1173,7 @@ if __name__ == '__main__':
           f"B_z = sqrt(μ² + Δ²)  ✓")
     print(f"  [O1 LO]   (prior claim of this line was tautological — closed-form")
     print(f"             checked against itself; now a real TRIM Pfaffian —")
-    print(f"             see src/r2_o1_pfaffian_trim_lo_correction.md)")
+    print(f"             see docs/methods/r2_o1_pfaffian_trim_lo_correction.md)")
     print(f"  [O1 LO]   Published params cited:   Mourik 2012, Das Sarma 2010  ✓")
     print(f"  [O1 LO]   Figures generated:        figure6_lo_phase_diagram.png,")
     print(f"                                       figure7_lo_finite_size.png")
