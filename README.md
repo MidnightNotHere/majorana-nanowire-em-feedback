@@ -5,8 +5,8 @@ BdG eigensolver, self-consistency solvers, validation scripts, and data for self
 This repository accompanies the paper in [`paper/`](paper/) (build with `cd paper && latexmk -pdf main.tex`; a prebuilt
 [`paper/main.pdf`](paper/main.pdf) is included). It holds the code behind the numbers and figures in the paper, the raw
 numerical results, and the methods notes in which each calculation, its validation gates and its corrections are
-recorded. A few figures have no generating script in the repository; they are listed in
-[`docs/KNOWN_ISSUES.md`](docs/KNOWN_ISSUES.md).
+recorded. Every figure of the paper can be redrawn from the saved results by a script in `src/` or `scripts/`; the
+few files that no script writes are listed in [`docs/KNOWN_ISSUES.md`](docs/KNOWN_ISSUES.md).
 
 **Scientific question.** Standard treatments of the Majorana nanowire fix the topological phase boundary and compute the
 induced supercurrent afterwards; the current is never fed back into the Hamiltonian that produced it. Here the loop is
@@ -64,12 +64,11 @@ lattice model, parameters of InAs/Al devices from the literature. See the paper'
 ├── docs/
 │   ├── methods/            methods notes with derivations, gates and correction records
 │   ├── paper_audit/        claim-by-claim verification log for the paper
-│   ├── logbook/            research logbook (.docx)
 │   ├── REPRODUCING.md      what to run, how long it takes, what it overwrites
 │   ├── KNOWN_ISSUES.md     limitations, provenance gaps, caveats
 │   └── RENAME_MAP.md       old-to-new path map and the R-code glossary
 ├── paper/                  main.tex, references.bib, main.bbl, figures/, main.pdf (self-contained)
-├── scripts/                redraw_paper_fig4.py
+├── scripts/                redraw_*.py: redraw figures from the saved results (seconds each)
 ├── requirements.txt        16 pinned packages
 ├── CITATION.cff
 └── LICENSE
