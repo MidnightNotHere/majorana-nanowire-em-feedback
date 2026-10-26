@@ -56,7 +56,8 @@ record, and the methods notes describe how they were made.
   disorder result. It was drawn from `r9_disorder_data.SUPERSEDED_task4_3.json` by an earlier version of `make_figures()`
   in `src/bdg_r9_disorder.py`; the current function draws a different image from that file (19,023 pixels differ), so the
   image is kept as the record and not redrawn. It is not in the paper.
-- **R4 saves no data file**, only figures. Figures 4 and 6 of that module take more than 15 minutes each to recompute.
+- **R4 saves no data file**, only figures. Recomputing figure 6 (`validate_pfaffian_boundary()`) took 676 s on
+  2026-10-25; figure 4 had not finished after about 45 minutes (section 3); figure 5 was not timed.
 
 Apart from that superseded image, every committed image has a script that draws it: an `src/` module, or one of the
 `scripts/redraw_*.py` files for the figures whose plotting code is not in the repository. The Data availability paragraph
@@ -127,7 +128,9 @@ text or legend box. Details that remain:
 - **`r4_figure6_pfaffian_vs_threshold.png` was recomputed** with the unchanged function, once with the original code and
   once with the restructured code, in scratch directories. The returned arrays, the plotted-data fingerprint and a render
   without text were identical, and the original code reproduced the committed image byte for byte. The new image differs
-  only in its title ("R4 Figure 6: " removed). `paper/figures/fig2_pfaffian_vs_threshold.png` is a byte copy of it.
+  only in its title ("R4 Figure 6: " removed). `paper/figures/fig2_pfaffian_vs_threshold.png` is a byte copy of it. A
+  further run of the committed `validate_pfaffian_boundary()` on 2026-10-25 (676 s, output redirected to a scratch
+  folder) reproduced both the committed `r4_figure6` image and the paper's copy byte for byte.
 - **Redrawn from saved data, not rerun.** The other redrawn figures that need hours to recompute were drawn from the
   saved result files.
 

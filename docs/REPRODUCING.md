@@ -78,7 +78,7 @@ These were not rerun during the repository restructure. The times are those reco
 
 | Script | Arguments | Time | Source of the time | Writes |
 |---|---|--:|---|---|
-| `src/bdg_r4_em_coupling.py` | | > 10 min in total; figures 5 and 6 each > 15 min alone | measured | `em_feedback_detector_comparison/`: 6 PNG (figures 1 to 3 are the quick part; R4 saves no data file) |
+| `src/bdg_r4_em_coupling.py` | | > 10 min in total; figure 6 alone 676 s (an earlier measurement had put it above 15 min); figure 4 > 45 min, not finished; figure 5 not timed | measured | `em_feedback_detector_comparison/`: 6 PNG (figures 1 to 3 are the quick part; R4 saves no data file) |
 | `src/bdg_r5_selfconsistent_ring.py` | | about 35 min | earlier README | `self_consistency_bifurcation/r5_results.json`, `r5_shift_comparison.csv` |
 | `src/bdg_r5_physically_meaningful_shift.py` | | about 40 min | earlier README | `r5_physical_shift_results.json` (the data of `r5_figure10`, `r5_figure11` and paper Fig. 4; those are drawn by `scripts/redraw_*.py`, section 3) |
 | `src/bdg_r5_anderson_mixing.py` | | not recorded | | `r5_anderson_results.json` |
@@ -103,7 +103,7 @@ Figs. 1 and 2 are TikZ diagrams drawn in `main.tex`).
 | File in `paper/figures/` | Fig. in the paper | How it is produced |
 |---|---|---|
 | `fig1_phase_diagram.png` | 7 | byte-identical copy of `results/lutchyn_oreg_phase_diagram/r6_figure3_phase_diagram.png` (`src/bdg_r6_lo_phase_diagram.py`) |
-| `fig2_pfaffian_vs_threshold.png` | 3 | byte-identical copy of `results/em_feedback_detector_comparison/r4_figure6_pfaffian_vs_threshold.png` (`src/bdg_r4_em_coupling.py`, long) |
+| `fig2_pfaffian_vs_threshold.png` | 3 | byte-identical copy of `results/em_feedback_detector_comparison/r4_figure6_pfaffian_vs_threshold.png` (`src/bdg_r4_em_coupling.py`, `validate_pfaffian_boundary()`, 676 s; rerun on 2026-10-25 it reproduced the file byte for byte) |
 | `fig3_null_validation.png` | 4 | `scripts/redraw_paper_fig3.py`, from `results/self_consistency_bifurcation/r5_physical_shift_results.json` (written by `src/bdg_r5_physically_meaningful_shift.py`, long); reproduces the committed image byte for byte |
 | `fig4_bounded_pole.png` | 5 | `scripts/redraw_paper_fig4.py`, from `results/reactive_impedance/pole_characterization/r9_pole_data.json` |
 | `fig5_disorder_summary.png` | 6 | byte-identical copy of `results/disorder/r9_disorder_summary.png` (`src/bdg_r9_disorder.py --full`, long; or `scripts/redraw_r9_disorder_summary.py` from the saved data) |
