@@ -122,6 +122,7 @@ def draw(data, head=SUPTITLE_HEAD, note_ref=NOTE_REF, baseline_label=BASELINE_LA
 def main(out=DEFAULT_OUT):
     data = load()
     fig = draw(data)
+    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     fig.savefig(out, dpi=DPI)
     plt.close(fig)
     print("wrote", out)

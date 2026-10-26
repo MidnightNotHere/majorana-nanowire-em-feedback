@@ -105,6 +105,7 @@ def draw(phys, res, title_head=TITLE_HEAD):
 def main(out=DEFAULT_OUT):
     phys, res = load()
     fig = draw(phys, res)
+    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     fig.savefig(out, dpi=150)
     plt.close(fig)
     print("wrote", out)

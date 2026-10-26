@@ -70,6 +70,7 @@ def draw(data, out):
     fig.suptitle("The reactive-impedance 'pole' near $g_{\\rm crit}$", fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.95))
     fig.subplots_adjust(top=0.91, hspace=0.35)
+    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     fig.savefig(out, dpi=140)
     plt.close(fig)
 

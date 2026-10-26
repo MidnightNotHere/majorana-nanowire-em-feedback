@@ -93,6 +93,7 @@ def draw(phys):
 def main(out=DEFAULT_OUT):
     phys = load()
     fig = draw(phys)
+    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     fig.savefig(out, dpi=DPI)
     plt.close(fig)
     print("wrote", out)
