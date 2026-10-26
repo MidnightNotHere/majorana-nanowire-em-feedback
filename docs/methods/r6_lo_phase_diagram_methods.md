@@ -1,6 +1,6 @@
 # Methods note: R6 — full Lutchyn-Oreg phase diagram, realistic InAs/Al parameters
 
-**Project:** ISEF 2027 — Inductive Circuit Feedback Shifts the Topological Phase Boundary in InAs/Al Majorana Nanowires
+**Project:** Inductive Circuit Feedback Shifts the Topological Phase Boundary in InAs/Al Majorana Nanowires
 **Module:** `src/bdg_r6_lo_phase_diagram.py`
 **Phase 1 reconnaissance:** structural audit found `build_bdg_lo()` already implements a genuine 4N×4N spin⊗Nambu Lutchyn-Oreg Hamiltonian (not a 2N→4N extension); target figure selected: Oreg–Refael–von Oppen (arXiv:1003.1145) Figure 1 (BdG spectrum vs Zeeman field, gap closing at `B=√(μ²+Δ²)`) as the primary deliverable, with a secondary (μ,B) 2D phase diagram using the corrected `pfaffian_trim_lo()` (see `docs/methods/r2_o1_pfaffian_trim_lo_correction.md`).
 

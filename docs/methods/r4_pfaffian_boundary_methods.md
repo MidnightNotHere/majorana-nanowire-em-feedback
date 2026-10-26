@@ -1,6 +1,6 @@
 # Methods note: N-independent extraction of the topological critical field B_c via a Pfaffian Z2 invariant
 
-**Project:** ISEF 2027 — Inductive Circuit Feedback Shifts the Topological Phase Boundary in InAs/Al Majorana Nanowires
+**Project:** Inductive Circuit Feedback Shifts the Topological Phase Boundary in InAs/Al Majorana Nanowires
 **Module:** `src/bdg_r4_em_coupling.py` (R4)
 **Date:** 2026-07-09
 
