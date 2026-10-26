@@ -269,6 +269,14 @@ confirmed via `git status`/`git diff --stat` that
 in the repository. Re-rendered and visually confirmed the title now fits
 without clipping and the data plots are unchanged.
 
+> **Correction note, 2026-10-25 (the paragraph above is unchanged).** The "Fig. 3" of this paragraph is the figure in
+> `paper/figures/fig4_bounded_pole.png`, which is Fig. 5 in the current typeset paper. The script it calls `regen_fig3.py`
+> was never committed to the repository and could not be recovered; `scripts/redraw_paper_fig4.py` replaces it, reads
+> `r9_pole_data.json`, and reproduces the committed `fig4_bounded_pole.png` byte for byte. The statement that the results
+> image `r9_figure1_bounded_pole.png` is untouched held when it was written; during the restructure that file was
+> redrawn with the stage label removed from its text (plotted data unchanged; see [`../RENAME_MAP.md`](../RENAME_MAP.md)).
+
+
 **Genuine placeholders the author must fill (all clearly marked in-file):**
 1. Author: **filled in** (`Arnav Rohilla`, sole author). `\affiliation{...}`
    still reads "Author affiliation to be completed" — left blank by design.
@@ -276,6 +284,12 @@ without clipping and the data plots are unchanged.
    refers to "the accompanying GitHub repository" but I did not hard-code the
    `github.com/MidnightNotHere/...` URL into the prose, since the public-facing
    URL and its citation form are the author's call. Add before submission.
+
+> **Correction note, 2026-10-25 (the list above is unchanged).** Item 2 no longer holds: the Data availability subsection
+> (§II.H) now names the repository `majorana-nanowire-em-feedback` and gives its URL,
+> `https://github.com/MidnightNotHere/majorana-nanowire-em-feedback` (no DOI). The remarks about this placeholder near the
+> top of this log (§II.H paragraph) and in the checklist at the end are superseded in the same way.
+
 
 **A second, brief expansion was made after review: the reactive-impedance
 material was split out of the combined "Robustness" subsection into its own
@@ -377,6 +391,23 @@ those JSON files — flagged here per the task instruction.
 | Fig. 6 (multi-subband proxy) | `results/multisubband/r9_multisubband_summary.png` | `bdg_r9_multisubband_sweep.py` |
 
 Each was opened and visually inspected before being described in prose.
+
+> **Correction note, 2026-10-25 (branch `cleanup/restructure`; the table and the text above it are unchanged).** The
+> "Paper fig" numbers in this table are the order in which the image files were made (`fig1_...` to `fig6_...`), not the
+> figure numbers in the typeset paper: file 1 is typeset Fig. 7, file 2 is Fig. 3, file 3 is Fig. 4, file 4 is Fig. 5,
+> file 5 is Fig. 6 and file 6 is Fig. 8 (typeset Figs. 1 and 2 are diagrams, and Fig. 9 is
+> `fig7_multisubband_M1to6_extension.png`, added later). Rows 3 and 6 name a generating script that does not write the
+> image. `bdg_r5_physically_meaningful_shift.py` writes `r5_physical_shift_results.json` and no image, and
+> `paper/figures/fig3_null_validation.png` is a single-column redraw of that data, not a copy of
+> `r5_figure11_headline_validation.png`. `bdg_r9_multisubband_sweep.py` writes `r9_multisubband_sweep_data.json` and no
+> image, and `paper/figures/fig6_multisubband_summary.png` is a single-column redraw of that data, not a copy of
+> `r9_multisubband_summary.png`; so the sentence in the "No figure exists for the §14 M=2 result" paragraph above that calls
+> `r9_multisubband_summary.png` "used as the paper's Fig. 6" is inexact too. Row 4's image is not `r9_figure1_bounded_pole.png` either (see the note
+> after the Fig. 3 paragraph). Only rows 1, 2 and 5 are plain copies: those three paper images are byte-identical to the
+> results images named. The redraws are now `scripts/redraw_paper_fig3.py`, `scripts/redraw_paper_fig4.py` and
+> `scripts/redraw_paper_fig6.py`, and each reproduces its committed image byte for byte from the saved JSON.
+> [`../REPRODUCING.md`](../REPRODUCING.md) gives the full provenance table.
+
 
 ---
 
