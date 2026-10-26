@@ -1,4 +1,3 @@
-'PYEOF'
 """
 Symmetry-Aware BdG Eigensolver
 Phase: R1 (Baseline eigensolver) + R2 (Pfaffian indicator)
