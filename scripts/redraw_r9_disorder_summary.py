@@ -1,8 +1,8 @@
 """
 Redraw results/disorder/r9_disorder_summary.png from the saved result file, without re-running the disorder ensembles.
 
-The figure is drawn by make_figures() in src/bdg_r9_disorder.py, which the full run (bdg_r9_disorder.py --full, about
-two hours) calls after the ensembles have finished. This script calls the same function on the saved data, so the
+The figure is drawn by make_figures() in src/bdg_r9_disorder.py, which the full run (bdg_r9_disorder.py --full, 4,627 s)
+calls after the ensembles have finished. This script calls the same function on the saved data, so the
 plotted values are read, not recomputed:
 
   results/disorder/r9_disorder_data.json
