@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R9 (Track 4): multi-subband loop-gain sweep — Tasks 1-3
+R9 (Track 4): multi-subband loop-gain sweep — Tasks 1-3
 ====================================================================
 Runs the two protocols locked, blind to s, in `bdg_r9_multisubband.py`'s
 pre-registration commit (`r9_multisubband_methods.md` documents the full
@@ -59,7 +59,7 @@ def _pin_blas_reset() -> None:
 
 N_WORKERS: int | None = None
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R9 data folder")
+                           "..", "results", "multisubband")
 
 
 def _out(name: str) -> str:

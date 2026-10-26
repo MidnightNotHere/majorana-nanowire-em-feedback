@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R8 (Track A): Static feedback-renormalized reactive impedance Z_r
+R8 (Track A): Static feedback-renormalized reactive impedance Z_r
 =============================================================================
 A SECOND observable, computed alongside the bulk gap, at every point of the
 R7 (B, mu, L) sweep: the reactive (inductive) impedance of the wire's
@@ -108,7 +108,7 @@ F_PROBE = 1.0e9                     # Hz
 OMEGA_PROBE = 2.0 * np.pi * F_PROBE  # rad/s
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R8 data folder")
+                           "..", "results", "reactive_impedance")
 
 
 def _out(name: str) -> str:
@@ -487,7 +487,7 @@ def make_figures(data: dict) -> list:
     axB.plot(gg[ok], ge[ok], "o-", color="#2ca02c", ms=4,
              label=r"$1/(1-s)$  (reactance enh.)")
     axB.axvspan(gs["g_crit_lo"], 1.2e5, color="orange", alpha=0.18,
-                label=r"R5 $g_{\rm crit}$ band")
+                label=r"$g_{\rm crit}$ band (self-consistent ring)")
     axB.axvline(G_R7, color="k", ls=":", lw=1.2, label=f"production g={G_R7:.1e}")
     axB.axhline(1.0, color="0.7", lw=0.8)
     axB.set_xscale("log")
@@ -498,7 +498,7 @@ def make_figures(data: dict) -> list:
                   "clean gap is g-INDEPENDENT — no pole" % (gs["mu"], gs["N"]))
     axB.legend(fontsize=8, loc="upper left")
 
-    fig.suptitle("R8 Track A — reactive impedance $Z_r$ vs bulk gap $\\Delta_{\\rm bulk}$",
+    fig.suptitle("Reactive impedance $Z_r$ vs bulk gap $\\Delta_{\\rm bulk}$",
                  fontweight="bold")
     fig.text(0.5, 0.005, _PRELIM, ha="center", fontsize=8, color="#b22222",
              style="italic", wrap=True)
@@ -542,7 +542,7 @@ def make_figures(data: dict) -> list:
                   "(clean points; dead-zone points have Z_r undefined)")
     ax2.legend(fontsize=8)
 
-    fig2.suptitle("R8 Track A — finite-size discipline for $Z_r$",
+    fig2.suptitle("Finite-size discipline for $Z_r$",
                   fontweight="bold")
     fig2.text(0.5, 0.005, _PRELIM, ha="center", fontsize=8, color="#b22222",
               style="italic")

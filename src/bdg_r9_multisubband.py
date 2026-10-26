@@ -1,11 +1,11 @@
 """
-ISEF 2027 — R9 (Track 4): multi-subband loop-gain probe
+R9 (Track 4): multi-subband loop-gain probe
 =======================================================
 Does the R1–R9 EM-feedback *null* — "inductive self-feedback does not move the
 bulk topological boundary" — survive when the wire carries more than one
 transverse channel? Every prior track held the channel count at exactly one
 (R6/R8's single 4N Lutchyn–Oreg block). The scoping report
-(`src/r9_multisubband_scoping.md`) established that the honest, tractable version
+(`docs/methods/r9_multisubband_scoping.md`) established that the honest, tractable version
 of this question is NOT the full self-consistent B_c sweep (34.7–160.6+ h per
 configuration — out of reach on this machine) but the *loop-gain slope* s, R5's
 bifurcation-map derivative, which needs ~30 eigh per point rather than ~2000.
@@ -91,7 +91,7 @@ with contextlib.redirect_stdout(io.StringIO()):
     from bdg_r7_inductance_sweep import G_R7, A0                     # noqa: E402
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R9 data folder")
+                           "..", "results", "multisubband")
 
 
 def _out(name: str) -> str:
@@ -675,4 +675,4 @@ if __name__ == "__main__":
     print(f"  closed/measured mean = {vh['closed_over_measured_mean']:.3f} "
           f"(conservative-low={vh['closed_form_is_conservative_low']})")
     print(f"\nALL GATES PASS: {res['all_gates_pass']}")
-    print("Wrote: ISEF R9 data folder/r9_multisubband_preregistration.json")
+    print("Wrote: results/multisubband/r9_multisubband_preregistration.json")

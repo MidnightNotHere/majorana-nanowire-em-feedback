@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R9 (Track 2): finite temperature in the BdG / Pfaffian / Kubo stack
+R9 (Track 2): finite temperature in the BdG / Pfaffian / Kubo stack
 ===============================================================================
 Every prior phase (R1-R8, and R9 Track 1) used ZERO-temperature BdG ground
 states (sharp Fermi sea, occupation = theta(-E)) and a T=0 Kubo formula. Real
@@ -97,7 +97,7 @@ T_BASE_CHANG_MK = 20.0         # Chang et al. 2015 dilution-fridge base temp (mK
 G_CRIT_LO = getattr(r8a, "G_CRIT_LO", 1.1e5)   # R5 g_crit band (for pole tests)
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R9 data folder")
+                           "..", "results", "finite_temperature")
 
 
 def _out(name: str) -> str:
@@ -894,14 +894,14 @@ def make_figures(data: dict) -> list:
     axs[0].axvline(theta_of_T(0.020), color="tab:red", ls="--", lw=1,
                    label="20 mK (operating)")
     axs[0].set_xlabel(r"$\theta = k_B T/\Delta$"); axs[0].set_ylabel(r"$\Delta B_c/B_c$ (%)")
-    axs[0].set_title("Task 4.1: bulk boundary shift vs T"); axs[0].legend(fontsize=8)
+    axs[0].set_title("Bulk boundary shift vs T"); axs[0].legend(fontsize=8)
 
     # panel 2: pole enhancement vs g at several theta
     for k, s in data["pole"]["series"].items():
         gs = s["gs"]; enh = [r["enh"] for r in s["res"]]
         axs[1].plot(gs, enh, "o-", ms=3, label=fr"$\theta$={k}")
     axs[1].set_xlabel("g (feedback)"); axs[1].set_ylabel(r"$1/(1-s)$")
-    axs[1].set_title("Task 4.2: g_crit pole vs T"); axs[1].legend(fontsize=8)
+    axs[1].set_title("g_crit pole vs T"); axs[1].legend(fontsize=8)
 
     # panel 3: dissipation |Re Z(w)| on log scale so the sub-gap (w<1) thermal
     # absorption — 4 orders below the interband peaks — is visible.
@@ -911,7 +911,7 @@ def make_figures(data: dict) -> list:
     axs[2].axvline(2.0, color="gray", ls=":", lw=1, label=r"pair-breaking $2\Delta$")
     axs[2].axvspan(0, 1.0, color="gray", alpha=0.08)
     axs[2].set_xlabel(r"$\hbar\omega/\Delta$"); axs[2].set_ylabel(r"|Re $Z$| ($\Omega$)")
-    axs[2].set_title("Task 4.3: dissipation vs T (shaded = sub-gap)")
+    axs[2].set_title("Dissipation vs T (shaded = sub-gap)")
     axs[2].legend(fontsize=8)
 
     fig.tight_layout()

@@ -1,0 +1,6 @@
+# Normalise line endings in text files; never touch binary data.
+* text=auto
+*.png binary
+*.npy binary
+*.docx binary
+*.pdf binary

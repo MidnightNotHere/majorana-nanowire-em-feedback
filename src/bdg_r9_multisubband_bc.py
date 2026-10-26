@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R9 (Track 4): the FULL self-consistent boundary calculation
+R9 (Track 4): the FULL self-consistent boundary calculation
 at M=2, not just the cheap loop-gain-slope proxy.
 
 R9 Track 4's headline result (r9_multisubband_methods.md Sec 8-9) was
@@ -53,7 +53,7 @@ with contextlib.redirect_stdout(io.StringIO()):
 
 _OUTPUT_DIR = __import__("os").path.join(
     __import__("os").path.dirname(__import__("os").path.abspath(__file__)),
-    "..", "ISEF R9 data folder")
+    "..", "results", "multisubband")
 
 
 def _out(name: str) -> str:

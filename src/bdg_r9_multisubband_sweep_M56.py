@@ -1,5 +1,5 @@
 """
-ISEF 2027 -- R9 (Track 4 extension): multi-subband loop-gain probe at M=5,6
+R9 (Track 4 extension): multi-subband loop-gain probe at M=5,6
 ============================================================================
 Extends the pre-registered protocol of `bdg_r9_multisubband.py` /
 `bdg_r9_multisubband_sweep.py` (M_MAX=4, "bounded-tractable ceiling, scoping
@@ -52,7 +52,7 @@ with contextlib.redirect_stdout(io.StringIO()):
     from bdg_parallel import parallel_map, default_workers              # noqa: E402
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R9 data folder")
+                           "..", "results", "multisubband")
 
 
 def _out(name: str) -> str:

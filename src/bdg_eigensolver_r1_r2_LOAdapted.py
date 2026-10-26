@@ -1,14 +1,11 @@
 'PYEOF'
 """
-ISEF 2027 — Symmetry-Aware BdG Eigensolver
+Symmetry-Aware BdG Eigensolver
 Phase: R1 (Baseline eigensolver) + R2 (Pfaffian indicator)
-Status: IN PROGRESS
 
 Project: Inductive Circuit Feedback Shifts the Topological Phase Boundary
          in InAs/Al Majorana Nanowires: A Self-Consistent Symmetry-Preserving
          Eigensolver Approach
-
-MIT PhD Advisor: [Name] (advisory role only — acknowledged, not co-author)
 
 Validated results (R1/R2 Kitaev baseline):
   - PH symmetry error: 0.00e+00 across all parameter values
@@ -62,7 +59,7 @@ Changes from previous version:
   [18] ADDED _validate_lo_ph_symmetry() — module-import assertion for LO.
 
 CORRECTION (2026-07-11, found during R6 reconnaissance; full writeup in
-src/r2_o1_pfaffian_trim_lo_correction.md):
+docs/methods/r2_o1_pfaffian_trim_lo_correction.md):
   pfaffian_trim_lo() originally built the 4×4 TRIM matrices its docstring
   described, then DISCARDED them and returned the closed-form
   nu = sign(mu^2 + Delta^2 - B_zeeman^2) directly — it never called
@@ -116,10 +113,10 @@ matplotlib.rcParams.update({
 })
 
 # ── All figure/data outputs are routed into this program's data folder ──
-# (repo-root/R1_R2_data_files), resolved relative to THIS file so it works
+# (repo-root/results/baseline_bdg_pfaffian), resolved relative to THIS file so it works
 # no matter what the current working directory is when the program is run.
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "R1_R2_data_files")
+                           "..", "results", "baseline_bdg_pfaffian")
 
 
 def _out(name: str) -> str:
@@ -417,7 +414,7 @@ def pfaffian_trim_lo(mu: float,
     numerical Pfaffian at the two TRIM points k=0 and k=π.
 
     [CORRECTED 2026-07-11 — see the module-header correction note and
-    src/r2_o1_pfaffian_trim_lo_correction.md. A previous version of this
+    docs/methods/r2_o1_pfaffian_trim_lo_correction.md. A previous version of this
     function built these same TRIM matrices but discarded them and
     returned the closed-form nu = sign(mu^2+delta^2-B_zeeman^2) directly,
     without ever calling pf.pfaffian() — this version genuinely does.]
@@ -560,7 +557,7 @@ def _validate_lo_phase_boundary(n_points: int = 20) -> None:
     trivially recovered the expected sign, independent of whether the LO
     Hamiltonian's actual topology matched. It now exercises a real
     TRIM-point Pfaffian and genuinely confirms the boundary in this regime
-    — see src/r2_o1_pfaffian_trim_lo_correction.md.
+    — see docs/methods/r2_o1_pfaffian_trim_lo_correction.md.
     """
 
     rng = np.random.default_rng(7)
@@ -1173,7 +1170,7 @@ if __name__ == '__main__':
           f"B_z = sqrt(μ² + Δ²)  ✓")
     print(f"  [O1 LO]   (prior claim of this line was tautological — closed-form")
     print(f"             checked against itself; now a real TRIM Pfaffian —")
-    print(f"             see src/r2_o1_pfaffian_trim_lo_correction.md)")
+    print(f"             see docs/methods/r2_o1_pfaffian_trim_lo_correction.md)")
     print(f"  [O1 LO]   Published params cited:   Mourik 2012, Das Sarma 2010  ✓")
     print(f"  [O1 LO]   Figures generated:        figure6_lo_phase_diagram.png,")
     print(f"                                       figure7_lo_finite_size.png")

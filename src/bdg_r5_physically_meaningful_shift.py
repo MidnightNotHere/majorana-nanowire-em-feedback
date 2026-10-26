@@ -59,7 +59,7 @@ from bdg_r5_selfconsistent_ring import (            # noqa: E402
 from bdg_r4_em_coupling import ring_boundary_Bc_pfaffian   # noqa: E402
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R5 data folder")
+                           "..", "results", "self_consistency_bifurcation")
 
 
 def _out(name: str) -> str:

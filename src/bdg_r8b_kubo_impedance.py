@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R8-B: finite-ω Kubo current–current correlator → AC impedance Z(ω)
+R8-B: finite-ω Kubo current–current correlator → AC impedance Z(ω)
 ==============================================================================
 Phase 8B (its own phase, R8-B). New PHYSICS, not new plumbing: the wire's
 finite-frequency current–current response χ_JJ(ω) from a Kubo (Lehmann)
@@ -70,7 +70,7 @@ with contextlib.redirect_stdout(io.StringIO()):
 N_WORKERS: int | None = None
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R8 data folder")
+                           "..", "results", "reactive_impedance")
 
 
 def _out(name: str) -> str:
@@ -402,14 +402,14 @@ def make_figure_8b(data: dict) -> str:
     axB.plot(w, np.abs(sp["Z_re"]), color="#d62728", label="|Re Z| = resistance (NEW)")
     axB.axvline(rep["w_rf"], color="k", ls=":", lw=1, label="1 GHz probe")
     axB.axhline(2*np.pi*1e9*rep["L_eff_dc_pH"]*1e-12, color="#1f77b4", ls="--", lw=0.8,
-                label="Track A reactance (DC L_eff)")
+                label="DC reactance (DC L_eff)")
     axB.set_xscale("log"); axB.set_yscale("log")
     axB.set_xlabel("ℏω/Δ"); axB.set_ylabel("Z (Ω)")
     axB.set_title("(B)  Complex impedance Z(ω)=iωL_eff(ω)\n"
-                  "DC→Track A (reactive); resistance only at interband ω")
+                  "DC→static reactance (reactive); resistance only at interband ω")
     axB.legend(fontsize=8)
 
-    fig.suptitle("R8-B — finite-ω Kubo impedance (rep: N=%d, μ=%.1f, a=%.1f nm)"
+    fig.suptitle("Finite-ω Kubo impedance (rep: N=%d, μ=%.1f, a=%.1f nm)"
                  % (rep["N"], rep["mu"], rep["a_nm"]), fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.95))
     p = _out("r8b_figure_kubo_impedance.png")
@@ -721,7 +721,7 @@ def make_figure_followups(fu: dict) -> str:
     axA.plot(B, g2, "s-", color="#1f77b4", label="2·gap (topological edge)")
     axA.axvline(t2["ana"], color="0.5", ls="--", lw=1, label="B_c")
     axA.set_xlabel("Zeeman field B (units of Δ)"); axA.set_ylabel("ℏω/Δ")
-    axA.set_title("(A) Task 2: dominant dissipation does NOT track the gap\n"
+    axA.set_title("(A) Dominant dissipation does NOT track the gap\n"
                   "peak drifts smoothly (bulk edge); topo edge weight <0.1%")
     axA.legend(fontsize=8)
 
@@ -733,10 +733,10 @@ def make_figure_followups(fu: dict) -> str:
     axB.set_xscale("log"); axB.set_yscale("log")
     axB.set_xlabel("N (sites)")
     axB.set_ylabel("Im χ roughness @ fixed η=0.05")
-    axB.set_title("(B) Task 3: dissipative spectrum smooths as N grows\n"
+    axB.set_title("(B) Dissipative spectrum smooths as N grows\n"
                   "roughness ∝ N^%.2f → finite-size, not intrinsic" % t3["roughness_exponent"])
 
-    fig.suptitle("R8-B follow-ups — onset-vs-gap (T2) and η finite-size test (T3)",
+    fig.suptitle("Follow-ups — onset-vs-gap and η finite-size test",
                  fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.95))
     p = _out("r8b_figure_followups.png")

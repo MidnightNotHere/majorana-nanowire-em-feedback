@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R8-C: fully self-consistent spin-orbit current in the self-field
+R8-C: fully self-consistent spin-orbit current in the self-field
 ============================================================================
 Track A / R8-B source the inductive self-field from the KINETIC bond current
 only (`ring_current_density`), which is what R4/R5's self-consistency map uses.
@@ -66,7 +66,7 @@ with contextlib.redirect_stdout(io.StringIO()):
 N_WORKERS: int | None = None
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R8 data folder")
+                           "..", "results", "reactive_impedance")
 
 
 def _out(name: str) -> str:
@@ -238,9 +238,9 @@ def make_figure(grid: list, nsc: dict) -> str:
     la.sort(key=lambda r: r["N"])
     L = [r["L_um"] for r in la]
     axA.plot(L, [r["L_eff_A_pH"] for r in la], "o-", color="#1f77b4",
-             label="Track A  L_eff (kinetic)")
+             label="Kinetic-only  L_eff")
     axA.plot(L, [r["L_eff_C_pH"] for r in la], "s-", color="#d62728",
-             label="Track C  L_eff (kinetic+SO)")
+             label="Kinetic+SO  L_eff")
     axA.set_xlabel("wire length L = N·a (μm)"); axA.set_ylabel("L_eff (pH)")
     axA.set_title("(A)  Self-consistent SO lowers L_eff by a few %\n"
                   "(L-axis, a=10 nm)")
@@ -252,11 +252,11 @@ def make_figure(grid: list, nsc: dict) -> str:
     axB.axhline(0, color="0.7", lw=0.8)
     axB.set_xscale("log")
     axB.set_xlabel("N (fixed L = %.1f μm, a = L/N)" % nsc["fixedL_um"])
-    axB.set_ylabel("Track C − A  L_eff shift (%)")
+    axB.set_ylabel("(Kinetic+SO) − kinetic-only  L_eff shift (%)")
     axB.set_title("(B)  SO reactance shift vs mesh refinement\n"
                   "does the SO correction survive the continuum limit?")
 
-    fig.suptitle("R8-C — self-consistent spin-orbit current in the self-field",
+    fig.suptitle("Self-consistent spin-orbit current in the self-field",
                  fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.95))
     p = _out("r8c_figure_so_selfconsistent.png")

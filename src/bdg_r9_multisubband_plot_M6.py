@@ -1,8 +1,8 @@
 """
-ISEF 2027 -- R9 (Track 4 extension): figure for the M=1..6 loop-gain probe.
-============================================================================
+R9 (Track 4 extension): figure for the M=1..6 loop-gain probe.
+=============================================================
 Combines the original M=1..4 pre-registered sweep
-(`ISEF R9 data folder/r9_multisubband_sweep_data.json`) with the M=5,6
+(`results/multisubband/r9_multisubband_sweep_data.json`) with the M=5,6
 extension (`r9_multisubband_sweep_M5_M6.json`, `r9_multisubband_protocol_a_M6.json`)
 into a single 3-panel figure, in the same layout as the original
 fig6_multisubband_summary.png (A: truncation convergence, B: s(mu;M) curves,
@@ -11,19 +11,21 @@ the original fig6 is left untouched, so the M<=4 result and its provenance
 remain independently reproducible.
 """
 import json
+import os
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-BASE = r"C:\Users\drohi\OneDrive\Documents\GitHub\ISEF-2027-bdg-eigensolve"
-R9 = BASE + r"\ISEF R9 data folder"
+# repo root, resolved relative to THIS file so the script runs from any checkout
+BASE = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+R9 = os.path.join(BASE, "results", "multisubband")
 
-orig = json.load(open(R9 + r"\r9_multisubband_sweep_data.json"))
-ext = json.load(open(R9 + r"\r9_multisubband_sweep_M5_M6.json"))
-pa6 = json.load(open(R9 + r"\r9_multisubband_protocol_a_M6.json"))
+orig = json.load(open(os.path.join(R9, "r9_multisubband_sweep_data.json")))
+ext = json.load(open(os.path.join(R9, "r9_multisubband_sweep_M5_M6.json")))
+pa6 = json.load(open(os.path.join(R9, "r9_multisubband_protocol_a_M6.json")))
 
-fig, axes = plt.subplots(1, 3, figsize=(13, 3.6))
+fig, axes = plt.subplots(3, 1, figsize=(4.4, 10.8))
 
 # --- Panel A: truncation convergence (fixed occupancy sanity check) ---
 ax = axes[0]
@@ -93,13 +95,14 @@ ax2.tick_params(axis="y", labelcolor="tab:gray")
 ax2.set_ylim(0, 60)
 
 plt.tight_layout()
-outpath = R9 + r"\fig7_multisubband_M1to6_extension.png"
+outpath = os.path.join(R9, "fig7_multisubband_M1to6_extension.png")
 plt.savefig(outpath, dpi=200)
 print("wrote", outpath)
 
 # also copy into the paper's figures/ directory for \includegraphics
 import shutil
-shutil.copy(outpath, BASE + r"\paper\figures\fig7_multisubband_M1to6_extension.png")
+shutil.copy(outpath, os.path.join(BASE, "paper", "figures",
+                                  "fig7_multisubband_M1to6_extension.png"))
 print("copied into paper/figures/")
 
 # print the exact numbers used, for the caption/text

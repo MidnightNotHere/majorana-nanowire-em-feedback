@@ -1,10 +1,30 @@
+# Python
 __pycache__/
 *.pyc
 .venv/
 venv/
 site-packages/
+.ipynb_checkpoints/
 test.py
+
+# LaTeX build artefacts. The paper is compiled locally (cd paper && latexmk -pdf main.tex).
+# Tracked on purpose: paper/main.tex, paper/references.bib, paper/main.bbl, paper/main.pdf
+paper/*.aux
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz
+paper/*.toc
+paper/*.lof
+paper/*.lot
+paper/*Notes.bib
+
+# Editor / OS / tool state
+.claude/
 .DS_Store
 Thumbs.db
-.ipynb_checkpoints/
+
+# Stray local directory (not part of the project)
 dmrsef2027.py/

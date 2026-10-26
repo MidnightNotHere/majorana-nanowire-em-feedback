@@ -1,5 +1,5 @@
 """
-ISEF 2027 -- Symmetry-Aware BdG Eigensolver
+Symmetry-Aware BdG Eigensolver
 Phase: R6 -- Full Lutchyn-Oreg phase diagram, realistic InAs/Al parameters
 
 Project: Inductive Circuit Feedback Shifts the Topological Phase Boundary
@@ -19,7 +19,7 @@ R6 Phase 1 reconnaissance found:
     directly onto build_bdg_lo with no new geometry required.
   - pfaffian_trim_lo() (R1/R2) was found to discard its own TRIM matrices
     and return a hardcoded closed form; fixed in a standalone commit before
-    this module was written (see src/r2_o1_pfaffian_trim_lo_correction.md).
+    this module was written (see docs/methods/r2_o1_pfaffian_trim_lo_correction.md).
     This module uses the corrected, genuine version throughout.
   - LO_PARAMS' Delta=0.25 meV traces to Mourik et al. 2012 (InSb, not
     InAs/Al). Corrected here to Delta=0.19 meV, the full-shell value
@@ -29,7 +29,7 @@ R6 Phase 1 reconnaissance found:
     topological transition at these parameters (~0.625 T at mu=0) exceeds
     the verified axial critical field of a comparable thin epitaxial-Al
     shell (~0.075 T, Chang et al. 2015) by ~8x. See Section 1 below and
-    src/r6_lo_phase_diagram_methods.md for the full disclaimer -- every
+    docs/methods/r6_lo_phase_diagram_methods.md for the full disclaimer -- every
     figure in this module that sweeps B_zeeman into that regime is an
     explicitly idealized/theoretical parameter regime, not a claim of
     achievable-in-one-device realism.
@@ -50,7 +50,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "R6_data_files")
+                           "..", "results", "lutchyn_oreg_phase_diagram")
 
 
 def _out(name: str) -> str:
@@ -128,7 +128,7 @@ IDEALIZED_REGIME_CAPTION = (
     "exceeds the verified axial critical field (~0.075 T, Chang et al. 2015) "
     "of a comparable thin epitaxial-Al shell by "
     f"~{R6_PARAMS['idealized_regime_ratio']:.1f}x at mu=0. See "
-    "src/r6_lo_phase_diagram_methods.md."
+    "docs/methods/r6_lo_phase_diagram_methods.md."
 )
 
 # Short form for placing the Delta(B) caveat directly on the physics panel of
@@ -362,7 +362,7 @@ def figure_orv_dispersion(mu: float = 0.0, save_path: str = 'r6_figure1_orv_disp
                  ha='right', va='top', fontsize=7, style='italic',
                  bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.85))
     plt.suptitle(
-        'R6 Figure 1 -- Lutchyn-Oreg BdG spectrum vs Zeeman field '
+        'Lutchyn-Oreg BdG spectrum vs Zeeman field '
         '(mu=0, realistic InAs/Al parameters)\n'
         f'InAs m*={R6_PARAMS["m_eff"]}me, alpha_SO={R6_PARAMS["alpha_SO"]} meV*nm, '
         f'Delta={delta} meV (Chang et al. 2015)  |  '
@@ -426,7 +426,7 @@ def figure_gap_vs_Bz(df: pd.DataFrame, save_path: str = 'r6_figure2_gap_vs_Bz.pn
     ax2.legend()
     ax2.grid(True, alpha=0.3)
 
-    plt.suptitle('R6 Figure 2 -- Gap closing and genuine invariant flip coincide',
+    plt.suptitle('Gap closing and genuine invariant flip coincide',
                  fontsize=12, fontweight='bold')
     fig.text(0.5, -0.01, IDEALIZED_REGIME_CAPTION, ha='center', fontsize=8,
              wrap=True, style='italic')
@@ -475,9 +475,9 @@ def figure_phase_diagram_2d_r6(mu_vals, Bz_vals, nu_map, gap_map,
     mask = (Bz_b >= Bz_vals[0]) & (Bz_b <= Bz_vals[-1])
     ax.plot(mu_b[mask], Bz_b[mask], 'w--', linewidth=2.5,
            label='B=sqrt(mu^2+Delta^2) (analytic; genuinely re-derived, not assumed -- '
-                 'see r2_o1_pfaffian_trim_lo_correction.md)')
+                 'see docs/methods/r2_o1_pfaffian_trim_lo_correction.md)')
     ax.set_xlabel('mu (meV)'); ax.set_ylabel('B_zeeman (meV)')
-    ax.set_title('R6: genuine TRIM Pfaffian invariant (InAs/Al parameters)')
+    ax.set_title('Genuine TRIM Pfaffian invariant (InAs/Al parameters)')
     ax.legend(loc='upper right', fontsize=7)
 
     ax2 = axes[1]
@@ -486,10 +486,10 @@ def figure_phase_diagram_2d_r6(mu_vals, Bz_vals, nu_map, gap_map,
     ax2.plot(mu_b[mask], Bz_b[mask], 'w--', linewidth=2.5)
     plt.colorbar(im2, ax=ax2, label='log10(ring bulk gap / meV)')
     ax2.set_xlabel('mu (meV)'); ax2.set_ylabel('B_zeeman (meV)')
-    ax2.set_title('R6: ring bulk gap (N=60), same parameters')
+    ax2.set_title('Ring bulk gap (N=60), same parameters')
 
     plt.suptitle(
-        'R6 Figure 3 -- Lutchyn-Oreg InAs/Al phase diagram, realistic parameters '
+        'Lutchyn-Oreg InAs/Al phase diagram, realistic parameters '
         f'(m*={R6_PARAMS["m_eff"]}me, Delta={delta} meV, Chang et al. 2015)',
         fontsize=12, fontweight='bold'
     )

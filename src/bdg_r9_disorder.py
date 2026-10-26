@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R9 (Track 3): on-site disorder in the BdG / Pfaffian / self-
+R9 (Track 3): on-site disorder in the BdG / Pfaffian / self-
 consistent-ring stack
 ===============================================================================
 Every prior phase (R1-R8, R9 Tracks 1-2) used a perfectly translationally-
@@ -116,7 +116,7 @@ with contextlib.redirect_stdout(io.StringIO()):
     )
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R9 data folder")
+                           "..", "results", "disorder")
 
 
 def _out(name: str) -> str:
@@ -1031,7 +1031,7 @@ def make_figures(data: dict) -> list:
     axs[0].scatter(Ws, fr, c=colors, zorder=3)
     axs[0].set_xscale("symlog")
     axs[0].set_xlabel(r"$W$ ($\Delta$)"); axs[0].set_ylabel("fraction topological")
-    axs[0].set_title("Task 4.1: boundary smearing vs W")
+    axs[0].set_title("Boundary smearing vs W")
 
     s = data["task4_2_subgap_states"]["rows"]
     Ws2 = [r["W"] for r in s]
@@ -1040,7 +1040,7 @@ def make_figures(data: dict) -> list:
     axs[1].errorbar(Ws2, nmean, yerr=nstd, fmt="o-", ms=4)
     axs[1].set_xscale("symlog")
     axs[1].set_xlabel(r"$W$ ($\Delta$)"); axs[1].set_ylabel(r"$\langle$ n sub-gap states $\rangle$")
-    axs[1].set_title("Task 4.2: spurious sub-gap states vs W")
+    axs[1].set_title("Spurious sub-gap states vs W")
 
     n = data["task4_3_null_result"]["rows"]
     Ws3 = [r["W"] for r in n]
@@ -1049,7 +1049,7 @@ def make_figures(data: dict) -> list:
     axs[2].errorbar(Ws3, sh, yerr=se, fmt="o-", ms=4)
     axs[2].axhline(0, color="k", lw=0.6)
     axs[2].set_xlabel(r"$W$ ($\Delta$)"); axs[2].set_ylabel(r"$\Delta B_c/B_c$ (%)")
-    axs[2].set_title("Task 4.3: inductive-feedback null vs W")
+    axs[2].set_title("Inductive-feedback null vs W")
 
     fig.tight_layout()
     p = _out("r9_disorder_summary.png")

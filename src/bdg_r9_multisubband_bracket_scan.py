@@ -1,5 +1,5 @@
 """
-ISEF 2027 — R9 (Track 4): instrumented bracketing scan across the two
+R9 (Track 4): instrumented bracketing scan across the two
 persistent-detachment onsets found in §11 of r9_multisubband_methods.md.
 
 Section 11's investigation ruled out two specific numerical explanations for
@@ -56,7 +56,7 @@ with contextlib.redirect_stdout(io.StringIO()):
     )
 
 _OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "ISEF R9 data folder")
+                           "..", "results", "multisubband")
 
 
 def _out(name: str) -> str:
