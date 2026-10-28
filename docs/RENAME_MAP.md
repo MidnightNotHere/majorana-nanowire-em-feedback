@@ -28,7 +28,7 @@ The research was carried out in numbered stages (R1-R9). The directory names bel
 | 2 | `ISEF R4 data folder/r4_figure1_peierls_validation.png` | `results/em_feedback_detector_comparison/r4_figure1_peierls_validation.png` | moved; figure redrawn: in-figure text only, plotted data identical |
 | 3 | `ISEF R4 data folder/r4_figure2_biot_savart.png` | `results/em_feedback_detector_comparison/r4_figure2_biot_savart.png` | moved; figure redrawn: in-figure text only, plotted data identical |
 | 4 | `ISEF R4 data folder/r4_figure3_current_density.png` | `results/em_feedback_detector_comparison/r4_figure3_current_density.png` | moved; figure redrawn: in-figure text only, plotted data identical |
-| 5 | `ISEF R4 data folder/r4_figure4_phase_shift_preview.png` | `results/em_feedback_detector_comparison/r4_figure4_phase_shift_preview.png` | moved, byte-identical |
+| 5 | `ISEF R4 data folder/r4_figure4_phase_shift_preview.png` | `results/em_feedback_detector_comparison/r4_figure4_phase_shift_preview.png` | moved; figure redrawn: in-figure text only, plotted data identical |
 | 6 | `ISEF R4 data folder/r4_figure5_flux_density.png` | `results/em_feedback_detector_comparison/r4_figure5_flux_density.png` | moved; figure redrawn: in-figure text only, plotted data identical |
 | 7 | `ISEF R4 data folder/r4_figure6_pfaffian_vs_threshold.png` | `results/em_feedback_detector_comparison/r4_figure6_pfaffian_vs_threshold.png` | moved; figure redrawn: in-figure text only, plotted data identical |
 | 8 | `ISEF R5 data folder/r5_anderson_results.json` | `results/self_consistency_bifurcation/r5_anderson_results.json` | moved, byte-identical |
