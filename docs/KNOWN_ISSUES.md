@@ -56,7 +56,8 @@ record, and the methods notes describe how they were made.
 - **Figures:** `results/disorder/r9_disorder_summary.SUPERSEDED_task4_3.png`, the figure of the superseded first-round
   disorder result. It was drawn from `r9_disorder_data.SUPERSEDED_task4_3.json` by an earlier version of `make_figures()`
   in `src/bdg_r9_disorder.py`; the current function draws a different image from that file (19,023 pixels differ), so the
-  image is kept as the record and not redrawn. It is not in the paper.
+  image is kept as the record and not redrawn. It is not in the paper. Its panel titles read "Task 4.1", "Task 4.2" and
+  "Task 4.3" (the labels of the superseded first round); they are part of the record and were left as they are.
 - **R4 saves no data file**, only figures. Recomputing figure 6 (`validate_pfaffian_boundary()`) took 676 s on
   2026-10-25; figure 4 had not finished after about 45 minutes (section 3); figure 5 was not timed.
 
@@ -98,6 +99,14 @@ text or legend box. Details that remain:
   about 7 % narrower because the legend now cites `docs/methods/...` instead of the old `src/...` path.
 - **Antialiasing.** Rerunning the original code for `r6_figure2_gap_vs_Bz.png` gives 536 pixels that differ from the
   committed image by at most 2/255 in one channel, which is antialiasing noise.
+- **Two stage labels removed on 2026-10-27.** The last scan of all text drawn inside the figures (every visible text
+  object of every figure that can be redrawn from the committed result files or by the `scripts/` files) found the words
+  "TASK-2" at the start of the verdict box of `r5_figure12_anderson_above_gcrit.png` and the stage code "R8-B" in the
+  footnote of `r8_figure1_Zr_vs_gap.png` and `r8_figure2_nscaling_grid.png`. They were removed from the two strings in
+  `src/bdg_r5_anderson_mixing.py` and `src/bdg_r8_reactive_impedance.py`, and the three images were redrawn from the
+  committed result files. Plotted data, axis limits and a render without text are identical to the previous images, the
+  canvas size is the same, and every changed pixel lies inside the box of a changed text. `R8_TRACKA_SUMMARY.md` quotes
+  the same footnote with the stage code; it is a saved result and was not edited.
 - **Figures redrawn by reconstructed scripts.** The plotting code of `r5_figure10_shift_vs_g.png`,
   `r5_figure11_headline_validation.png`, `results/multisubband/r9_multisubband_summary.png` and of the paper's
   `fig3_null_validation.png` and `fig6_multisubband_summary.png` is in neither the repository nor its history.
