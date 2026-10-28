@@ -1069,7 +1069,7 @@ def figure12_anderson_above_gcrit(
     fp_names = [s for s in seeds if seeds[s]["fixed_point"]]
     other_names = [s for s in seeds if not seeds[s]["fixed_point"]]
     txt = (
-        f"TASK-2 VERDICT: does Anderson converge above $g_{{crit}}$?  ->  {verdict}\n\n"
+        f"VERDICT: does Anderson converge above $g_{{crit}}$?  ->  {verdict}\n\n"
         f"At g={hg:.0e} (above g_crit): {n_fp}/{hrow['n_seeds']} seeds "
         f"({', '.join(fp_names)}) reach a\n"
         f"GENUINE fixed point (phi*={hrow['root_bisection']*1e3:.3f} mrad, matching\n"
