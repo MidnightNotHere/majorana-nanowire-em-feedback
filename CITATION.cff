@@ -1,9 +1,29 @@
 cff-version: 1.2.0
-message: "If you use this software or its data, please cite it as below."
+message: "If you use this software or data, please cite it as below."
+type: software
 title: "BdG eigensolver, self-consistency solvers, validation scripts, and data for self-consistent EM feedback in Majorana nanowires"
 authors:
   - family-names: Rohilla
     given-names: Arnav
+    orcid: "https://orcid.org/0009-0001-5513-479X"
+    affiliation: "Independent Researcher, Colorado, USA"
+abstract: >-
+  Source code, validation scripts, raw numerical results and methods notes accompanying the paper "Self-consistent
+  electromagnetic feedback in Majorana nanowires: a validated single-channel null result, and its breakdown beyond one
+  subband". The repository contains a particle-hole-symmetric Bogoliubov-de Gennes (BdG) eigensolver, a real-space
+  Pfaffian Z2 topological detector, a Biot-Savart ring self-field, the self-consistent feedback solvers and their
+  extensions (wire length and inductance, reactive impedance, finite temperature, disorder and multiple transverse
+  subbands), the validation scripts for each of these, the raw numerical results and figures, and methods notes that
+  record each calculation, its validation gates and its corrections, including superseded results, which are kept and
+  marked as such. Developed with the assistance of AI coding tools; all results were verified by the author using the
+  validation gates described in the paper.
+keywords:
+  - Majorana
+  - topological superconductivity
+  - Bogoliubov-de Gennes
+  - self-consistent feedback
+  - Pfaffian invariant
 license: MIT
 repository-code: "https://github.com/MidnightNotHere/majorana-nanowire-em-feedback"
-url: "https://github.com/MidnightNotHere/majorana-nanowire-em-feedback"
+version: 1.0.0
+date-released: 2026-10-27
