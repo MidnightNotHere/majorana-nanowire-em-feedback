@@ -1,8 +1,8 @@
 %apsrev4-2.bst 2019-01-14 (MD) hand-edited version of apsrev4-1.bst
 %Control: key (0)
-%Control: author (72) initials jnrlst
+%Control: author (8) initials jnrlst
 %Control: editor formatted (1) identically to author
-%Control: production of article title (-1) disabled
+%Control: production of article title (0) allowed
 %Control: page (0) single
 %Control: year (1) truncated
 %Control: production of eprint (0) enabled
@@ -53,20 +53,23 @@
 \bibitem [{\citenamefont {Kitaev}(2001)}]{kitaev2001}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~Y.}\ \bibnamefont
-  {Kitaev}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal}
-  {Phys.-Usp.}\ }\textbf {\bibinfo {volume} {44}},\ \bibinfo {pages} {131}
-  (\bibinfo {year} {2001})},\ \Eprint {https://arxiv.org/abs/cond-mat/0010440}
-  {arXiv:cond-mat/0010440} \BibitemShut {NoStop}%
+  {Kitaev}},\ }\bibfield  {title} {\bibinfo {title} {Unpaired {Majorana}
+  fermions in quantum wires},\ }\href@noop {} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys.-Usp.}\ }\textbf {\bibinfo {volume} {44}},\ \bibinfo {pages}
+  {131} (\bibinfo {year} {2001})},\ \Eprint
+  {https://arxiv.org/abs/cond-mat/0010440} {arXiv:cond-mat/0010440}
+  \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Oreg}\ \emph {et~al.}(2010)\citenamefont {Oreg},
   \citenamefont {Refael},\ and\ \citenamefont {von Oppen}}]{oreg2010}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont
   {Oreg}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Refael}},\ and\
-  \bibinfo {author} {\bibfnamefont {F.}~\bibnamefont {von Oppen}},\ }\href@noop
-  {} {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf
-  {\bibinfo {volume} {105}},\ \bibinfo {pages} {177002} (\bibinfo {year}
-  {2010})},\ \Eprint {https://arxiv.org/abs/1003.1145} {arXiv:1003.1145}
-  \BibitemShut {NoStop}%
+  \bibinfo {author} {\bibfnamefont {F.}~\bibnamefont {von Oppen}},\ }\bibfield
+  {title} {\bibinfo {title} {Helical liquids and {Majorana} bound states in
+  quantum wires},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal}
+  {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {105}},\ \bibinfo {pages}
+  {177002} (\bibinfo {year} {2010})},\ \Eprint
+  {https://arxiv.org/abs/1003.1145} {arXiv:1003.1145} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Lutchyn}\ \emph {et~al.}(2010)\citenamefont
   {Lutchyn}, \citenamefont {Sau},\ and\ \citenamefont
   {Das~Sarma}}]{lutchyn2010}%
@@ -74,6 +77,8 @@
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.~M.}\ \bibnamefont
   {Lutchyn}}, \bibinfo {author} {\bibfnamefont {J.~D.}\ \bibnamefont {Sau}},\
   and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Das~Sarma}},\
+  }\bibfield  {title} {\bibinfo {title} {{Majorana} fermions and a topological
+  phase transition in semiconductor-superconductor heterostructures},\
   }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. Lett.}\
   }\textbf {\bibinfo {volume} {105}},\ \bibinfo {pages} {077001} (\bibinfo
   {year} {2010})},\ \Eprint {https://arxiv.org/abs/1002.4033} {arXiv:1002.4033}
@@ -89,10 +94,11 @@
   {Kouwenhoven}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
   {Krogstrup}}, \bibinfo {author} {\bibfnamefont {C.~M.}\ \bibnamefont
   {Marcus}},\ and\ \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Oreg}},\
-  }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Nat. Rev. Mater.}\
-  }\textbf {\bibinfo {volume} {3}},\ \bibinfo {pages} {52} (\bibinfo {year}
-  {2018})},\ \Eprint {https://arxiv.org/abs/1707.04899} {arXiv:1707.04899}
-  \BibitemShut {NoStop}%
+  }\bibfield  {title} {\bibinfo {title} {{Majorana} zero modes in
+  superconductor--semiconductor heterostructures},\ }\href@noop {} {\bibfield
+  {journal} {\bibinfo  {journal} {Nat. Rev. Mater.}\ }\textbf {\bibinfo
+  {volume} {3}},\ \bibinfo {pages} {52} (\bibinfo {year} {2018})},\ \Eprint
+  {https://arxiv.org/abs/1707.04899} {arXiv:1707.04899} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Prada}\ \emph {et~al.}(2020)\citenamefont {Prada},
   \citenamefont {San-Jose}, \citenamefont {de~Moor}, \citenamefont {Geresdi},
   \citenamefont {Lee}, \citenamefont {Klinovaja}, \citenamefont {Loss},
@@ -108,49 +114,60 @@
   {\bibfnamefont {D.}~\bibnamefont {Loss}}, \bibinfo {author} {\bibfnamefont
   {J.}~\bibnamefont {Nyg{\aa}rd}}, \bibinfo {author} {\bibfnamefont
   {R.}~\bibnamefont {Aguado}},\ and\ \bibinfo {author} {\bibfnamefont {L.~P.}\
-  \bibnamefont {Kouwenhoven}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo
-  {journal} {Nat. Rev. Phys.}\ }\textbf {\bibinfo {volume} {2}},\ \bibinfo
-  {pages} {575} (\bibinfo {year} {2020})},\ \Eprint
-  {https://arxiv.org/abs/1911.04512} {arXiv:1911.04512} \BibitemShut {NoStop}%
+  \bibnamefont {Kouwenhoven}},\ }\bibfield  {title} {\bibinfo {title} {From
+  {Andreev} to {Majorana} bound states in hybrid superconductor--semiconductor
+  nanowires},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Nat.
+  Rev. Phys.}\ }\textbf {\bibinfo {volume} {2}},\ \bibinfo {pages} {575}
+  (\bibinfo {year} {2020})},\ \Eprint {https://arxiv.org/abs/1911.04512}
+  {arXiv:1911.04512} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Liu}\ \emph {et~al.}(2018)\citenamefont {Liu},
   \citenamefont {Sau},\ and\ \citenamefont
   {Das~Sarma}}]{liu2018distinguishing}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {C.-X.}\ \bibnamefont
   {Liu}}, \bibinfo {author} {\bibfnamefont {J.~D.}\ \bibnamefont {Sau}},\ and\
-  \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Das~Sarma}},\ }\href@noop
-  {} {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf
-  {\bibinfo {volume} {97}},\ \bibinfo {pages} {214502} (\bibinfo {year}
-  {2018})},\ \Eprint {https://arxiv.org/abs/1803.05423} {arXiv:1803.05423}
-  \BibitemShut {NoStop}%
-\bibitem [{\citenamefont {{Microsoft Quantum}}\ \emph
-  {et~al.}(2025)\citenamefont {{Microsoft Quantum}}, \citenamefont {Aghaee},
-  \citenamefont {{Alcaraz Ramirez}}, \citenamefont {Alam} \emph
+  \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Das~Sarma}},\ }\bibfield
+  {title} {\bibinfo {title} {Distinguishing topological {Majorana} bound states
+  from trivial {Andreev} bound states: Proposed tests through differential
+  tunneling conductance spectroscopy},\ }\href@noop {} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {97}},\
+  \bibinfo {pages} {214502} (\bibinfo {year} {2018})},\ \Eprint
+  {https://arxiv.org/abs/1803.05423} {arXiv:1803.05423} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {{Microsoft Azure Quantum}}\ \emph
+  {et~al.}(2025)\citenamefont {{Microsoft Azure Quantum}}, \citenamefont
+  {Aghaee}, \citenamefont {{Alcaraz Ramirez}}, \citenamefont {Alam} \emph
   {et~al.}}]{aghaee2025}%
   \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibnamefont {{Microsoft Quantum}}},
-  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Aghaee}}, \bibinfo
-  {author} {\bibfnamefont {A.}~\bibnamefont {{Alcaraz Ramirez}}}, \bibinfo
-  {author} {\bibfnamefont {Z.}~\bibnamefont {Alam}}, \emph {et~al.},\
-  }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Nature}\ }\textbf
-  {\bibinfo {volume} {638}},\ \bibinfo {pages} {651} (\bibinfo {year}
-  {2025})},\ \Eprint {https://arxiv.org/abs/2401.09549} {arXiv:2401.09549}
-  \BibitemShut {NoStop}%
+  \bibfield  {author} {\bibinfo {author} {\bibnamefont {{Microsoft Azure
+  Quantum}}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Aghaee}},
+  \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {{Alcaraz Ramirez}}},
+  \bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont {Alam}}, \emph {et~al.},\
+  }\bibfield  {title} {\bibinfo {title} {Interferometric single-shot parity
+  measurement in {InAs}--{Al} hybrid devices},\ }\href@noop {} {\bibfield
+  {journal} {\bibinfo  {journal} {Nature}\ }\textbf {\bibinfo {volume} {638}},\
+  \bibinfo {pages} {651} (\bibinfo {year} {2025})},\ \Eprint
+  {https://arxiv.org/abs/2401.09549} {arXiv:2401.09549} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Legg}(2025)}]{legg2025}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.~F.}\ \bibnamefont
-  {Legg}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {arXiv
-  preprint}\ } (\bibinfo {year} {2025})},\ \Eprint
-  {https://arxiv.org/abs/2503.08944} {arXiv:2503.08944} \BibitemShut {NoStop}%
+  {Legg}},\ }\bibfield  {title} {\bibinfo {title} {Comment on
+  ``{Interferometric} single-shot parity measurement in {InAs}-{Al} hybrid
+  devices'', {Microsoft Quantum}, {Nature} 638, 651-655 (2025)},\ }\href@noop
+  {} {\bibfield  {journal} {\bibinfo  {journal} {arXiv preprint}\ } (\bibinfo
+  {year} {2025})},\ \Eprint {https://arxiv.org/abs/2503.08944}
+  {arXiv:2503.08944} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Pan}\ and\ \citenamefont
   {Das~Sarma}(2026)}]{pan2026}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
   {Pan}}\ and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
-  {Das~Sarma}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal}
-  {Phys. Rev. B}\ } (\bibinfo {year} {2026})},\ \bibinfo {note}
-  {{DOI}~10.1103/2v41-yvs1},\ \Eprint {https://arxiv.org/abs/2507.00128}
-  {arXiv:2507.00128} \BibitemShut {NoStop}%
+  {Das~Sarma}},\ }\bibfield  {title} {\bibinfo {title} {{Majorana} zero modes
+  in semiconductor-superconductor hybrid structures: Defining topology in short
+  and disordered nanowires through {Majorana} splitting},\ }\href@noop {}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo
+  {volume} {113}},\ \bibinfo {pages} {165420} (\bibinfo {year} {2026})},\
+  \Eprint {https://arxiv.org/abs/2507.00128} {arXiv:2507.00128} \BibitemShut
+  {NoStop}%
 \bibitem [{\citenamefont {Vuik}\ \emph {et~al.}(2016)\citenamefont {Vuik},
   \citenamefont {Eeltink}, \citenamefont {Akhmerov},\ and\ \citenamefont
   {Wimmer}}]{vuik2016}%
@@ -158,40 +175,47 @@
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
   {Vuik}}, \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont {Eeltink}},
   \bibinfo {author} {\bibfnamefont {A.~R.}\ \bibnamefont {Akhmerov}},\ and\
-  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Wimmer}},\ }\href@noop {}
-  {\bibfield  {journal} {\bibinfo  {journal} {New J. Phys.}\ }\textbf {\bibinfo
-  {volume} {18}},\ \bibinfo {pages} {033013} (\bibinfo {year} {2016})},\
-  \Eprint {https://arxiv.org/abs/1511.08044} {arXiv:1511.08044} \BibitemShut
-  {NoStop}%
+  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Wimmer}},\ }\bibfield
+  {title} {\bibinfo {title} {Effects of the electrostatic environment on the
+  {Majorana} nanowire devices},\ }\href@noop {} {\bibfield  {journal} {\bibinfo
+   {journal} {New J. Phys.}\ }\textbf {\bibinfo {volume} {18}},\ \bibinfo
+  {pages} {033013} (\bibinfo {year} {2016})},\ \Eprint
+  {https://arxiv.org/abs/1511.08044} {arXiv:1511.08044} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Lobo}\ \emph {et~al.}(2025)\citenamefont {Lobo},
   \citenamefont {Prada},\ and\ \citenamefont {San-Jose}}]{lobo2025}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
   {Lobo}}, \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Prada}},\ and\
-  \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {San-Jose}},\ }\href@noop
-  {} {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf
-  {\bibinfo {volume} {111}},\ \bibinfo {pages} {195415} (\bibinfo {year}
-  {2025})},\ \Eprint {https://arxiv.org/abs/2412.15174} {arXiv:2412.15174}
-  \BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Shustin}\ \emph {et~al.}(2023)\citenamefont
+  \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {San-Jose}},\ }\bibfield
+  {title} {\bibinfo {title} {Exponential suppression of the topological gap in
+  self-consistent intrinsic {Majorana} nanowires},\ }\href@noop {} {\bibfield
+  {journal} {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume}
+  {111}},\ \bibinfo {pages} {195415} (\bibinfo {year} {2025})},\ \Eprint
+  {https://arxiv.org/abs/2412.15174} {arXiv:2412.15174} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Shustin}\ \emph {et~al.}(2024)\citenamefont
   {Shustin}, \citenamefont {Aksenov},\ and\ \citenamefont
   {Burmistrov}}]{shustin2024}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~S.}\ \bibnamefont
   {Shustin}}, \bibinfo {author} {\bibfnamefont {S.~V.}\ \bibnamefont
   {Aksenov}},\ and\ \bibinfo {author} {\bibfnamefont {I.~S.}\ \bibnamefont
-  {Burmistrov}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal}
-  {arXiv preprint}\ } (\bibinfo {year} {2023})},\ \Eprint
-  {https://arxiv.org/abs/2310.14035} {arXiv:2310.14035} \BibitemShut {NoStop}%
+  {Burmistrov}},\ }\bibfield  {title} {\bibinfo {title} {Topological phases
+  induced by charge fluctuations in {Majorana} wires},\ }\href@noop {}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo
+  {volume} {109}},\ \bibinfo {pages} {075435} (\bibinfo {year} {2024})},\
+  \Eprint {https://arxiv.org/abs/2310.14035} {arXiv:2310.14035} \BibitemShut
+  {NoStop}%
 \bibitem [{\citenamefont {Roy}\ \emph {et~al.}(2026{\natexlab{a}})\citenamefont
   {Roy}, \citenamefont {Sau},\ and\ \citenamefont
   {Tewari}}]{roy2026inductance}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.~B.}\ \bibnamefont
   {Roy}}, \bibinfo {author} {\bibfnamefont {J.~D.}\ \bibnamefont {Sau}},\ and\
-  \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Tewari}},\ }\href@noop {}
-  {\bibfield  {journal} {\bibinfo  {journal} {arXiv preprint}\ } (\bibinfo
-  {year} {2026}{\natexlab{a}})},\ \Eprint {https://arxiv.org/abs/2603.12256}
+  \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Tewari}},\ }\bibfield
+  {title} {\bibinfo {title} {Quantum inductance as a phase-sensitive probe of
+  fermion parity switching in {Majorana} nanowires},\ }\href@noop {} {\bibfield
+   {journal} {\bibinfo  {journal} {arXiv preprint}\ } (\bibinfo {year}
+  {2026}{\natexlab{a}})},\ \Eprint {https://arxiv.org/abs/2603.12256}
   {arXiv:2603.12256} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Woods}\ \emph {et~al.}(2020)\citenamefont {Woods},
   \citenamefont {Das~Sarma},\ and\ \citenamefont {Stanescu}}]{woods2020}%
@@ -199,10 +223,11 @@
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.~D.}\ \bibnamefont
   {Woods}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Das~Sarma}},\
   and\ \bibinfo {author} {\bibfnamefont {T.~D.}\ \bibnamefont {Stanescu}},\
-  }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. B}\
-  }\textbf {\bibinfo {volume} {101}},\ \bibinfo {pages} {045405} (\bibinfo
-  {year} {2020})},\ \Eprint {https://arxiv.org/abs/1910.04362}
-  {arXiv:1910.04362} \BibitemShut {NoStop}%
+  }\bibfield  {title} {\bibinfo {title} {Subband occupation in
+  semiconductor-superconductor nanowires},\ }\href@noop {} {\bibfield
+  {journal} {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume}
+  {101}},\ \bibinfo {pages} {045405} (\bibinfo {year} {2020})},\ \Eprint
+  {https://arxiv.org/abs/1910.04362} {arXiv:1910.04362} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Chang}\ \emph {et~al.}(2015)\citenamefont {Chang},
   \citenamefont {Albrecht}, \citenamefont {Jespersen}, \citenamefont
   {Kuemmeth}, \citenamefont {Krogstrup}, \citenamefont {Nyg{\aa}rd},\ and\
@@ -214,10 +239,12 @@
   {author} {\bibfnamefont {F.}~\bibnamefont {Kuemmeth}}, \bibinfo {author}
   {\bibfnamefont {P.}~\bibnamefont {Krogstrup}}, \bibinfo {author}
   {\bibfnamefont {J.}~\bibnamefont {Nyg{\aa}rd}},\ and\ \bibinfo {author}
-  {\bibfnamefont {C.~M.}\ \bibnamefont {Marcus}},\ }\href@noop {} {\bibfield
-  {journal} {\bibinfo  {journal} {Nat. Nanotechnol.}\ }\textbf {\bibinfo
-  {volume} {10}},\ \bibinfo {pages} {232} (\bibinfo {year} {2015})},\ \Eprint
-  {https://arxiv.org/abs/1411.6255} {arXiv:1411.6255} \BibitemShut {NoStop}%
+  {\bibfnamefont {C.~M.}\ \bibnamefont {Marcus}},\ }\bibfield  {title}
+  {\bibinfo {title} {Hard gap in epitaxial semiconductor--superconductor
+  nanowires},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Nat.
+  Nanotechnol.}\ }\textbf {\bibinfo {volume} {10}},\ \bibinfo {pages} {232}
+  (\bibinfo {year} {2015})},\ \Eprint {https://arxiv.org/abs/1411.6255}
+  {arXiv:1411.6255} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Roy}\ \emph {et~al.}(2026{\natexlab{b}})\citenamefont
   {Roy}, \citenamefont {Cason}, \citenamefont {Sharma},\ and\ \citenamefont
   {Tewari}}]{pfaffian_realspace2026}%
@@ -225,7 +252,9 @@
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.~B.}\ \bibnamefont
   {Roy}}, \bibinfo {author} {\bibfnamefont {W.~B.}\ \bibnamefont {Cason}},
   \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont {Sharma}},\ and\ \bibinfo
-  {author} {\bibfnamefont {S.}~\bibnamefont {Tewari}},\ }\href@noop {}
+  {author} {\bibfnamefont {S.}~\bibnamefont {Tewari}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Pfaffian}-based topological invariants for one
+  dimensional semiconductor-superconductor heterostructures},\ }\href@noop {}
   {\bibfield  {journal} {\bibinfo  {journal} {arXiv preprint}\ } (\bibinfo
   {year} {2026}{\natexlab{b}})},\ \Eprint {https://arxiv.org/abs/2603.08786}
   {arXiv:2603.08786} \BibitemShut {NoStop}%
@@ -244,10 +273,12 @@
   {author} {\bibfnamefont {T.~S.}\ \bibnamefont {Jespersen}}, \bibinfo {author}
   {\bibfnamefont {J.}~\bibnamefont {Nyg{\aa}rd}}, \bibinfo {author}
   {\bibfnamefont {K.}~\bibnamefont {Flensberg}},\ and\ \bibinfo {author}
-  {\bibfnamefont {C.~M.}\ \bibnamefont {Marcus}},\ }\href@noop {} {\bibfield
-  {journal} {\bibinfo  {journal} {Nat. Phys.}\ }\textbf {\bibinfo {volume}
-  {11}},\ \bibinfo {pages} {1017} (\bibinfo {year} {2015})},\ \Eprint
-  {https://arxiv.org/abs/1501.05155} {arXiv:1501.05155} \BibitemShut {NoStop}%
+  {\bibfnamefont {C.~M.}\ \bibnamefont {Marcus}},\ }\bibfield  {title}
+  {\bibinfo {title} {Parity lifetime of bound states in a proximitized
+  semiconductor nanowire},\ }\href@noop {} {\bibfield  {journal} {\bibinfo
+  {journal} {Nat. Phys.}\ }\textbf {\bibinfo {volume} {11}},\ \bibinfo {pages}
+  {1017} (\bibinfo {year} {2015})},\ \Eprint {https://arxiv.org/abs/1501.05155}
+  {arXiv:1501.05155} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Megrant}\ \emph {et~al.}(2012)\citenamefont
   {Megrant}, \citenamefont {Neill}, \citenamefont {Barends}, \citenamefont
   {Chiaro}, \citenamefont {Chen}, \citenamefont {Feigl}, \citenamefont {Kelly},
@@ -274,10 +305,12 @@
   {J.}~\bibnamefont {Zhao}}, \bibinfo {author} {\bibfnamefont {C.~J.}\
   \bibnamefont {Palmstr{\o}m}}, \bibinfo {author} {\bibfnamefont {J.~M.}\
   \bibnamefont {Martinis}},\ and\ \bibinfo {author} {\bibfnamefont {A.~N.}\
-  \bibnamefont {Cleland}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo
-  {journal} {Appl. Phys. Lett.}\ }\textbf {\bibinfo {volume} {100}},\ \bibinfo
-  {pages} {113510} (\bibinfo {year} {2012})},\ \Eprint
-  {https://arxiv.org/abs/1201.3384} {arXiv:1201.3384} \BibitemShut {NoStop}%
+  \bibnamefont {Cleland}},\ }\bibfield  {title} {\bibinfo {title} {Planar
+  superconducting resonators with internal quality factors above one million},\
+  }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Appl. Phys.
+  Lett.}\ }\textbf {\bibinfo {volume} {100}},\ \bibinfo {pages} {113510}
+  (\bibinfo {year} {2012})},\ \Eprint {https://arxiv.org/abs/1201.3384}
+  {arXiv:1201.3384} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Samkharadze}\ \emph {et~al.}(2016)\citenamefont
   {Samkharadze}, \citenamefont {Bruno}, \citenamefont {Scarlino}, \citenamefont
   {Zheng}, \citenamefont {DiVincenzo}, \citenamefont {DiCarlo},\ and\
@@ -289,11 +322,12 @@
   {author} {\bibfnamefont {G.}~\bibnamefont {Zheng}}, \bibinfo {author}
   {\bibfnamefont {D.~P.}\ \bibnamefont {DiVincenzo}}, \bibinfo {author}
   {\bibfnamefont {L.}~\bibnamefont {DiCarlo}},\ and\ \bibinfo {author}
-  {\bibfnamefont {L.~M.~K.}\ \bibnamefont {Vandersypen}},\ }\href@noop {}
-  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. Applied}\ }\textbf
-  {\bibinfo {volume} {5}},\ \bibinfo {pages} {044004} (\bibinfo {year}
-  {2016})},\ \Eprint {https://arxiv.org/abs/1511.01760} {arXiv:1511.01760}
-  \BibitemShut {NoStop}%
+  {\bibfnamefont {L.~M.~K.}\ \bibnamefont {Vandersypen}},\ }\bibfield  {title}
+  {\bibinfo {title} {High-kinetic-inductance superconducting nanowire
+  resonators for circuit {QED} in a magnetic field},\ }\href@noop {} {\bibfield
+   {journal} {\bibinfo  {journal} {Phys. Rev. Applied}\ }\textbf {\bibinfo
+  {volume} {5}},\ \bibinfo {pages} {044004} (\bibinfo {year} {2016})},\ \Eprint
+  {https://arxiv.org/abs/1511.01760} {arXiv:1511.01760} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Lim}\ \emph {et~al.}(2012)\citenamefont {Lim},
   \citenamefont {Serra}, \citenamefont {L{\'o}pez},\ and\ \citenamefont
   {Aguado}}]{lim2012}%
@@ -301,11 +335,12 @@
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.~S.}\ \bibnamefont
   {Lim}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Serra}}, \bibinfo
   {author} {\bibfnamefont {R.}~\bibnamefont {L{\'o}pez}},\ and\ \bibinfo
-  {author} {\bibfnamefont {R.}~\bibnamefont {Aguado}},\ }\href@noop {}
-  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo
-  {volume} {86}},\ \bibinfo {pages} {121103} (\bibinfo {year} {2012})},\
-  \Eprint {https://arxiv.org/abs/1202.5057} {arXiv:1202.5057} \BibitemShut
-  {NoStop}%
+  {author} {\bibfnamefont {R.}~\bibnamefont {Aguado}},\ }\bibfield  {title}
+  {\bibinfo {title} {Magnetic-field instability of {Majorana} modes in
+  multiband semiconductor wires},\ }\href@noop {} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {86}},\
+  \bibinfo {pages} {121103} (\bibinfo {year} {2012})},\ \Eprint
+  {https://arxiv.org/abs/1202.5057} {arXiv:1202.5057} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Ahn}\ \emph {et~al.}(2021)\citenamefont {Ahn},
   \citenamefont {Pan}, \citenamefont {Woods}, \citenamefont {Stanescu},\ and\
   \citenamefont {Das~Sarma}}]{ahn2021}%
@@ -314,9 +349,11 @@
   {Ahn}}, \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont {Pan}}, \bibinfo
   {author} {\bibfnamefont {B.}~\bibnamefont {Woods}}, \bibinfo {author}
   {\bibfnamefont {T.~D.}\ \bibnamefont {Stanescu}},\ and\ \bibinfo {author}
-  {\bibfnamefont {S.}~\bibnamefont {Das~Sarma}},\ }\href@noop {} {\bibfield
-  {journal} {\bibinfo  {journal} {Phys. Rev. Materials}\ }\textbf {\bibinfo
-  {volume} {5}},\ \bibinfo {pages} {124602} (\bibinfo {year} {2021})},\ \Eprint
+  {\bibfnamefont {S.}~\bibnamefont {Das~Sarma}},\ }\bibfield  {title} {\bibinfo
+  {title} {Estimating disorder and its adverse effects in semiconductor
+  {Majorana} nanowires},\ }\href@noop {} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. Materials}\ }\textbf {\bibinfo {volume} {5}},\ \bibinfo
+  {pages} {124602} (\bibinfo {year} {2021})},\ \Eprint
   {https://arxiv.org/abs/2109.00007} {arXiv:2109.00007} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Mikkelsen}\ \emph {et~al.}(2018)\citenamefont
   {Mikkelsen}, \citenamefont {Kotetes}, \citenamefont {Krogstrup},\ and\
@@ -326,10 +363,11 @@
   \bibnamefont {Mikkelsen}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
   {Kotetes}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Krogstrup}},\
   and\ \bibinfo {author} {\bibfnamefont {K.}~\bibnamefont {Flensberg}},\
-  }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. X}\
-  }\textbf {\bibinfo {volume} {8}},\ \bibinfo {pages} {031040} (\bibinfo {year}
-  {2018})},\ \Eprint {https://arxiv.org/abs/1801.03439} {arXiv:1801.03439}
-  \BibitemShut {NoStop}%
+  }\bibfield  {title} {\bibinfo {title} {Hybridization at
+  superconductor-semiconductor interfaces},\ }\href@noop {} {\bibfield
+  {journal} {\bibinfo  {journal} {Phys. Rev. X}\ }\textbf {\bibinfo {volume}
+  {8}},\ \bibinfo {pages} {031040} (\bibinfo {year} {2018})},\ \Eprint
+  {https://arxiv.org/abs/1801.03439} {arXiv:1801.03439} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Winkler}\ \emph {et~al.}(2019)\citenamefont
   {Winkler}, \citenamefont {Antipov}, \citenamefont {van Heck}, \citenamefont
   {Soluyanov}, \citenamefont {Glazman}, \citenamefont {Wimmer},\ and\
@@ -341,7 +379,9 @@
   \bibinfo {author} {\bibfnamefont {A.~A.}\ \bibnamefont {Soluyanov}}, \bibinfo
   {author} {\bibfnamefont {L.~I.}\ \bibnamefont {Glazman}}, \bibinfo {author}
   {\bibfnamefont {M.}~\bibnamefont {Wimmer}},\ and\ \bibinfo {author}
-  {\bibfnamefont {R.~M.}\ \bibnamefont {Lutchyn}},\ }\href@noop {} {\bibfield
+  {\bibfnamefont {R.~M.}\ \bibnamefont {Lutchyn}},\ }\bibfield  {title}
+  {\bibinfo {title} {Unified numerical approach to topological
+  semiconductor-superconductor heterostructures},\ }\href@noop {} {\bibfield
   {journal} {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume}
   {99}},\ \bibinfo {pages} {245408} (\bibinfo {year} {2019})},\ \Eprint
   {https://arxiv.org/abs/1810.04180} {arXiv:1810.04180} \BibitemShut {NoStop}%
@@ -354,11 +394,13 @@
   {Hart}}, \bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont {Cui}}, \bibinfo
   {author} {\bibfnamefont {G.}~\bibnamefont {M{\'e}nard}}, \bibinfo {author}
   {\bibfnamefont {M.}~\bibnamefont {Deng}}, \bibinfo {author} {\bibfnamefont
-  {A.}~\bibnamefont {Antipov}}, \bibinfo {author} {\bibfnamefont {R.~M.}\
+  {A.~E.}\ \bibnamefont {Antipov}}, \bibinfo {author} {\bibfnamefont {R.~M.}\
   \bibnamefont {Lutchyn}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
   {Krogstrup}}, \bibinfo {author} {\bibfnamefont {C.~M.}\ \bibnamefont
   {Marcus}},\ and\ \bibinfo {author} {\bibfnamefont {K.~A.}\ \bibnamefont
-  {Moler}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Phys.
+  {Moler}},\ }\bibfield  {title} {\bibinfo {title} {Current-phase relations of
+  {InAs} nanowire {Josephson} junctions: From interacting to multimode
+  regimes},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Phys.
   Rev. B}\ }\textbf {\bibinfo {volume} {100}},\ \bibinfo {pages} {064523}
   (\bibinfo {year} {2019})},\ \Eprint {https://arxiv.org/abs/1902.07804}
   {arXiv:1902.07804} \BibitemShut {NoStop}%
@@ -367,19 +409,23 @@
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~C.}\ \bibnamefont
   {Potter}}\ and\ \bibinfo {author} {\bibfnamefont {P.~A.}\ \bibnamefont
-  {Lee}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Phys.
-  Rev. Lett.}\ }\textbf {\bibinfo {volume} {105}},\ \bibinfo {pages} {227003}
-  (\bibinfo {year} {2010})},\ \Eprint {https://arxiv.org/abs/1007.4569}
-  {arXiv:1007.4569} \BibitemShut {NoStop}%
+  {Lee}},\ }\bibfield  {title} {\bibinfo {title} {Multichannel generalization
+  of {Kitaev}'s {Majorana} end states and a practical route to realize them in
+  thin films},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal}
+  {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {105}},\ \bibinfo {pages}
+  {227003} (\bibinfo {year} {2010})},\ \Eprint
+  {https://arxiv.org/abs/1007.4569} {arXiv:1007.4569} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Potter}\ and\ \citenamefont
   {Lee}(2011)}]{potterlee2011}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~C.}\ \bibnamefont
   {Potter}}\ and\ \bibinfo {author} {\bibfnamefont {P.~A.}\ \bibnamefont
-  {Lee}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Phys.
-  Rev. B}\ }\textbf {\bibinfo {volume} {83}},\ \bibinfo {pages} {094525}
-  (\bibinfo {year} {2011})},\ \Eprint {https://arxiv.org/abs/1011.6371}
-  {arXiv:1011.6371} \BibitemShut {NoStop}%
+  {Lee}},\ }\bibfield  {title} {\bibinfo {title} {{Majorana} end states in
+  multiband microstructures with {Rashba} spin-orbit coupling},\ }\href@noop {}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo
+  {volume} {83}},\ \bibinfo {pages} {094525} (\bibinfo {year} {2011})},\
+  \Eprint {https://arxiv.org/abs/1011.6371} {arXiv:1011.6371} \BibitemShut
+  {NoStop}%
 \bibitem [{\citenamefont {Lutchyn}\ \emph {et~al.}(2011)\citenamefont
   {Lutchyn}, \citenamefont {Stanescu},\ and\ \citenamefont
   {Das~Sarma}}]{lutchyn2011}%
@@ -387,10 +433,12 @@
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.~M.}\ \bibnamefont
   {Lutchyn}}, \bibinfo {author} {\bibfnamefont {T.~D.}\ \bibnamefont
   {Stanescu}},\ and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
-  {Das~Sarma}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal}
-  {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {106}},\ \bibinfo {pages}
-  {127001} (\bibinfo {year} {2011})},\ \Eprint
-  {https://arxiv.org/abs/1008.0629} {arXiv:1008.0629} \BibitemShut {NoStop}%
+  {Das~Sarma}},\ }\bibfield  {title} {\bibinfo {title} {Search for {Majorana}
+  fermions in multiband semiconducting nanowires},\ }\href@noop {} {\bibfield
+  {journal} {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo
+  {volume} {106}},\ \bibinfo {pages} {127001} (\bibinfo {year} {2011})},\
+  \Eprint {https://arxiv.org/abs/1008.0629} {arXiv:1008.0629} \BibitemShut
+  {NoStop}%
 \bibitem [{\citenamefont {Stanescu}\ \emph {et~al.}(2011)\citenamefont
   {Stanescu}, \citenamefont {Lutchyn},\ and\ \citenamefont
   {Das~Sarma}}]{stanescu2011}%
@@ -398,16 +446,19 @@
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.~D.}\ \bibnamefont
   {Stanescu}}, \bibinfo {author} {\bibfnamefont {R.~M.}\ \bibnamefont
   {Lutchyn}},\ and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
-  {Das~Sarma}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal}
-  {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {84}},\ \bibinfo {pages} {144522}
-  (\bibinfo {year} {2011})},\ \Eprint {https://arxiv.org/abs/1106.3078}
-  {arXiv:1106.3078} \BibitemShut {NoStop}%
+  {Das~Sarma}},\ }\bibfield  {title} {\bibinfo {title} {{Majorana} fermions in
+  semiconductor nanowires},\ }\href@noop {} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {84}},\ \bibinfo
+  {pages} {144522} (\bibinfo {year} {2011})},\ \Eprint
+  {https://arxiv.org/abs/1106.3078} {arXiv:1106.3078} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Ginossar}\ and\ \citenamefont
   {Grosfeld}(2014)}]{ginossar2014microwave}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
   {Ginossar}}\ and\ \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
-  {Grosfeld}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Nat.
+  {Grosfeld}},\ }\bibfield  {title} {\bibinfo {title} {Microwave transitions as
+  a signature of coherent parity mixing effects in the {Majorana}-transmon
+  qubit},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Nat.
   Commun.}\ }\textbf {\bibinfo {volume} {5}},\ \bibinfo {pages} {4772}
   (\bibinfo {year} {2014})},\ \Eprint {https://arxiv.org/abs/1307.1159}
   {arXiv:1307.1159} \BibitemShut {NoStop}%
