@@ -78,7 +78,7 @@ These were not rerun during the repository restructure. The times are those reco
 
 | Script | Arguments | Time | Source of the time | Writes |
 |---|---|--:|---|---|
-| `src/bdg_r4_em_coupling.py` | | > 10 min in total; figure 6 alone 676 s (an earlier measurement had put it above 15 min); figure 4 > 45 min, not finished; figure 5 not timed | measured | `em_feedback_detector_comparison/`: 6 PNG (figures 1 to 3 are the quick part; R4 saves no data file) |
+| `src/bdg_r4_em_coupling.py` | | > 10 min in total; figure 6 alone 676 s (an earlier measurement had put it above 15 min); figure 4 > 45 min, not finished; figure 5 762 s (2026-10-28) | measured | `em_feedback_detector_comparison/`: 6 PNG (figures 1 to 3 are the quick part; R4 saves no data file) |
 | `src/bdg_r5_selfconsistent_ring.py` | | about 35 min | earlier README | `self_consistency_bifurcation/r5_results.json`, `r5_shift_comparison.csv` |
 | `src/bdg_r5_physically_meaningful_shift.py` | | about 40 min | earlier README | `r5_physical_shift_results.json` (the data of `r5_figure10`, `r5_figure11` and paper Fig. 4; those are drawn by `scripts/redraw_*.py`, section 3) |
 | `src/bdg_r5_anderson_mixing.py` | | not recorded | | `r5_anderson_results.json` |
