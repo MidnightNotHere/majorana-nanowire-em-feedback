@@ -92,6 +92,22 @@ These were not rerun during the repository restructure. The times are those reco
 | `src/bdg_r9_multisubband_bc.py` | | 5,711 s (N = 80), 4,257 s (N = 120), 406 s (N = 60) | `docs/methods/r9_multisubband_methods.md`, section 13 table | `multisubband/r9_multisubband_bc_M2_*.json` |
 | `src/bdg_r9_multisubband_bracket_scan.py` | | not recorded | | `multisubband/r9_multisubband_bracket_scan.json` |
 
+**Regenerate before release: R4 figure 4.** `results/em_feedback_detector_comparison/r4_figure4_phase_shift_preview.png`
+still has its old title ("R4 Figure 4: ...") and, in its caveat line, the old path `src/r4_pfaffian_boundary_methods.md`;
+the plotting code in `src/bdg_r4_em_coupling.py` already has the corrected text, but the image has not been redrawn because
+a run of `figure4_phase_shift_preview()` had not finished after about 45 minutes (see
+[`KNOWN_ISSUES.md`](KNOWN_ISSUES.md), section 3). To regenerate it, run this from the repository root (it calls the figure
+function only, not the whole module; it takes well over 45 minutes and overwrites the committed file):
+
+```bash
+python -X utf8 -c "import sys; sys.path.insert(0, 'src'); import bdg_r4_em_coupling as r4; print(r4.figure4_phase_shift_preview())"
+```
+
+The function writes `results/em_feedback_detector_comparison/r4_figure4_phase_shift_preview.png` (the folder is fixed by
+the module, whatever the working directory) and returns the path, the shift in percent at mu = 0 and the largest shift.
+Afterwards `git diff --stat` should show that only this PNG changed; the file has not been checked against the
+regenerated image, and `FIGURE_PROVENANCE.md` and `KNOWN_ISSUES.md` should be updated when it has.
+
 `src/bdg_parallel.py` is a helper imported by the sweep drivers, not a script to run. Its worker count and memory budget
 are fixed for the machine it was tuned on; see [`KNOWN_ISSUES.md`](KNOWN_ISSUES.md).
 

@@ -119,7 +119,9 @@ text or legend box. Details that remain:
   the original text strings the same code reproduces the previously committed image pixel for pixel; the new image
   differs from it only in the super-title ("R9 Track 1" removed) and in one legend entry ("R5 g_crit band" became
   "g_crit band").
-- **`results/em_feedback_detector_comparison/r4_figure4_phase_shift_preview.png` was not redrawn.** The R4 module keeps
+- **Regenerate before release: `results/em_feedback_detector_comparison/r4_figure4_phase_shift_preview.png` was not
+  redrawn.** The command is in [`REPRODUCING.md`](REPRODUCING.md), section 4 (it calls
+  `figure4_phase_shift_preview()` of `src/bdg_r4_em_coupling.py`; it was not run). The R4 module keeps
   no data file, so redrawing it means recomputing a 121-point grid of open-wire critical-field searches. A comparison run
   of the original and the restructured code had not finished after about 45 minutes and was abandoned. The committed
   image therefore still has the title "R4 Figure 4: ..." and, in its caveat line, the old path
