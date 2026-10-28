@@ -138,10 +138,15 @@ text or legend box. Details that remain:
 
 ## 4. The paper
 
-- `main.tex` still has `\affiliation{Author affiliation to be completed}`.
+- The affiliation line of `main.tex` was set to `Independent Researcher, Colorado, USA` on 2026-10-27; it had been a
+  placeholder. The two comment lines under it in the source (`% NOTE: affiliation left as a placeholder ...`) are now out
+  of date; they were left as they were and are not in the PDF.
 - `\date{\today}` means every build differs from the committed `paper/main.pdf` in the date line.
 - The Data availability paragraph gives the repository name and URL but no DOI; add the DOI after the first release has
-  been archived.
+  been archived. It was checked against the repository on 2026-10-27: every figure of the paper has a script that draws it
+  ([`FIGURE_PROVENANCE.md`](FIGURE_PROVENANCE.md)), so the words "every figure-generating script" were left unchanged. Two
+  details are looser than the repository: the raw results include NPY files as well as the "JSON/CSV data files" the
+  paragraph names, and R4 (paper Fig. 3) saves no data file.
 - The build reports 2 overfull boxes, 17 underfull boxes and 2 "Deferred float stuck during \clearpage processing"
   messages, and no undefined references. A build of the paper as it stood before the restructure reports the same
   overfull boxes and deferred floats and 11 underfull boxes; four of the additional underfull boxes are line breaks in
@@ -162,6 +167,9 @@ text or legend box. Details that remain:
   `scripts/redraw_r9_disorder_summary.py`. The captions of Figs. 7 and 9 were already correct. No other caption or body
   text changed. The rebuilt `paper/main.pdf` differs from the previous one in these strings, in the date line (`\today`)
   and in the line and page breaks around the three longer captions.
+- **Rebuilt on 2026-10-27** after the affiliation was filled in: 17 pages, 2 overfull boxes, 17 underfull boxes, 2 deferred
+  floats and no undefined references or citations (`latexmk -g -pdf main.tex`). A word-level comparison of the text of the
+  new and the previous PDF finds two differences: the affiliation line and the date line (26 to 27 October).
 
 ## 5. Documents
 
