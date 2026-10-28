@@ -1,6 +1,6 @@
 # Correction note: `pfaffian_trim_lo()` discarded its own TRIM matrices
 
-**Project:** ISEF 2027 — Inductive Circuit Feedback Shifts the Topological Phase Boundary in InAs/Al Majorana Nanowires
+**Project:** Inductive Circuit Feedback Shifts the Topological Phase Boundary in InAs/Al Majorana Nanowires
 **Module:** `src/bdg_eigensolver_r1_r2_LOAdapted.py` (R1/R2/O1)
 **Found:** 2026-07-11, during R6 reconnaissance (pre-implementation code audit)
 **Fixed:** 2026-07-11, standalone corrective task (separate from R6)

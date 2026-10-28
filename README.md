@@ -1,11 +1,15 @@
 # majorana-nanowire-em-feedback
 
-BdG eigensolver, self-consistency solvers, validation scripts, and data for self-consistent EM feedback in Majorana nanowires.
+**BdG eigensolver, self-consistency solvers, validation scripts, and data for self-consistent EM feedback in Majorana nanowires**
+
+Developed with the assistance of AI coding tools; all results were verified by the author using the validation gates described in the paper.
 
 This repository accompanies the paper in [`paper/`](paper/) (build with `cd paper && latexmk -pdf main.tex`; a prebuilt
 [`paper/main.pdf`](paper/main.pdf) is included). It holds the code behind the numbers and figures in the paper, the raw
 numerical results, and the methods notes in which each calculation, its validation gates and its corrections are
-recorded. A few figures have no generating script in the repository; they are listed in
+recorded. Every figure of the paper is produced by a script in `src/` or `scripts/`, and the figures that would need
+hours of computation are redrawn from the saved results. [`docs/FIGURE_PROVENANCE.md`](docs/FIGURE_PROVENANCE.md) names
+the script and the data files behind each figure; the few files that no script writes are listed in
 [`docs/KNOWN_ISSUES.md`](docs/KNOWN_ISSUES.md).
 
 **Scientific question.** Standard treatments of the Majorana nanowire fix the topological phase boundary and compute the
@@ -64,12 +68,12 @@ lattice model, parameters of InAs/Al devices from the literature. See the paper'
 ├── docs/
 │   ├── methods/            methods notes with derivations, gates and correction records
 │   ├── paper_audit/        claim-by-claim verification log for the paper
-│   ├── logbook/            research logbook (.docx)
 │   ├── REPRODUCING.md      what to run, how long it takes, what it overwrites
 │   ├── KNOWN_ISSUES.md     limitations, provenance gaps, caveats
+│   ├── FIGURE_PROVENANCE.md  which script and data files produce each figure
 │   └── RENAME_MAP.md       old-to-new path map and the R-code glossary
 ├── paper/                  main.tex, references.bib, main.bbl, figures/, main.pdf (self-contained)
-├── scripts/                redraw_paper_fig4.py
+├── scripts/                redraw_*.py: redraw figures from the saved results (seconds each)
 ├── requirements.txt        16 pinned packages
 ├── CITATION.cff
 └── LICENSE
@@ -123,9 +127,11 @@ calculations are long: from about 15 minutes up to 4 hours for the multi-subband
 
 ## Licence and citation
 
-Released under the [MIT licence](LICENSE). The licence covers the code, the data and the results in this repository.
+Released under the [MIT License](LICENSE), Copyright (c) 2026 Arnav Rohilla. The licence covers the code, the data and
+the results in this repository.
 
 To cite this work use [`CITATION.cff`](CITATION.cff) (GitHub's "Cite this repository" button reads it). A DOI will be added
 to it when the first release is archived.
 
-Author: Arnav Rohilla.
+Author: Arnav Rohilla ([ORCID 0009-0001-5513-479X](https://orcid.org/0009-0001-5513-479X)), Independent Researcher,
+Colorado, USA.

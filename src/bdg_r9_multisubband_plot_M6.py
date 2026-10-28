@@ -96,13 +96,15 @@ ax2.set_ylim(0, 60)
 
 plt.tight_layout()
 outpath = os.path.join(R9, "fig7_multisubband_M1to6_extension.png")
+os.makedirs(R9, exist_ok=True)
 plt.savefig(outpath, dpi=200)
 print("wrote", outpath)
 
 # also copy into the paper's figures/ directory for \includegraphics
 import shutil
-shutil.copy(outpath, os.path.join(BASE, "paper", "figures",
-                                  "fig7_multisubband_M1to6_extension.png"))
+paper_figures = os.path.join(BASE, "paper", "figures")
+os.makedirs(paper_figures, exist_ok=True)
+shutil.copy(outpath, os.path.join(paper_figures, "fig7_multisubband_M1to6_extension.png"))
 print("copied into paper/figures/")
 
 # print the exact numbers used, for the caption/text

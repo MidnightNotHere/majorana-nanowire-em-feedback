@@ -437,7 +437,7 @@ def nscaling_enhancement(mu: float = 1.2, g: float = G_R7,
 # ════════════════════════════════════════════════════════════════════════
 # 8 — Figures (side-by-side Z_r vs Delta_bulk) and written report
 # ════════════════════════════════════════════════════════════════════════
-_PRELIM = ("Quasi-static reactive-only Z_r. L_eff cross-VALIDATED by the R8-B "
+_PRELIM = ("Quasi-static reactive-only Z_r. L_eff cross-VALIDATED by the "
            "finite-ω Kubo impedance: its ω->0 limit reproduces this L_eff to "
            "<1e-4 at every clean grid point (DC-limit gate passed).")
 
