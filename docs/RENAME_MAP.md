@@ -29,7 +29,7 @@ The research was carried out in numbered stages (R1-R9). The directory names bel
 | 3 | `ISEF R4 data folder/r4_figure2_biot_savart.png` | `results/em_feedback_detector_comparison/r4_figure2_biot_savart.png` | moved; figure redrawn: in-figure text only, plotted data identical |
 | 4 | `ISEF R4 data folder/r4_figure3_current_density.png` | `results/em_feedback_detector_comparison/r4_figure3_current_density.png` | moved; figure redrawn: in-figure text only, plotted data identical |
 | 5 | `ISEF R4 data folder/r4_figure4_phase_shift_preview.png` | `results/em_feedback_detector_comparison/r4_figure4_phase_shift_preview.png` | moved, byte-identical |
-| 6 | `ISEF R4 data folder/r4_figure5_flux_density.png` | `results/em_feedback_detector_comparison/r4_figure5_flux_density.png` | moved, byte-identical |
+| 6 | `ISEF R4 data folder/r4_figure5_flux_density.png` | `results/em_feedback_detector_comparison/r4_figure5_flux_density.png` | moved; figure redrawn: in-figure text only, plotted data identical |
 | 7 | `ISEF R4 data folder/r4_figure6_pfaffian_vs_threshold.png` | `results/em_feedback_detector_comparison/r4_figure6_pfaffian_vs_threshold.png` | moved; figure redrawn: in-figure text only, plotted data identical |
 | 8 | `ISEF R5 data folder/r5_anderson_results.json` | `results/self_consistency_bifurcation/r5_anderson_results.json` | moved, byte-identical |
 | 9 | `ISEF R5 data folder/r5_figure10_shift_vs_g.png` | `results/self_consistency_bifurcation/r5_figure10_shift_vs_g.png` | moved; figure redrawn: in-figure text only, plotted data identical; drawn by `scripts/redraw_r5_figure10.py` (reconstructed plotting code, `KNOWN_ISSUES.md` section 3), stage codes removed from the in-figure text |
