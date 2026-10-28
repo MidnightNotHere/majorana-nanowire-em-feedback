@@ -6,7 +6,7 @@
 %Control: page (0) single
 %Control: year (1) truncated
 %Control: production of eprint (0) enabled
-\begin{thebibliography}{29}%
+\begin{thebibliography}{32}%
 \makeatletter
 \providecommand \@ifxundefined [1]{%
  \@ifx{#1\undefined}
@@ -156,6 +156,39 @@
   {} {\bibfield  {journal} {\bibinfo  {journal} {arXiv preprint}\ } (\bibinfo
   {year} {2025})},\ \Eprint {https://arxiv.org/abs/2503.08944}
   {arXiv:2503.08944} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Legg}(2026)}]{legg2026nature}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.~F.}\ \bibnamefont
+  {Legg}},\ }\bibfield  {title} {\bibinfo {title} {On the robustness of
+  topological gap detection via transport},\ }\href@noop {} {\bibfield
+  {journal} {\bibinfo  {journal} {Nature}\ }\textbf {\bibinfo {volume} {654}},\
+  \bibinfo {pages} {E22} (\bibinfo {year} {2026})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Aghaee}\ \emph {et~al.}(2025)\citenamefont {Aghaee},
+  \citenamefont {Alam}, \citenamefont {Andrzejczuk} \emph
+  {et~al.}}]{msreply2025}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Aghaee}}, \bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont {Alam}},
+  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Andrzejczuk}}, \emph
+  {et~al.},\ }\bibfield  {title} {\bibinfo {title} {Response to recent comments
+  on {Phys. Rev. B} 107, 245423 (2023) and {Subsection S4.3} of the {Supp.
+  Info.} for {Nature} 638, 651-655 (2025)},\ }\href@noop {} {\bibfield
+  {journal} {\bibinfo  {journal} {arXiv preprint}\ } (\bibinfo {year}
+  {2025})},\ \Eprint {https://arxiv.org/abs/2504.13240} {arXiv:2504.13240}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {{Microsoft Quantum}}\ \emph
+  {et~al.}(2026)\citenamefont {{Microsoft Quantum}}, \citenamefont {Aghaee},
+  \citenamefont {{Alcaraz Ramirez}}, \citenamefont {Alam} \emph
+  {et~al.}}]{msreply2026nature}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibnamefont {{Microsoft Quantum}}},
+  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Aghaee}}, \bibinfo
+  {author} {\bibfnamefont {A.}~\bibnamefont {{Alcaraz Ramirez}}}, \bibinfo
+  {author} {\bibfnamefont {Z.}~\bibnamefont {Alam}}, \emph {et~al.},\
+  }\bibfield  {title} {\bibinfo {title} {Reply to: On the robustness of
+  topological gap detection via transport},\ }\href@noop {} {\bibfield
+  {journal} {\bibinfo  {journal} {Nature}\ }\textbf {\bibinfo {volume} {654}},\
+  \bibinfo {pages} {E27} (\bibinfo {year} {2026})}\BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Pan}\ and\ \citenamefont
   {Das~Sarma}(2026)}]{pan2026}%
   \BibitemOpen
