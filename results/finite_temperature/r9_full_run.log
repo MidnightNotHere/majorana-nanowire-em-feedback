@@ -79,6 +79,6 @@ theta at 20 mK base = 0.00907
   theta=0.1: subgap_reZ_peak=1.648e-04 drude=True
   theta=0.15: subgap_reZ_peak=4.254e-04 drude=True
 
-Wrote <REPO_ROOT>\src\..\ISEF R9 data folder\r9_finiteT_data.json
-      ['<REPO_ROOT>\\src\\..\\ISEF R9 data folder\\r9_finiteT_summary.png']
+Wrote <REPO_ROOT>\src\..\<R9 data folder>\r9_finiteT_data.json
+      ['<REPO_ROOT>\\src\\..\\<R9 data folder>\\r9_finiteT_summary.png']
 Total wall: 915.5s

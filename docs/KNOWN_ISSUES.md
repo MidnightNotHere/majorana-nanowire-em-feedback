@@ -41,8 +41,9 @@ Nothing here changes a result.
 8. **`results/finite_temperature/r9_full_run.log` is an archival run log.** It recorded the absolute Windows path of the
    machine it ran on, with a user name, in two lines (82 and 83, the "Wrote ..." lines for `r9_finiteT_data.json` and
    `r9_finiteT_summary.png`). On 2026-10-25 the part of those paths before `src\..\` was replaced by the placeholder
-   `<REPO_ROOT>`; no other line and no number of the log was changed. The `ISEF R9 data folder` component that follows
-   is the name of the output folder the run used then, kept as logged.
+   `<REPO_ROOT>`; no other line and no number of the log was changed. The component that followed, the pre-restructure
+   name of the output folder of the run (it began with a competition name), was replaced by `<R9 data folder>` on
+   2026-10-27; the folder is now `results/finite_temperature/` (see [`RENAME_MAP.md`](RENAME_MAP.md)).
 
 ## 2. Provenance gaps
 
