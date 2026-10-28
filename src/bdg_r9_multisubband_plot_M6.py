@@ -25,7 +25,11 @@ orig = json.load(open(os.path.join(R9, "r9_multisubband_sweep_data.json")))
 ext = json.load(open(os.path.join(R9, "r9_multisubband_sweep_M5_M6.json")))
 pa6 = json.load(open(os.path.join(R9, "r9_multisubband_protocol_a_M6.json")))
 
-fig, axes = plt.subplots(3, 1, figsize=(4.4, 10.8))
+# 4.4 x 7.8 in (was 4.4 x 10.8): same panels and data, shorter so the figure and
+# its full caption fit in one column of the paper; the unequal height ratios keep
+# the symlog tick labels of panels B and C from overlapping
+fig, axes = plt.subplots(3, 1, figsize=(4.4, 7.8),
+                         gridspec_kw={"height_ratios": [0.7, 1.6, 1.1]})
 
 # --- Panel A: truncation convergence (fixed occupancy sanity check) ---
 ax = axes[0]
@@ -59,7 +63,7 @@ ax.set_xlabel(r"$\mu$ ($\Delta$-units)")
 ax.set_ylabel(r"$s(\mu)$")
 ax.set_yscale("symlog", linthresh=1e-3)
 ax.set_title("(B) Genuine-occupancy sweep\n$g=2.9\\times10^4$")
-ax.legend(fontsize=6, ncol=2, loc="upper right")
+ax.legend(fontsize=8, ncol=2, loc="lower left")  # lower left is empty: nothing plotted below s = 0 at mu < 700
 ax.grid(alpha=0.3)
 
 # --- Panel C: pre-registered median statistic vs M ---
