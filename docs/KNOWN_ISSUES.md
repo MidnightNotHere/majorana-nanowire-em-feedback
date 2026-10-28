@@ -59,7 +59,7 @@ record, and the methods notes describe how they were made.
   image is kept as the record and not redrawn. It is not in the paper. Its panel titles read "Task 4.1", "Task 4.2" and
   "Task 4.3" (the labels of the superseded first round); they are part of the record and were left as they are.
 - **R4 saves no data file**, only figures. Recomputing figure 6 (`validate_pfaffian_boundary()`) took 676 s on
-  2026-10-25; figure 4 had not finished after about 45 minutes (section 3); figure 5 took 762 s on 2026-10-28.
+  2026-10-25; figure 4 took 6,135 s and figure 5 762 s, both on 2026-10-28 (section 3).
 
 Apart from that superseded image, every committed image has a script that draws it: an `src/` module, or one of the
 `scripts/redraw_*.py` files for the figures whose plotting code is not in the repository. The Data availability paragraph
@@ -129,21 +129,24 @@ text or legend box. Details that remain:
   the original text strings the same code reproduces the previously committed image pixel for pixel; the new image
   differs from it only in the super-title ("R9 Track 1" removed) and in one legend entry ("R5 g_crit band" became
   "g_crit band").
-- **Regenerate before release: `results/em_feedback_detector_comparison/r4_figure4_phase_shift_preview.png` was not
-  redrawn.** The command is in [`REPRODUCING.md`](REPRODUCING.md), section 4 (it calls
-  `figure4_phase_shift_preview()` of `src/bdg_r4_em_coupling.py`; it was not run). The R4 module keeps
-  no data file, so redrawing it means recomputing a 121-point grid of open-wire critical-field searches. A comparison run
-  of the original and the restructured code had not finished after about 45 minutes and was abandoned. The committed
-  image therefore still has the title "R4 Figure 4: ..." and, in its caveat line, the old path
-  `src/r4_pfaffian_boundary_methods.md`, which is now `docs/methods/r4_pfaffian_boundary_methods.md`. The plotting code
-  in `src/bdg_r4_em_coupling.py` has the new text, so rerunning that module produces the corrected figure.
+- **`r4_figure4_phase_shift_preview.png` was recomputed on 2026-10-28** (6,135 s, `figure4_phase_shift_preview()` of
+  `src/bdg_r4_em_coupling.py`, run unchanged in a scratch clone and copied back; the command is in
+  [`REPRODUCING.md`](REPRODUCING.md), section 4). The R4 module keeps no data file, so redrawing it means recomputing 62
+  open-wire critical-field searches (31 values of mu, each with and without feedback); an earlier comparison run of the
+  original and the restructured code had not finished after about 45 minutes and was abandoned. The previous image had the
+  title "R4 Figure 4: ..." and, in its caveat line, the old path `src/r4_pfaffian_boundary_methods.md` (now
+  `docs/methods/r4_pfaffian_boundary_methods.md`) and "pending R5 self-consistent self-field"; the module's text is now
+  "pending the self-consistent ring self-field". The canvas size is the same, 42,955 of 1,890,000 pixels differ, all of
+  them in the title (pixel rows 18 to 45 of 900) or the caveat line (rows 848 to 882), and the panels between them
+  (rows 46 to 847) are identical to the committed image. The returned shifts are -1.18 % at mu = 0 and -9.36 % at
+  mu = 1.4 (the largest), the -9.36 % that the paper and `docs/methods/r4_pfaffian_boundary_methods.md` quote.
 - **`r4_figure5_flux_density.png` was recomputed on 2026-10-28** (762 s, `figure5_flux_density_profile()` of
   `src/bdg_r4_em_coupling.py`, run unchanged in a scratch clone and copied back). Its caveat line, like that of figure 4,
   still said "pending R5 self-consistent self-field. See r4_pfaffian_boundary_methods.md"; the module's text is now "pending
   the self-consistent ring self-field. See docs/methods/r4_pfaffian_boundary_methods.md". The canvas size is the same
   and every changed pixel lies in the caveat line (pixel rows 701 to 735 of 750); the panels and titles above it are identical
   to the committed image, and the printed peak phases (5.125e-08 rad unscaled, 1.537e-02 rad at g = 3e5) are the values
-  written in panel (c). Only figure 4 still waits for a recomputation.
+  written in panel (c). Figure 4 was recomputed in the same way (entry above).
 - **`r4_figure6_pfaffian_vs_threshold.png` was recomputed** with the unchanged function, once with the original code and
   once with the restructured code, in scratch directories. The returned arrays, the plotted-data fingerprint and a render
   without text were identical, and the original code reproduced the committed image byte for byte. The new image differs

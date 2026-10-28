@@ -78,7 +78,7 @@ These were not rerun during the repository restructure. The times are those reco
 
 | Script | Arguments | Time | Source of the time | Writes |
 |---|---|--:|---|---|
-| `src/bdg_r4_em_coupling.py` | | > 10 min in total; figure 6 alone 676 s (an earlier measurement had put it above 15 min); figure 4 > 45 min, not finished; figure 5 762 s (2026-10-28) | measured | `em_feedback_detector_comparison/`: 6 PNG (figures 1 to 3 are the quick part; R4 saves no data file) |
+| `src/bdg_r4_em_coupling.py` | | > 10 min in total; figure 6 alone 676 s (an earlier measurement had put it above 15 min); figure 4 6,135 s (2026-10-28); figure 5 762 s (2026-10-28) | measured | `em_feedback_detector_comparison/`: 6 PNG (figures 1 to 3 are the quick part; R4 saves no data file) |
 | `src/bdg_r5_selfconsistent_ring.py` | | about 35 min | earlier README | `self_consistency_bifurcation/r5_results.json`, `r5_shift_comparison.csv` |
 | `src/bdg_r5_physically_meaningful_shift.py` | | about 40 min | earlier README | `r5_physical_shift_results.json` (the data of `r5_figure10`, `r5_figure11` and paper Fig. 4; those are drawn by `scripts/redraw_*.py`, section 3) |
 | `src/bdg_r5_anderson_mixing.py` | | not recorded | | `r5_anderson_results.json` |
@@ -92,12 +92,12 @@ These were not rerun during the repository restructure. The times are those reco
 | `src/bdg_r9_multisubband_bc.py` | | 5,711 s (N = 80), 4,257 s (N = 120), 406 s (N = 60) | `docs/methods/r9_multisubband_methods.md`, section 13 table | `multisubband/r9_multisubband_bc_M2_*.json` |
 | `src/bdg_r9_multisubband_bracket_scan.py` | | not recorded | | `multisubband/r9_multisubband_bracket_scan.json` |
 
-**Regenerate before release: R4 figure 4.** `results/em_feedback_detector_comparison/r4_figure4_phase_shift_preview.png`
-still has its old title ("R4 Figure 4: ...") and, in its caveat line, the old path `src/r4_pfaffian_boundary_methods.md`;
-the plotting code in `src/bdg_r4_em_coupling.py` already has the corrected text, but the image has not been redrawn because
-a run of `figure4_phase_shift_preview()` had not finished after about 45 minutes (see
-[`KNOWN_ISSUES.md`](KNOWN_ISSUES.md), section 3). To regenerate it, run this from the repository root (it calls the figure
-function only, not the whole module; it takes well over 45 minutes and overwrites the committed file):
+**R4 figure 4 was regenerated on 2026-10-28.** `results/em_feedback_detector_comparison/r4_figure4_phase_shift_preview.png`
+had its old title ("R4 Figure 4: ...") and, in its caveat line, the old path `src/r4_pfaffian_boundary_methods.md`; the
+plotting code in `src/bdg_r4_em_coupling.py` already had the corrected text. `figure4_phase_shift_preview()` was run
+unchanged in a scratch clone of the repository, took 6,135 s (102 min), and the image was copied back (see
+[`KNOWN_ISSUES.md`](KNOWN_ISSUES.md), section 3). To regenerate it again, run this from the repository root (it calls the
+figure function only, not the whole module; it takes about 100 minutes and overwrites the committed file):
 
 ```bash
 python -X utf8 -c "import sys; sys.path.insert(0, 'src'); import bdg_r4_em_coupling as r4; print(r4.figure4_phase_shift_preview())"
@@ -105,8 +105,8 @@ python -X utf8 -c "import sys; sys.path.insert(0, 'src'); import bdg_r4_em_coupl
 
 The function writes `results/em_feedback_detector_comparison/r4_figure4_phase_shift_preview.png` (the folder is fixed by
 the module, whatever the working directory) and returns the path, the shift in percent at mu = 0 and the largest shift.
-Afterwards `git diff --stat` should show that only this PNG changed; the file has not been checked against the
-regenerated image, and `FIGURE_PROVENANCE.md` and `KNOWN_ISSUES.md` should be updated when it has.
+The run of 2026-10-28 returned -1.18 % at mu = 0 and a largest shift of -9.36 % at mu = 1.4, the value that the paper
+and the R4 methods note quote.
 
 `src/bdg_parallel.py` is a helper imported by the sweep drivers, not a script to run. Its worker count and memory budget
 are fixed for the machine it was tuned on; see [`KNOWN_ISSUES.md`](KNOWN_ISSUES.md).
