@@ -172,6 +172,13 @@ text or legend box. Details that remain:
   `Physics Research Logbook - Majorana Nanowire Inductive Feedback Project.docx`, and in the commits that moved it to
   `docs/logbook/`. To restore a copy: `git show "pre-cleanup:Physics Research Logbook - Majorana Nanowire Inductive
   Feedback Project.docx" > logbook.docx`. The commit hashes that the methods notes quote still refer to that history.
+  **Logbook moved out of the archive tree; still present in git history.** On 2026-10-27 a copy was placed outside the
+  repository, in the folder `../majorana-private-archive/` (next to the repository folder), under the same file name; it
+  is byte-identical to the file at the root of `pre-cleanup` (990,642 bytes, SHA-256
+  `9a06b4d5a5317bb56b1bcef31c70e6653878c5750953f4610c8e49d9c7d25a8d`). No history was rewritten. Pull request #1 had
+  already merged the restructure branch into `main` before the logbook was removed from the branch, so the file was in
+  the tree of `main` (as `docs/logbook/...docx`) from that merge until this branch is merged, and it stays in the public
+  history of the repository.
 - **Superseded results are kept.** Files and sections marked `SUPERSEDED`, and the correction boxes in the methods notes,
   record earlier numbers that were later found to be wrong or inflated. They are intentionally not deleted.
 
